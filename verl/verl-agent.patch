@@ -210,7 +210,7 @@ index d0f68ba..8fb0d62 100644
      step_advantage_w: 1.0
      mode: "mean_norm" # "mean_norm" or "mean_std_norm"
 diff --git a/verl/trainer/ppo/ray_trainer.py b/verl/trainer/ppo/ray_trainer.py
-index d85e23a..3911eab 100644
+index d85e23a..73e2949 100644
 --- a/verl/trainer/ppo/ray_trainer.py
 +++ b/verl/trainer/ppo/ray_trainer.py
 @@ -94,6 +94,7 @@ class AdvantageEstimator(str, Enum):
@@ -221,7 +221,45 @@ index d85e23a..3911eab 100644
  
  
  @dataclass
-@@ -357,6 +358,22 @@ def compute_advantage(data: DataProto, adv_estimator, gamma=1.0, lam=1.0, num_re
+@@ -241,6 +242,37 @@ def compute_response_mask(data: DataProto):
+     return attention_mask[:, -response_length:]
+ 
+ 
++def _dump_steps_impl(trainer, batch, ent):
++    """One JSON line per step row: sampled-token NLL (GACA's H_t), exact mean
++    token entropy, within-response entropy spread, anchor, group ids, returns."""
++    import json, hashlib
++    mask = batch.batch["response_mask"].float().cpu()
++    lp = batch.batch["old_log_probs"].float().cpu()
++    n = mask.sum(-1).clamp(min=1)
++    nll = (-(lp * mask).sum(-1) / n).numpy()
++    e = ent * mask
++    ent_mean = (e.sum(-1) / n).numpy()
++    ent_max = (e.max(-1).values).numpy()
++    ent_sq = ((ent ** 2) * mask).sum(-1) / n
++    ent_std = (ent_sq - torch.as_tensor(ent_mean) ** 2).clamp(min=0).sqrt().numpy()
++    # share of the response's total entropy carried by its top-20% tokens
++    top = []
++    for i in range(len(nll)):
++        v = ent[i][mask[i] > 0]
++        k = max(1, int(round(0.2 * len(v))))
++        top.append(float(v.topk(k).values.sum() / v.sum().clamp(min=1e-9)) if len(v) else 0.0)
++    ret = batch.batch["token_level_rewards"].sum(-1).float().cpu().numpy()
++    g = batch.batch["step_rewards"].float().cpu().numpy() if "step_rewards" in batch.batch.keys() else np.zeros(len(nll))
++    nb = batch.non_tensor_batch
++    with open(os.environ["GACA_STEP_DUMP"], "a") as f:
++        for i in range(len(nll)):
++            f.write(json.dumps({"it": int(trainer.global_steps), "uid": str(nb["uid"][i]), "traj": str(nb["traj_uid"][i]),
++                                "anchor": hashlib.md5(repr(nb["anchor_obs"][i]).encode()).hexdigest()[:16],
++                                "nll": float(nll[i]), "ent": float(ent_mean[i]), "ent_std": float(ent_std[i]),
++                                "ent_max": float(ent_max[i]), "top20": top[i], "len": int(n[i]),
++                                "ret": float(ret[i]), "g_hat": float(g[i])}) + "\n")
++
++
+ def compute_advantage(data: DataProto, adv_estimator, gamma=1.0, lam=1.0, num_repeat=1, multi_turn=False, norm_adv_by_std_in_grpo=True, step_advantage_w=1.0, gigpo_mode="mean_std_norm", gigpo_enable_similarity=False, gigpo_similarity_thresh=0.95, **kwargs):
+     """Compute advantage estimates for policy optimization.
+ 
+@@ -357,6 +389,22 @@ def compute_advantage(data: DataProto, adv_estimator, gamma=1.0, lam=1.0, num_re
              )
          data.batch['advantages'] = advantages
          data.batch['returns'] = returns
@@ -244,7 +282,7 @@ index d85e23a..3911eab 100644
      else:
          raise NotImplementedError
      return data
-@@ -451,7 +468,8 @@ class RayPPOTrainer:
+@@ -451,7 +499,8 @@ class RayPPOTrainer:
              AdvantageEstimator.REMAX,
              AdvantageEstimator.RLOO,
              AdvantageEstimator.REINFORCE_PLUS_PLUS_BASELINE,
@@ -254,7 +292,7 @@ index d85e23a..3911eab 100644
          ]:
              self.use_critic = False
          else:
-@@ -1067,6 +1085,21 @@ class RayPPOTrainer:
+@@ -1067,6 +1116,21 @@ class RayPPOTrainer:
                  )
  
                  is_last_step = self.global_steps >= self.total_training_steps
@@ -276,7 +314,7 @@ index d85e23a..3911eab 100644
  
                  with _timer("step", timing_raw):
                      # generate a batch
-@@ -1108,7 +1141,7 @@ class RayPPOTrainer:
+@@ -1108,7 +1172,7 @@ class RayPPOTrainer:
                      del batch
                      batch = gen_batch_output
  
@@ -285,7 +323,15 @@ index d85e23a..3911eab 100644
                          step_rewards_tensor = core_gigpo.compute_step_discounted_returns(
                              batch=batch,
                              gamma=self.config.algorithm.gamma
-@@ -1233,7 +1266,10 @@ class RayPPOTrainer:
+@@ -1142,6 +1206,7 @@ class RayPPOTrainer:
+                     with _timer("old_log_prob", timing_raw):
+                         old_log_prob = self.actor_rollout_wg.compute_log_prob(batch)
+                         entropys = old_log_prob.batch["entropys"]
++                        _row_entropy = entropys.detach().float().cpu()  # term project: exact per-token entropy, kept for the step dump
+                         response_masks = batch.batch["response_mask"]
+                         loss_agg_mode = self.config.actor_rollout_ref.actor.loss_agg_mode
+                         entropy_loss = agg_loss(loss_mat=entropys, loss_mask=response_masks, loss_agg_mode=loss_agg_mode)
+@@ -1233,7 +1298,16 @@ class RayPPOTrainer:
                              gigpo_mode=self.config.algorithm.gigpo.mode,
                              gigpo_enable_similarity= self.config.algorithm.gigpo.enable_similarity,
                              gigpo_similarity_thresh=self.config.algorithm.gigpo.similarity_thresh,
@@ -293,6 +339,19 @@ index d85e23a..3911eab 100644
 +                            step=self.global_steps,
                          )
 +                        metrics.update(batch.meta_info.pop("gaca_diag", {}))
++                        # Term project: per-step dump (logging only, never affects training).
++                        if os.environ.get("GACA_STEP_DUMP"):
++                            try:
++                                self._dump_steps(batch, _row_entropy)
++                            except Exception as _e:  # never let logging kill a run
++                                print(f"[step dump] skipped: {_e}")
  
                      # update critic
                      if self.use_critic:
+@@ -1302,3 +1376,6 @@ class RayPPOTrainer:
+                     pprint(f"Final validation metrics: {last_val_metrics}")
+                     progress_bar.close()
+                     return
++
++
++RayPPOTrainer._dump_steps = lambda self, batch, ent: _dump_steps_impl(self, batch, ent)

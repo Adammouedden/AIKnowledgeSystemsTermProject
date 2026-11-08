@@ -25,6 +25,7 @@ TEST_FREQ=${TEST_FREQ:-5}
 python3 -m examples.data_preprocess.prepare --mode text --train_data_size $TRAIN_BS --val_data_size $VAL_BS
 
 export GACA_VAL_DUMP=$OUT/val_episodes.jsonl   # per-episode outcomes for McNemar (rollout_loop._dump_episodes)
+export GACA_STEP_DUMP=$OUT/steps.jsonl        # per-step NLL vs exact entropy, logging only (ray_trainer._dump_steps_impl)
 python3 -m verl.trainer.main_ppo \
     algorithm.adv_estimator=gaca \
     algorithm.gaca.method=$METHOD \
