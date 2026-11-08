@@ -1,0 +1,42 @@
+{
+ "steps": 10,
+ "steps_with_decision_mass": 10,
+ "F0_mean": 0.8,
+ "importance_share_inside_action_tags": 0.12507936507936507,
+ "uniform": {
+  "tv_to_importance": 0.6951198065449665,
+  "credit_on_importance_vs_uniform": 1.0,
+  "tv_minus_uniform": 0.0,
+  "tv_minus_uniform_ci": [
+   0.0,
+   0.0
+  ]
+ },
+ "entropy": {
+  "tv_to_importance": 0.7368366548663571,
+  "credit_on_importance_vs_uniform": 0.8766101475146708,
+  "tv_minus_uniform": 0.04171684832139053,
+  "tv_minus_uniform_ci": [
+   -0.011348451960925269,
+   0.10237479800965164
+  ]
+ },
+ "nll": {
+  "tv_to_importance": 0.7396411540964969,
+  "credit_on_importance_vs_uniform": 0.9027116387724653,
+  "tv_minus_uniform": 0.044521347551530345,
+  "tv_minus_uniform_ci": [
+   -0.020774849769841508,
+   0.11147331772655268
+  ]
+ },
+ "action_span": {
+  "tv_to_importance": 0.686366626436614,
+  "credit_on_importance_vs_uniform": 1.027079509346802,
+  "tv_minus_uniform": -0.008753180108352443,
+  "tv_minus_uniform_ci": [
+   -0.028112201489936504,
+   0.010899064852240735
+  ]
+ }
+}

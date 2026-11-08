@@ -371,9 +371,163 @@ def entropy_check(path, out=None):
     return rep
 
 
+# ----------------------------------------------------------------- token decision relevance
+
+
+def token_oracle(args):
+    """Which tokens of a reasoning-plus-action response decide the action?
+
+    For real steps sampled from the policy, cut the response after j tokens,
+    resample the remainder K times and record F(j) = P(final action differs
+    from the original). F falls from F(0) (resample everything) to F(L) = 0;
+    the drop across a segment, F(j_a) - F(j_b), is the share of the decision
+    settled inside it -- its decision importance. The environment is
+    deterministic, so an unchanged action means an identical next state, which
+    makes F an exact step-level relevance measure. Token-weighting schemes are
+    then scored by how well the credit they assign matches that importance.
+    """
+    import torch
+    from transformers import AutoModelForCausalLM, AutoTokenizer
+    from vllm import LLM, SamplingParams
+    from vllm.inputs import TokensPrompt
+
+    import env as E
+
+    rng = random.Random(args.seed)
+    tok = AutoTokenizer.from_pretrained(args.model)
+    llm = LLM(args.model, gpu_memory_utilization=0.55, max_model_len=4096, seed=args.seed, enable_prefix_caching=True)
+    sp = SamplingParams(temperature=1.0, top_p=1.0, top_k=-1, max_tokens=512, seed=None)
+
+    def ids_of(msgs):
+        return tok.apply_chat_template(msgs, tokenize=True, add_generation_prompt=True)
+
+    # ---- A. real steps from policy rollouts
+    games = E.list_games("train")
+    random.Random(1234).shuffle(games)
+    games = games[args.task_offset : args.task_offset + args.n_games]
+    envs = [E.AlfEnv(g["gamefile"], args.max_steps) for g in games]
+    for e in envs:
+        e.reset()
+    hist = [[] for _ in envs]
+    alive = list(range(len(envs)))
+    steps = []
+    while alive:
+        prompts = [ids_of(E.build_prompt(envs[i], hist[i], mode="think")) for i in alive]
+        outs = llm.generate([TokensPrompt(prompt_token_ids=p) for p in prompts], sp, use_tqdm=False)
+        for i, p, o in zip(list(alive), prompts, outs):
+            text = o.outputs[0].text
+            act, valid = E.parse_think_action(text, envs[i].admissible)
+            if valid and act in envs[i].admissible:
+                steps.append({"game": i, "t": envs[i].t, "prompt": p, "resp": list(o.outputs[0].token_ids),
+                              "action": act, "admissible": list(envs[i].admissible)})
+            ob, done, won, _ = envs[i].step(act)
+            hist[i].append((act, ob))
+            if done:
+                alive.remove(i)
+    print(f"collected {len(steps)} valid steps from {len(envs)} games")
+    rng.shuffle(steps)
+    steps = steps[: args.n_steps]
+
+    # ---- B. exact per-token entropy and sampled NLL (one forward pass per step)
+    hf = AutoModelForCausalLM.from_pretrained(args.model, dtype=torch.bfloat16).cuda().eval()
+    for s in steps:
+        ids = torch.tensor([s["prompt"] + s["resp"]], device="cuda")
+        with torch.no_grad():
+            lg = hf(ids).logits[0, len(s["prompt"]) - 1 : -1].float()
+        lp = torch.log_softmax(lg, -1)
+        s["ent"] = (-(lp.exp() * lp).sum(-1)).cpu().tolist()
+        s["nll"] = (-lp.gather(-1, torch.tensor(s["resp"], device="cuda")[:, None])[:, 0]).cpu().tolist()
+    del hf
+    torch.cuda.empty_cache()
+
+    # ---- C. flip test at cut points
+    reqs, owners = [], []
+    for si, s in enumerate(steps):
+        resp = s["resp"]
+        stop = {tok.eos_token_id, tok.convert_tokens_to_ids("<|im_end|>"), tok.convert_tokens_to_ids("<|endoftext|>")}
+        L = len(resp)
+        while L and resp[L - 1] in stop:
+            L -= 1
+        txt_ids = resp[:L]
+        cuts = {0} | {round(L * k / args.n_cuts) for k in range(1, args.n_cuts)}
+        # where the <action> tag starts, in tokens
+        for j in range(L):
+            if "<action>" in tok.decode(txt_ids[: j + 1]):
+                s["act_start"] = j
+                cuts |= {j, min(L, j + 1)}
+                break
+        s["L"], s["cuts"] = L, sorted(c for c in cuts if c < L)
+        for c in s["cuts"]:
+            for _ in range(args.K):
+                reqs.append(TokensPrompt(prompt_token_ids=s["prompt"] + txt_ids[:c]))
+                owners.append((si, c))
+    print(f"flip test: {len(reqs)} continuations")
+    t0 = time.time()
+    outs = llm.generate(reqs, sp, use_tqdm=False)
+    print(f"  done in {time.time() - t0:.0f}s")
+    flips = {}
+    for (si, c), o in zip(owners, outs):
+        s = steps[si]
+        text = tok.decode(s["resp"][:c]) + o.outputs[0].text
+        a, valid = E.parse_think_action(text, s["admissible"])
+        flips.setdefault((si, c), []).append(0.0 if (valid and a == s["action"]) else 1.0)
+    os.makedirs(os.path.dirname(args.out) or ".", exist_ok=True)
+    with open(args.out + ".jsonl", "w") as f:
+        for si, s in enumerate(steps):
+            F = {c: float(np.mean(flips[(si, c)])) for c in s["cuts"]}
+            f.write(json.dumps({k: s[k] for k in ("game", "t", "action", "L", "cuts", "ent", "nll")}
+                               | {"act_start": s.get("act_start"), "F": {str(c): v for c, v in F.items()}}) + "\n")
+    token_analyze(args.out + ".jsonl")
+
+
+def token_analyze(path, n_boot=2000):
+    """Score token-weighting schemes against measured decision importance."""
+    recs = [json.loads(l) for l in open(path)]
+    schemes = ("uniform", "entropy", "nll", "action_span")
+    per = []  # per step: dict scheme -> (TV distance, credit on importance)
+    act_share, f0 = [], []
+    for r in recs:
+        L, cuts = r["L"], r["cuts"]
+        F = [r["F"][str(c)] for c in cuts] + [0.0]
+        b = cuts + [L]
+        imp = np.array([max(F[k] - F[k + 1], 0.0) for k in range(len(cuts))])
+        f0.append(F[0])
+        if imp.sum() < 1e-9:
+            continue
+        imp = imp / imp.sum()
+        ent, nll = np.array(r["ent"][:L]), np.array(r["nll"][:L])
+        a0 = r["act_start"] if r["act_start"] is not None else L
+        span = np.array([2.0 if j >= a0 else 1.0 for j in range(L)])
+        w = {"uniform": np.ones(L), "entropy": ent, "nll": nll, "action_span": span}
+        out = {}
+        for k in schemes:
+            m = np.array([w[k][b[i] : b[i + 1]].sum() for i in range(len(cuts))])
+            m = m / max(m.sum(), 1e-12)
+            # TV distance between credit and importance; and importance-weighted credit
+            # relative to uniform (>1 = credit concentrates where the decision is made)
+            out[k] = (0.5 * np.abs(m - imp).sum(), float((m * imp).sum()))
+        per.append(out)
+        act_share.append(float(sum(imp[i] for i in range(len(cuts)) if b[i] >= a0)))
+    rng = np.random.default_rng(0)
+    rep = {"steps": len(recs), "steps_with_decision_mass": len(per), "F0_mean": float(np.mean(f0)),
+           "importance_share_inside_action_tags": float(np.mean(act_share))}
+    uni = np.array([p["uniform"][1] for p in per])
+    for k in schemes:
+        tv = np.array([p[k][0] for p in per])
+        cr = np.array([p[k][1] for p in per])
+        dtv = np.array([p[k][0] - p["uniform"][0] for p in per])
+        boots = [dtv[rng.integers(0, len(per), len(per))].mean() for _ in range(n_boot)]
+        rep[k] = {"tv_to_importance": float(tv.mean()), "credit_on_importance_vs_uniform": float(cr.mean() / uni.mean()),
+                  "tv_minus_uniform": float(dtv.mean()),
+                  "tv_minus_uniform_ci": [float(np.percentile(boots, 2.5)), float(np.percentile(boots, 97.5))]}
+    print(json.dumps(rep, indent=1))
+    json.dump(rep, open(os.path.splitext(path)[0] + ".analysis.json", "w"), indent=1)
+    return rep
+
+
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("cmd", choices=["collect", "analyze", "entropy"])
+    p.add_argument("cmd", choices=["collect", "analyze", "entropy", "tokens", "tokens_analyze"])
     p.add_argument("paths", nargs="*")
     p.add_argument("--out", default="runs/measure/base")
     p.add_argument("--adapter", default="base")
@@ -396,9 +550,16 @@ def main():
     p.add_argument("--max_adm0", type=int, default=20)
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--lora_r", type=int, default=32)
+    p.add_argument("--n_games", type=int, default=48)
+    p.add_argument("--n_steps", type=int, default=320)
+    p.add_argument("--n_cuts", type=int, default=16)
     args = p.parse_args()
     if args.cmd == "collect":
         collect(args)
+    elif args.cmd == "tokens":
+        token_oracle(args)
+    elif args.cmd == "tokens_analyze":
+        token_analyze(args.paths[0])
     elif args.cmd == "entropy":
         entropy_check(args.paths[0], os.path.splitext(args.paths[0])[0] + ".entropy.json")
     else:
