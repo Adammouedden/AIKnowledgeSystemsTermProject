@@ -866,3 +866,35 @@ iteration now sit next to the paper's Table 7: c_t std 0.40 [0.31], lambda_t
 std 0.10 [0.08], clamped 0.001 [<0.01], step coverage 0.96 [0.86]. Under index
 actions they were 1.04 / 0.22 / 0.056 / 0.82; matching the response format is
 what closed that gap.
+
+## 2026-11-08 — Probe-weighted token credit: offline evidence and arm design
+
+Full analysis in `IDEAS.md`; data in `runs/tokens/`. A flip-test oracle
+(resample a response after j tokens, does the final action change?) on 640
+real steps over two disjoint game sets found that the commitment probe
+q(j) = P(original action | first j tokens + forced "</think>\n<action>") is the
+only token-weighting signal that tracks where the decision is made. Using the
+exact training function (`advantages.probe_token_weights`, clip [0.25, 4],
+mean-preserving), it puts **1.65x [1.57, 1.74]** more credit on decisive
+segments than uniform, on held-out games, consistently across all six task
+types (1.52-1.96), both game halves (1.73 / 1.57) and early/late steps, and
+most on open decisions (2.37x). Entropy (1.04x), NLL (1.08x) and an
+entropy-plus-action-span hybrid (1.07x) do not.
+
+Arm design: GACA unchanged; each step's advantage is redistributed over its
+response tokens by the probe weights (cut every 16 reasoning tokens + the
+<action> tag; invalid-format rows stay uniform). Integration
+(`verl-agent/gigpo/core_probe.py`) scores the probe through verl's own
+log-prob routine; CPU tests pin the batch layout against direct scoring
+(<2e-4 nats) and against the offline oracle's values (bf16 noise).
+
+One definitional change from the offline oracle: the action cut is where the
+`<action>` tag *begins* (clean context), not the token that completes it (the
+oracle's, whose context ended in a tag fragment). It affects only the last
+reasoning cut.
+
+**Matched on iterations (34), not wall-clock.** The probe adds a scoring pass
+per iteration; on the controls' 3.75 h budget it would get fewer iterations,
+i.e. less data, and lose for reasons unrelated to credit assignment. Rollout
+budget (iterations x tasks x G) is what the comparison holds fixed, as in
+attempts 1-3. The arm therefore runs past 4 h by the measured probe overhead.
