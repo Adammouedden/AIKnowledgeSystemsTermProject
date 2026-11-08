@@ -1,0 +1,2 @@
+./finalize.sh: line 15: syntax error near unexpected token `do'
+./finalize.sh: line 15: `f "gaca_onl[y]\.sh" >/dev/null 2>&1; do'

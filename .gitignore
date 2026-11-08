@@ -1,0 +1,34 @@
+# Environment and large artifacts. Source is ~250 KB; everything below is ~16 GB.
+# NOTE: git has no inline comments in .gitignore - keep comments on their own lines.
+# NOTE: use **/ so patterns match at any depth, not just the top level.
+
+# HF cache (3.9 GB), re-downloaded automatically on first use
+models/
+
+# ALFWorld games (2.3 GB), re-fetch with: pixi run alfworld-download
+data/
+
+# pixi environment (7.7 GB), rebuilt with: pixi install
+.pixi/
+
+__pycache__/
+*.pyc
+
+# Model weights and optimizer state, at any depth. GitHub rejects >100 MB,
+# and a resume checkpoint's state.pt is ~283 MB on its own.
+*.safetensors
+*.pt
+*.bin
+*.ckpt
+
+# LoRA adapter and resume directories, at any depth. Listed both with and
+# without a trailing slash: the slash form only matches paths that already
+# exist as directories, so the bare form covers dirs a later run recreates.
+**/*_best/
+**/*_last/
+**/*_ckpt/
+**/*_best
+**/*_last
+**/*_ckpt
+
+# Keep: runs/*.jsonl, runs/*.out, runs/*paired*.json, runs/learning_curves.png

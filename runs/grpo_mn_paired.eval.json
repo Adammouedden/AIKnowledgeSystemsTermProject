@@ -1,0 +1,331 @@
+{
+ "success": 0.109375,
+ "steps": 23.25,
+ "invalid": 0.029375,
+ "n": 64,
+ "per_task": [
+  {
+   "task_type": "look_at_obj_in_light",
+   "won": true,
+   "steps": 13
+  },
+  {
+   "task_type": "pick_and_place_simple",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "look_at_obj_in_light",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "look_at_obj_in_light",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "look_at_obj_in_light",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "look_at_obj_in_light",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "pick_and_place_simple",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "pick_and_place_simple",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "pick_and_place_simple",
+   "won": true,
+   "steps": 14
+  },
+  {
+   "task_type": "pick_and_place_simple",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "look_at_obj_in_light",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "pick_and_place_simple",
+   "won": true,
+   "steps": 9
+  },
+  {
+   "task_type": "pick_and_place_simple",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "pick_and_place_simple",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "pick_and_place_simple",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "pick_and_place_simple",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "pick_and_place_simple",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "pick_and_place_simple",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "pick_and_place_simple",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "look_at_obj_in_light",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "look_at_obj_in_light",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "look_at_obj_in_light",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "look_at_obj_in_light",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "pick_and_place_simple",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "pick_and_place_simple",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "pick_and_place_simple",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "look_at_obj_in_light",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "look_at_obj_in_light",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "pick_and_place_simple",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "look_at_obj_in_light",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "pick_and_place_simple",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "pick_and_place_simple",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "pick_and_place_simple",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "pick_and_place_simple",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "pick_and_place_simple",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "look_at_obj_in_light",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "pick_and_place_simple",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "pick_and_place_simple",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "pick_and_place_simple",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "pick_and_place_simple",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "look_at_obj_in_light",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "pick_and_place_simple",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "pick_and_place_simple",
+   "won": true,
+   "steps": 11
+  },
+  {
+   "task_type": "pick_and_place_simple",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "look_at_obj_in_light",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "pick_and_place_simple",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "pick_and_place_simple",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "look_at_obj_in_light",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "look_at_obj_in_light",
+   "won": true,
+   "steps": 3
+  },
+  {
+   "task_type": "look_at_obj_in_light",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "look_at_obj_in_light",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "pick_and_place_simple",
+   "won": true,
+   "steps": 10
+  },
+  {
+   "task_type": "look_at_obj_in_light",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "look_at_obj_in_light",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "look_at_obj_in_light",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "look_at_obj_in_light",
+   "won": true,
+   "steps": 3
+  },
+  {
+   "task_type": "pick_and_place_simple",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "pick_and_place_simple",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "look_at_obj_in_light",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "look_at_obj_in_light",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "look_at_obj_in_light",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "look_at_obj_in_light",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "pick_and_place_simple",
+   "won": false,
+   "steps": 25
+  },
+  {
+   "task_type": "look_at_obj_in_light",
+   "won": false,
+   "steps": 25
+  }
+ ],
+ "event": "eval_only",
+ "adapter": "runs/grpo_mn_best",
+ "method": "grpo"
+}
