@@ -461,6 +461,31 @@ def token_oracle(args):
             for _ in range(args.K):
                 reqs.append(TokensPrompt(prompt_token_ids=s["prompt"] + txt_ids[:c]))
                 owners.append((si, c))
+    # ---- B2. commitment probe: q(c) = P(original action | prompt + resp[:c] + forced close).
+    # One teacher-forced forward per cut, no generation. Before the <action>
+    # tag the reasoning is closed by force; from the tag on, the original
+    # tokens up to and including the action are scored as they are.
+    hf = AutoModelForCausalLM.from_pretrained(args.model, dtype=torch.bfloat16).cuda().eval()
+    close = tok("</think>\n<action>", add_special_tokens=False).input_ids
+    for s in steps:
+        act_ids = tok(s["action"] + "</action>", add_special_tokens=False).input_ids
+        a0 = s.get("act_start", s["L"])
+        q = {}
+        for c in s["cuts"] + [s["L"]]:
+            if c <= a0:
+                ctx, tgt = s["prompt"] + s["resp"][:c] + close, act_ids
+            else:
+                ctx, tgt = s["prompt"] + s["resp"][:c], s["resp"][c : s["L"]]
+            if not tgt:
+                q[c] = 0.0
+                continue
+            ids = torch.tensor([ctx + tgt], device="cuda")
+            with torch.no_grad():
+                lp = torch.log_softmax(hf(ids).logits[0, len(ctx) - 1 : -1].float(), -1)
+            q[c] = float(lp.gather(-1, torch.tensor(tgt, device="cuda")[:, None]).sum())
+        s["q"] = {str(k): v for k, v in q.items()}
+    del hf
+    torch.cuda.empty_cache()
     print(f"flip test: {len(reqs)} continuations")
     t0 = time.time()
     outs = llm.generate(reqs, sp, use_tqdm=False)
@@ -475,7 +500,7 @@ def token_oracle(args):
     with open(args.out + ".jsonl", "w") as f:
         for si, s in enumerate(steps):
             F = {c: float(np.mean(flips[(si, c)])) for c in s["cuts"]}
-            f.write(json.dumps({k: s[k] for k in ("game", "t", "action", "L", "cuts", "ent", "nll")}
+            f.write(json.dumps({k: s[k] for k in ("game", "t", "action", "L", "cuts", "ent", "nll", "q", "prompt", "resp")}
                                | {"act_start": s.get("act_start"), "F": {str(c): v for c, v in F.items()}}) + "\n")
     token_analyze(args.out + ".jsonl")
 
@@ -483,7 +508,7 @@ def token_oracle(args):
 def token_analyze(path, n_boot=2000):
     """Score token-weighting schemes against measured decision importance."""
     recs = [json.loads(l) for l in open(path)]
-    schemes = ("uniform", "entropy", "nll", "action_span")
+    schemes = ("uniform", "entropy", "nll", "action_span", "hybrid", "probe")
     per = []  # per step: dict scheme -> (TV distance, credit on importance)
     act_share, f0 = [], []
     for r in recs:
@@ -498,10 +523,27 @@ def token_analyze(path, n_boot=2000):
         ent, nll = np.array(r["ent"][:L]), np.array(r["nll"][:L])
         a0 = r["act_start"] if r["act_start"] is not None else L
         span = np.array([2.0 if j >= a0 else 1.0 for j in range(L)])
-        w = {"uniform": np.ones(L), "entropy": ent, "nll": nll, "action_span": span}
+        # hybrid (pre-registered from the first oracle run): entropy on the
+        # reasoning, but action-span tokens get the mean reasoning entropy
+        # instead of their own near-zero entropy.
+        hyb = ent.copy()
+        if a0 < L:
+            hyb[a0:] = ent[:a0].mean() if a0 > 0 else 1.0
+        w = {"uniform": np.ones(L), "entropy": ent, "nll": nll, "action_span": span, "hybrid": hyb}
+        seg_mass = {}
+        if "q" in r:
+            # probe: how much P(original action) rises across the segment
+            # (log-prob gain, clipped at 0) -- a segment-level score directly
+            qv = [np.exp(r["q"][str(c)]) for c in cuts] + [np.exp(r["q"][str(L)]) if str(L) in r["q"] else 1.0]
+            seg_mass["probe"] = np.array([max(qv[i + 1] - qv[i], 0.0) for i in range(len(cuts))]) + 1e-6
         out = {}
         for k in schemes:
-            m = np.array([w[k][b[i] : b[i + 1]].sum() for i in range(len(cuts))])
+            if k == "probe":
+                if "probe" not in seg_mass:
+                    continue
+                m = seg_mass["probe"]
+            else:
+                m = np.array([w[k][b[i] : b[i + 1]].sum() for i in range(len(cuts))])
             m = m / max(m.sum(), 1e-12)
             # TV distance between credit and importance; and importance-weighted credit
             # relative to uniform (>1 = credit concentrates where the decision is made)
@@ -513,6 +555,8 @@ def token_analyze(path, n_boot=2000):
            "importance_share_inside_action_tags": float(np.mean(act_share))}
     uni = np.array([p["uniform"][1] for p in per])
     for k in schemes:
+        if any(k not in p for p in per):
+            continue
         tv = np.array([p[k][0] for p in per])
         cr = np.array([p[k][1] for p in per])
         dtv = np.array([p[k][0] - p["uniform"][0] for p in per])
@@ -525,9 +569,82 @@ def token_analyze(path, n_boot=2000):
     return rep
 
 
+def token_robust(path, task_offset=400, n_games=48, n_boot=2000):
+    """Robustness of probe-weighted token credit, using the exact training
+    function (advantages.probe_token_weights) on flip-test data.
+
+    For each step the fine flip-test grid gives the measured decision
+    importance per segment. Probe weights are built from q at a (possibly
+    coarser) subset of the reasoning cuts, clipped, mean-preserving, then
+    integrated over the fine segments. Metric: credit on importance relative to
+    uniform (sum_seg credit_share * importance_share, divided by uniform's),
+    >1 means the weights move credit toward where the decision is made."""
+    import env as E
+
+    games = E.list_games("train")
+    random.Random(1234).shuffle(games)
+    gtype = {i: g["task_type"] for i, g in enumerate(games[task_offset : task_offset + n_games])}
+    recs = [json.loads(l) for l in open(path)]
+
+    def score(r, spacing=1, clip=(0.25, 4.0)):
+        L, cuts = r["L"], r["cuts"]
+        F = [r["F"][str(c)] for c in cuts] + [0.0]
+        b = cuts + [L]
+        imp = np.array([max(F[k] - F[k + 1], 0.0) for k in range(len(cuts))])
+        if imp.sum() < 1e-9:
+            return None
+        imp = imp / imp.sum()
+        a0 = r["act_start"] if r["act_start"] is not None else L
+        reason = [c for c in cuts if c <= a0]
+        sub = sorted(set(reason[::spacing]) | {0, min(a0, L)} & set(cuts))
+        sub = [c for c in sub if str(c) in r["q"]]
+        qv = [float(np.exp(r["q"][str(c)])) for c in sub]
+        w = ADV.probe_token_weights(L, sub, qv, clip=clip) if clip else _noclip(L, sub, qv)
+        m = np.array([w[b[i] : b[i + 1]].sum() for i in range(len(cuts))])
+        u = np.array([b[i + 1] - b[i] for i in range(len(cuts))], dtype=float)
+        m, u = m / m.sum(), u / u.sum()
+        return float((m * imp).sum()), float((u * imp).sum())
+
+    def _noclip(L, sub, qv):
+        return ADV.probe_token_weights(L, sub, qv, clip=(0.0, 1e9))
+
+    rng = np.random.default_rng(0)
+
+    def summarize(pairs):
+        pairs = [p for p in pairs if p]
+        a = np.array([p[0] for p in pairs]); u = np.array([p[1] for p in pairs])
+        boots = []
+        for _ in range(n_boot):
+            ix = rng.integers(0, len(a), len(a))
+            boots.append(a[ix].mean() / u[ix].mean())
+        return {"n": len(a), "ratio": float(a.mean() / u.mean()),
+                "ci": [float(np.percentile(boots, 2.5)), float(np.percentile(boots, 97.5))],
+                "frac_steps_better": float(np.mean(a > u))}
+
+    rep = {"spacing": {}, "clip": {}, "task_type": {}, "step_t": {}, "openness_F0": {}, "split_half": {}}
+    for sp in (1, 2, 3):
+        rep["spacing"][f"x{sp}"] = summarize([score(r, sp) for r in recs])
+    for name, cl in (("none", None), ("0.1-10", (0.1, 10.0)), ("0.25-4", (0.25, 4.0)), ("0.5-2", (0.5, 2.0))):
+        rep["clip"][name] = summarize([score(r, 2, cl) for r in recs])
+    for tt in sorted(set(gtype.values())):
+        rep["task_type"][tt] = summarize([score(r, 2) for r in recs if gtype.get(r["game"]) == tt])
+    ts = np.array([r["t"] for r in recs]); tm = np.median(ts)
+    rep["step_t"]["early(t<=%d)" % tm] = summarize([score(r, 2) for r in recs if r["t"] <= tm])
+    rep["step_t"]["late"] = summarize([score(r, 2) for r in recs if r["t"] > tm])
+    f0 = np.array([r["F"][str(r["cuts"][0])] for r in recs]); q1, q2 = np.quantile(f0, [1 / 3, 2 / 3])
+    for lab, lo, hi in (("settled", -1, q1), ("middle", q1, q2), ("open", q2, 2)):
+        rep["openness_F0"][lab] = summarize([score(r, 2) for r, f in zip(recs, f0) if lo < f <= hi])
+    g = sorted(gtype)
+    for h, half in enumerate((set(g[::2]), set(g[1::2]))):
+        rep["split_half"][f"half{h}"] = summarize([score(r, 2) for r in recs if r["game"] in half])
+    print(json.dumps(rep, indent=1))
+    json.dump(rep, open(os.path.splitext(path)[0] + ".robust.json", "w"), indent=1)
+    return rep
+
+
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("cmd", choices=["collect", "analyze", "entropy", "tokens", "tokens_analyze"])
+    p.add_argument("cmd", choices=["collect", "analyze", "entropy", "tokens", "tokens_analyze", "tokens_robust"])
     p.add_argument("paths", nargs="*")
     p.add_argument("--out", default="runs/measure/base")
     p.add_argument("--adapter", default="base")
@@ -558,6 +675,8 @@ def main():
         collect(args)
     elif args.cmd == "tokens":
         token_oracle(args)
+    elif args.cmd == "tokens_robust":
+        token_robust(args.paths[0], task_offset=args.task_offset)
     elif args.cmd == "tokens_analyze":
         token_analyze(args.paths[0])
     elif args.cmd == "entropy":

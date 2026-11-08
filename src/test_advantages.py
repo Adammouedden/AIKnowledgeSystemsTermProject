@@ -276,6 +276,30 @@ def test_reliability_gate():
     print("ok reliability gate (anchor-group size, Prop. 3)")
 
 
+def test_probe_token_weights():
+    L = 40
+    # flat probe -> exactly uniform (== GACA)
+    w = A.probe_token_weights(L, [0, 16, 32], [1.0, 1.0, 1.0])
+    np.testing.assert_allclose(w, 1.0)
+    # mean-preserving and clipped
+    w = A.probe_token_weights(L, [0, 16, 32], [0.1, 0.2, 0.9])
+    assert abs(w.mean() - 1.0) < 1e-9, w.mean()
+    assert w.min() >= 0.25 - 1e-6 and w.max() <= 4.0 + 1e-6, (w.min(), w.max())
+    # the segment where q jumps (16..32: 0.2 -> 0.9) gets the most weight
+    assert w[16:32].mean() > w[0:16].mean() and w[16:32].mean() > w[32:].mean()
+    # decreasing q contributes nothing extra (rise is clipped at 0)
+    w2 = A.probe_token_weights(L, [0, 16, 32], [0.5, 0.3, 0.3])
+    assert w2[0:16].max() <= w2[32:].max() + 1e-9
+    # cut grid
+    assert A.probe_cuts(50, 35, 16) == [0, 16, 32, 35]
+    assert A.probe_cuts(50, 0, 16) == [0]
+    assert A.probe_cuts(10, 99, 16) == [0, 10]
+    # GACA advantage broadcast through uniform weights is unchanged
+    adv = 0.7
+    np.testing.assert_allclose(adv * A.probe_token_weights(30, [0], [1.0]), adv)
+    print("ok probe token weights (mean-preserving, clipped, uniform == GACA)")
+
+
 if __name__ == "__main__":
     test_discounted()
     test_episode_rowwise()
@@ -289,4 +313,5 @@ if __name__ == "__main__":
     test_degenerate_inputs()
     test_coverage_diagnostic()
     test_reliability_gate()
+    test_probe_token_weights()
     print("\nALL ADVANTAGE TESTS PASSED")

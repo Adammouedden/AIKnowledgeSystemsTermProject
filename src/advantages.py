@@ -239,3 +239,45 @@ def compute_advantages(
         adv_abs=float(np.abs(adv).mean()),
     )
     return adv, diag
+
+
+def probe_cuts(L: int, act_start: int, every: int = 16):
+    """Cut points for the commitment probe: every `every` tokens through the
+    reasoning, plus the start of the <action> tag. Always starts at 0."""
+    a0 = max(0, min(int(act_start), L))
+    return sorted(set(range(0, a0, every)) | {a0}) if L > 0 else []
+
+
+def probe_token_weights(L: int, cuts, q, clip=(0.25, 4.0)):
+    """Token weights from the commitment probe (IDEAS.md, treatment 1).
+
+    `cuts` are increasing positions starting at 0, `q[k]` the probability of
+    the original action given the response's first cuts[k] tokens (then a
+    forced close of the reasoning). The response end L is an implicit last cut
+    with q = 1 (the original action is certain once fully written). A segment
+    [cuts[k], cuts[k+1]) carries the rise of q across it, max(q[k+1]-q[k], 0),
+    spread evenly over its tokens. Weights are then clipped to `clip` times
+    the mean and renormalized to mean 1, so a step's total credit is
+    unchanged -- only where it lands inside the response moves. A flat probe
+    (no rise anywhere) returns uniform weights, which is exactly GACA.
+    """
+    w = np.ones(L, dtype=np.float64)
+    if L <= 0 or not cuts:
+        return w
+    b = list(cuts) + [L]
+    qv = list(q) + [1.0]
+    dens = np.zeros(L)
+    for k in range(len(cuts)):
+        a, e = b[k], b[k + 1]
+        if e > a:
+            dens[a:e] = max(qv[k + 1] - qv[k], 0.0) / (e - a)
+    if dens.sum() <= 1e-12:
+        return w
+    dens = dens / dens.mean()
+    lo, hi = clip
+    for _ in range(20):  # clip-and-renormalize to a fixed point
+        dens = np.clip(dens, lo, hi)
+        dens = dens / dens.mean()
+        if dens.min() >= lo - 1e-9 and dens.max() <= hi + 1e-9:
+            break
+    return dens
