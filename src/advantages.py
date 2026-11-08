@@ -143,6 +143,38 @@ def mixing_weight(c, lam0: float, alpha_lam: float, beta_lam: float):
     return np.where(c >= 1.0, up, down)
 
 
+def anchor_sizes(steps):
+    """m_z for every step: the size of its anchor bucket inside its prompt group."""
+    m = np.ones(len(steps), dtype=np.float64)
+    for gid in {s["group"] for s in steps}:
+        buckets = {}
+        for i, s in enumerate(steps):
+            if s["group"] == gid:
+                buckets.setdefault(s["anchor"], []).append(i)
+        for idx in buckets.values():
+            m[idx] = len(idx)
+    return m
+
+
+def reliability(lam, m):
+    """Group-size correction of the mixing weight (Proposition 3, eq. 18).
+
+    M_S(z) = y_z sigma_z^2 with y_z = m_z / (m_z - 1), so at fixed everything
+    else the optimal odds lambda*/(1 - lambda*) = M_E / M_S scale with
+    rho_z = 1/y_z = 1 - 1/m_z. Reading the NLL gate's lambda_t as the weight
+    it would assign with an infinitely large anchor group (rho = 1) and
+    applying that factor to its odds gives
+
+        lambda'_t = lambda_t rho / (lambda_t rho + 1 - lambda_t).
+
+    A singleton step (m_z = 1) has no within-group contrast and gets exactly
+    0; large groups are left almost untouched (m=8 -> rho 0.875).
+    """
+    rho = 1.0 - 1.0 / np.maximum(np.asarray(m, dtype=np.float64), 1.0)
+    num = lam * rho
+    return np.where(num + (1.0 - lam) > 0, num / np.maximum(num + (1.0 - lam), EPS), 0.0)
+
+
 def compute_advantages(
     steps,
     method: str = "gaca",
@@ -154,6 +186,7 @@ def compute_advantages(
     alpha_c: float = 1.0,
     score_mode: str = "entropy",
     rng=None,
+    rel: str = "none",
 ):
     """Per-step advantage for one rollout iteration.
 
@@ -162,6 +195,7 @@ def compute_advantages(
       "gigpo" -- w * A^S_t + A^E, one fixed weight, uniform granularity (Eq. 3 + Eq. 2).
       "fixed" -- convex fixed-weight control: lam0 * w * A^S_t + (1-lam0) * A^E.
       "gaca"  -- Eq. 8 with the per-step weight of Eq. 7.
+    rel: "none" (the paper) or "msize" (scale the gate's odds by 1 - 1/m_z).
     Returns (advantages, diagnostics).
     """
     if not steps:
@@ -190,6 +224,8 @@ def compute_advantages(
     elif method == "gaca":
         c = criticality(steps, alpha_c=alpha_c, mode=score_mode, rng=rng)
         lam = mixing_weight(c, lam0, alpha_lam, beta_lam)
+        if rel == "msize":  # estimator-reliability correction, see reliability()
+            lam = reliability(lam, anchor_sizes(steps))
         adv = lam * w * a_s + (1.0 - lam) * a_e  # Eq. 8
     else:
         raise ValueError(f"unknown method {method!r}")

@@ -253,6 +253,29 @@ def test_coverage_diagnostic():
     print("ok step coverage diagnostic")
 
 
+def test_reliability_gate():
+    # Anchor sizes: A shared by both trajectories (m=2), B by both, C and X singletons.
+    steps = mk(0, 0, 1.0, [0.81, 0.9, 1], ["A", "B", "C"], [1, 2, 3]) + mk(0, 1, 0.0, [0, 0, 0], ["A", "B", "X"], [3, 2, 1])
+    np.testing.assert_allclose(A.anchor_sizes(steps), [2, 2, 1, 2, 2, 1])
+    lam = np.array([0.5, 0.9, 0.9, 0.0, 1.0, 0.3])
+    m = np.array([2, 8, 1, 4, 1e9, 1])
+    out = A.reliability(lam, m)
+    # odds scaled by rho = 1 - 1/m: 0.5 at m=2 -> odds 0.5 -> 1/3
+    np.testing.assert_allclose(out[0], (0.5 * 0.5) / (0.5 * 0.5 + 0.5))
+    np.testing.assert_allclose(out[1], (0.9 * 0.875) / (0.9 * 0.875 + 0.1))
+    assert out[2] == 0.0 and out[5] == 0.0, out  # singletons: no contrast, no weight
+    assert out[3] == 0.0  # lambda = 0 stays 0
+    assert abs(out[4] - 1.0) < 1e-6  # lambda = 1 with a huge group stays 1
+    assert np.all(out <= lam + 1e-12), "the correction can only shrink the weight"
+    # Wired into compute_advantages: singleton steps get exactly the episode advantage.
+    adv, _ = A.compute_advantages(steps, method="gaca", norm="mean", rel="msize")
+    a_e = A.episode_advantage(steps, "mean")
+    np.testing.assert_allclose(adv[[2, 5]], a_e[[2, 5]])
+    adv0, _ = A.compute_advantages(steps, method="gaca", norm="mean")
+    assert not np.allclose(adv0[[2, 5]], a_e[[2, 5]])  # the paper's gate does mix them
+    print("ok reliability gate (anchor-group size, Prop. 3)")
+
+
 if __name__ == "__main__":
     test_discounted()
     test_episode_rowwise()
@@ -265,4 +288,5 @@ if __name__ == "__main__":
     test_gaca_tilts_toward_step_on_uncertain_steps()
     test_degenerate_inputs()
     test_coverage_diagnostic()
+    test_reliability_gate()
     print("\nALL ADVANTAGE TESTS PASSED")

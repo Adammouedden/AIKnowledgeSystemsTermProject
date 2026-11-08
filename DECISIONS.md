@@ -704,3 +704,116 @@ had finished or been abandoned, and none of them waits for the GPU any more
 into a script also appears in the command line of the shell that created it,
 so it self-matched and hung). Left runnable: `finalize.sh`, and
 `run_grpo_meannorm.sh` while its run is in flight.
+
+---
+
+# Attempt 4: A100 40 GB (2026-11-08)
+
+## 2026-11-08 — Hardware and environment
+
+Moved to a single **A100-PCIE 40 GB**, 24 CPU cores, 165 GiB RAM, 32 GB disk,
+no persistent volume (anything not pushed off-box is lost on recycle). pixi's
+installer could not be run here, so the environment is a uv venv (`.venv`,
+`source env.sh`) built from the *exact* versions in `pixi.lock` (torch
+2.10.0+cu128, transformers 5.22.2, trl 1.17.1, peft 0.21.2, alfworld 0.4.2,
+textworld 1.7.0). `pixi.toml` paths were made project-relative. Both suites
+pass unchanged, and the index-action zero-shot evaluation reproduces the
+4060's number exactly (3.1%, 2/64, invalid 3.9%), so the port is faithful.
+
+## 2026-11-08 — Free-form text actions restored (the index hack goes)
+
+The brief's first item: was the 88% invalid-action rate a prompt problem? Yes.
+Zero-shot, greedy, the same 64 held-out tasks, 25-step cap:
+
+| action format | invalid | success |
+|---|---|---|
+| index into numbered list (attempts 1-3) | 3.9% | 3.1% (2/64) |
+| text, 2 worked trajectories as one transcript in the system prompt | 67.7% | 3.1% (2/64) |
+| text, the same 2 trajectories as prior chat turns *with the admissible list shown at every step* | **19.5%** | **7.8% (5/64)** |
+
+The middle row is instructive. Its examples showed actions but never the list
+they were chosen from, so the model learned to *compose* actions: 40% of its
+invalid replies named objects copied out of the examples (`desk 2`,
+`desklamp 1`, `sidetable 1`). Showing the worked trajectories in exactly the
+live-step format, admissible list included, teaches copying instead. The
+residual 20-27% (sampled, T=1) is spread over genuine mistakes -- `open` on a
+non-openable receptacle, `take` of an absent object, paraphrases -- i.e. real
+inadmissible actions of the kind the paper's penalty exists for.
+
+Parsing is strict: a reply is admissible only if, up to case, whitespace and
+trailing punctuation, it *is* an admissible command. Anything else goes to the
+environment verbatim ("Nothing happens.") and is counted invalid. No fuzzy
+rescue, so the rate above is the real one.
+
+Under the brief's own criterion (below ~20%) this clears the bar, and the
+zero-shot success rate more than doubles, so text actions become the default
+and the index path is retired. Cost: the few-shot turns put prompts at
+~2,600 tokens, so `--max_prompt_len` is 4096 for text mode (2048 would have
+truncated the live turn), and actions are ~6-10 tokens (`--max_new_tokens`
+24). The prompt-length cost is recovered by the prefix cache below.
+
+## 2026-11-08 — The paper's response format: reasoning + action, ~512-token cap
+
+Checked against the sources the paper says it follows (verl-agent, "the public
+GiGPO recipes"). Its ALFWorld prompt asks the model to "reason step-by-step ...
+within <think> </think> tags" and then give the action inside <action>
+</action>, with `max_response_length=512`. So a step's "action" a_t in the
+paper -- and hence GACA's H_t, the mean NLL over a_t's tokens -- is the whole
+reasoning-plus-action response, not a bare 6-token command. Our text mode
+(6.5 tokens/step) and index mode (1-3) both mismatch this, and this is also the
+direct cause of our 3x wider c_t spread (DECISIONS: "Index actions widen
+GACA's criticality score 3x"). The paper's format is now the default.
+
+The same recipe also fixes, per arm: 16 tasks x 8 rollouts per iteration (the
+brief guessed 8), 150 iterations, lr 1e-6 full fine-tuning, PPO mini-batch 256
+step-rows, KL 0.01 low_var_kl, invalid-action penalty 0.1 (format-based: both
+tags present, no Chinese characters), validation sampled at T=0.4 on 128
+episodes.
+
+## 2026-11-08 — Moved the experiment to verl-agent (vLLM rollouts)
+
+With ~100-500 reasoning tokens per step, generation dominates and HF
+`generate` in lockstep batches is the wrong tool: a 64-task zero-shot
+evaluation with the reasoning prompt was still unfinished after ~55 minutes.
+The paper's own per-iteration cost (Table 5: 371 s, 319 s of it rollout, on
+>=62 GB-per-GPU hardware) puts 150 iterations at ~15.5 h per arm; the brief's
+~4 h per arm (training + evaluation, confirmed by the user) therefore caps us
+near 20% of the paper's iterations even at the paper's speed, and an HF
+pipeline would reach ~6-10%. verl-agent closes most of the throughput part of
+that gap and is the paper's exact pipeline (prompts, anchor grouping,
+mini-batched PPO, KL estimator, penalty), so most remaining deviations vanish.
+
+What was changed in verl-agent (all marked "term project" in the source):
+
+- `gigpo/core_gaca.py` + `algorithm.adv_estimator=gaca`: every batch row
+  becomes the step record of our `src/advantages.py` (symlinked in as
+  `gigpo/gaca_advantages.py`, so the unit-tested code *is* the code that
+  runs). All arms -- GRPO, GACA, GACA + reliability -- go through it and
+  differ only in `algorithm.gaca.method` / `algorithm.gaca.rel`. H_t is read
+  from `old_log_probs`, which verl computes before the advantage step anyway,
+  exactly as the paper says ("no second forward pass").
+- `AlfworldMultiWorker`: 8 environments per Ray actor. The container caps its
+  whole process tree at 2,816 threads (`pids.max`); one actor per env (128
+  train + 128 val) cannot start (`fork: Resource temporarily unavailable`).
+  Each env keeps its own instance and seed, so behaviour is unchanged.
+- `rollout_loop._dump_episodes`: per-episode validation outcomes (gamefile,
+  won, length) to `val_episodes.jsonl`, for paired McNemar tests.
+
+Single-GPU deviations from the recipe (`verl/run_arm.sh`): tensor parallel 1
+(recipe 2), vLLM at 35% of the 40 GB card (recipe 60% of 80 GB), Adam state
+offloaded to CPU, vLLM's own FlashAttention backend (the recipe's xformers
+wheel does not load against torch 2.8 here), KV cache kept resident because
+releasing it requires disabling CUDA graphs.
+
+Environment: `/workspace/verl-agent/.venv`, Python 3.12, vllm 0.11.0 (torch
+2.8.0+cu128), flash-attn 2.8.3 prebuilt wheel, transformers 4.57.3, ray 2.50,
+alfworld 0.4.2. The earlier HF venv was deleted to free disk (32 GB total);
+it can be rebuilt from `pixi.lock` in ~3 minutes.
+
+## 2026-11-08 — Full ALFWorld benchmark, not the two-task-type subset
+
+The two-task-type, small-room subset of attempts 1-3 existed to keep a
+LoRA-on-7 GB policy above zero reward. Under verl-agent the paper's own
+setting -- all six task types, its 128 validation episodes -- is the default
+and costs nothing extra, and it is the only setting the paper's numbers refer
+to. We use it.

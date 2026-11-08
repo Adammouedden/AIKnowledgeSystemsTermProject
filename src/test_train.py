@@ -28,6 +28,7 @@ class A:  # minimal stand-in for the argparse namespace
     gen_batch = 8
     eval_batch = 8
     max_new_tokens = 8
+    action_mode = "index"
     max_prompt_len = 2048
     history_len = 10
     clip_eps = 0.2
@@ -351,6 +352,62 @@ def test_advantages_on_real_rollout(steps):
     print("ok advantages on a real rollout")
 
 
+def test_pool_matches_serial(games):
+    """The process pool must reproduce a serial AlfEnv step for step."""
+    gfs = [g["gamefile"] for g in games[:3]]
+    pool = E.make_pool(3, gfs[0], 8, workers=2)
+    views = pool.load(gfs)
+    ser = [E.AlfEnv(gf, 8) for gf in gfs]
+    for e in ser:
+        e.reset()
+    rng = random.Random(0)
+    for _ in range(6):
+        acts = [rng.choice(e.admissible) for e in ser]
+        res = pool.step([0, 1, 2], acts)
+        for k, (e, a) in enumerate(zip(ser, acts)):
+            o, d, w, v = e.step(a)
+            assert res[k] == (o, d, w, v), (res[k], (o, d, w, v))
+            pv = pool.views[k]
+            assert pv.admissible == e.admissible and pv.anchor() == e.anchor() and pv.t == e.t
+            assert pv.visited == e.visited and pv.carrying == e.carrying
+    pool.close()
+    print("ok process pool reproduces serial stepping")
+
+
+def test_prefix_cache_matches(tok, model, games, pool):
+    """Sharing the few-shot prefix's KV cache must not change what is generated.
+
+    Greedy completions must be identical and the per-token log-probs equal up
+    to the bf16 noise floor measured in test_logprob_alignment."""
+
+    class A3(A):
+        action_mode = "text"
+        max_new_tokens = 16
+        max_prompt_len = 4096
+
+    views = pool.load([g["gamefile"] for g in games[:6]])
+    hist = [[], [], [("go to shelf 1", "You arrive at shelf 1. On the shelf 1, you see nothing.")], [], [], []]
+    texts = [tok.apply_chat_template(E.build_prompt(v, h, mode="text"), tokenize=False, add_generation_prompt=True)
+             for v, h in zip(views, hist)]
+    outs = []
+    for use in (False, True):
+        A3.prefix_cache = use
+        enc, cache = T.encode_prompts(model, tok, texts, A3)
+        assert (cache is not None) == use
+        with torch.no_grad():
+            o = model.generate(**enc, past_key_values=cache, max_new_tokens=16, do_sample=False,
+                               pad_token_id=tok.pad_token_id, return_dict_in_generate=True, output_scores=True)
+        comp = o.sequences[:, enc["input_ids"].shape[1]:]
+        lp = torch.log_softmax(torch.stack(o.scores, 1).float(), -1).gather(-1, comp.unsqueeze(-1)).squeeze(-1)
+        outs.append((tok.batch_decode(comp, skip_special_tokens=True), lp, comp))
+    assert outs[0][0] == outs[1][0], (outs[0][0], outs[1][0])
+    m = outs[0][2] != tok.pad_token_id
+    err = (outs[0][1] - outs[1][1]).abs()[m]
+    print(f"  prefix cache vs full prefill: max |dlogp| {err.max():.4f} mean {err.mean():.4f}; replies {outs[1][0][:3]}")
+    assert err.max() < 0.15, err.max()
+    print("ok shared-prefix KV cache reproduces full-prefill generation")
+
+
 def _mem(tag):
     torch.cuda.empty_cache()
     print(f"    [{tag}] peak VRAM {torch.cuda.max_memory_allocated() / 1e9:.2f} GB")
@@ -373,6 +430,8 @@ if __name__ == "__main__":
     _mem("kl penalty")
     test_advantages_on_real_rollout(steps)
     test_eval_is_greedy(tok, model, games, pool)
+    test_pool_matches_serial(games)
+    test_prefix_cache_matches(tok, model, games, pool)
     _mem("eval rollout")
     test_update_direction(tok, model, steps)
     _mem("full update")

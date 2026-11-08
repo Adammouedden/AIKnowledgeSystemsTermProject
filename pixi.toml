@@ -21,8 +21,8 @@ numpy = "<2.3"
 matplotlib = ">=3.8"
 
 [activation.env]
-HF_HOME = "/home/adamant/SCHOOL/CreditAssignment/models"
-ALFWORLD_DATA = "/home/adamant/SCHOOL/CreditAssignment/data/alfworld"
+HF_HOME = "$PIXI_PROJECT_ROOT/models"
+ALFWORLD_DATA = "$PIXI_PROJECT_ROOT/data/alfworld"
 PYTORCH_ALLOC_CONF = "expandable_segments:True"
 TOKENIZERS_PARALLELISM = "false"
 

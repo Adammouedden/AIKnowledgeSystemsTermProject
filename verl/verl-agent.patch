@@ -1,0 +1,276 @@
+diff --git a/agent_system/environments/env_package/alfworld/envs.py b/agent_system/environments/env_package/alfworld/envs.py
+index e72f621..3b36823 100644
+--- a/agent_system/environments/env_package/alfworld/envs.py
++++ b/agent_system/environments/env_package/alfworld/envs.py
+@@ -82,6 +82,27 @@ class AlfworldWorker:
+         image = image.cpu()  
+         return image
+ 
++class AlfworldMultiWorker:
++    """Term project: one Ray actor hosting several AlfworldWorker envs.
++
++    The container caps the whole process tree at 2816 threads (pids.max) and a
++    Ray actor process costs ~20 threads, so one actor per environment (256 for
++    16x8 training + 128 validation) cannot start. Each hosted env keeps its own
++    instance and seed, so behaviour is identical to the one-env-per-actor layout."""
++
++    def __init__(self, config, seeds, base_env):
++        self.envs = [AlfworldWorker(config, s, base_env) for s in seeds]
++
++    def step(self, actions):
++        return [e.step(a) for e, a in zip(self.envs, actions)]
++
++    def reset(self):
++        return [e.reset() for e in self.envs]
++
++
++ENVS_PER_ACTOR = int(os.environ.get("ALF_ENVS_PER_ACTOR", "8"))
++
++
+ class AlfworldEnvs(gym.Env):
+     def __init__(self, alf_config_path, seed, env_num, group_n, resources_per_worker, is_train=True, env_kwargs={}):
+         super().__init__()
+@@ -98,12 +119,12 @@ class AlfworldEnvs(gym.Env):
+         self.num_processes = env_num * group_n
+         self.group_n = group_n
+ 
+-        # Create Ray remote actors instead of processes
+-        env_worker = ray.remote(**resources_per_worker)(AlfworldWorker)
+-        self.workers = []
+-        for i in range(self.num_processes):
+-            worker = env_worker.remote(config, seed + (i // self.group_n), base_env)
+-            self.workers.append(worker)
++        # Create Ray remote actors, ENVS_PER_ACTOR environments each
++        env_worker = ray.remote(**resources_per_worker)(AlfworldMultiWorker)
++        seeds = [seed + (i // self.group_n) for i in range(self.num_processes)]
++        self.chunks = [list(range(k, min(k + ENVS_PER_ACTOR, self.num_processes)))
++                       for k in range(0, self.num_processes, ENVS_PER_ACTOR)]
++        self.workers = [env_worker.remote(config, [seeds[i] for i in c], base_env) for c in self.chunks]
+ 
+         self.prev_admissible_commands = [None for _ in range(self.num_processes)]
+ 
+@@ -112,10 +133,7 @@ class AlfworldEnvs(gym.Env):
+             "The num of actions must be equal to the num of processes"
+ 
+         # Send step commands to all workers
+-        futures = []
+-        for i, worker in enumerate(self.workers):
+-            future = worker.step.remote(actions[i])
+-            futures.append(future)
++        futures = [w.step.remote([actions[i] for i in c]) for w, c in zip(self.workers, self.chunks)]
+ 
+         # Collect results
+         text_obs_list = []
+@@ -124,7 +142,7 @@ class AlfworldEnvs(gym.Env):
+         dones_list = []
+         info_list = []
+ 
+-        results = ray.get(futures)
++        results = [r for rs in ray.get(futures) for r in rs]
+         for i, (obs, scores, dones, info) in enumerate(results):
+             for k in info.keys():
+                 info[k] = info[k][0]
+@@ -152,13 +170,10 @@ class AlfworldEnvs(gym.Env):
+         info_list = []
+ 
+         # Send reset commands to all workers
+-        futures = []
+-        for worker in self.workers:
+-            future = worker.reset.remote()
+-            futures.append(future)
++        futures = [w.reset.remote() for w in self.workers]
+ 
+         # Collect results
+-        results = ray.get(futures)
++        results = [r for rs in ray.get(futures) for r in rs]
+         for i, (obs, info) in enumerate(results):
+             for k in info.keys():
+                 info[k] = info[k][0] 
+diff --git a/agent_system/multi_turn_rollout/rollout_loop.py b/agent_system/multi_turn_rollout/rollout_loop.py
+index d79e678..e638d1c 100644
+--- a/agent_system/multi_turn_rollout/rollout_loop.py
++++ b/agent_system/multi_turn_rollout/rollout_loop.py
+@@ -410,8 +410,29 @@ class TrajectoryCollector:
+                     episode_rewards=episode_rewards, 
+                     episode_lengths=episode_lengths,
+                     )
+-        
++        self._dump_episodes(total_infos, total_batch_list, episode_lengths)
+         return total_batch_list, episode_rewards, episode_lengths, success, traj_uid, tool_callings
++
++    def _dump_episodes(self, total_infos, total_batch_list, episode_lengths):
++        """Term project: per-episode outcomes for paired (McNemar) comparisons.
++        Validation only (self._dump_tag set by multi_turn_loop); one JSON line
++        per episode: gamefile, won, length, mean response tokens."""
++        import json, os
++        path = os.environ.get("GACA_VAL_DUMP")
++        tag = getattr(self, "_dump_tag", None)
++        if not path or tag is None:
++            return
++        with open(path, "a") as f:
++            for i, infos in enumerate(total_infos):
++                last = None
++                for j in reversed(range(len(total_batch_list[i]))):
++                    if total_batch_list[i][j]['active_masks']:
++                        last = infos[j]
++                        break
++                if last is None:
++                    continue
++                f.write(json.dumps({"tag": tag, "env": i, "gamefile": last.get("extra.gamefile"),
++                                    "won": bool(last.get("won", False)), "length": float(episode_lengths[i])}) + "\n")
+     
+     def dynamic_multi_turn_loop(
+             self,
+@@ -502,6 +523,10 @@ class TrajectoryCollector:
+         """
+         if is_train:
+             gen_batch = gen_batch.repeat(repeat_times=self.config.env.rollout.n, interleave=True)
++            self._dump_tag = None
++        else:
++            self._val_calls = getattr(self, "_val_calls", 0) + 1
++            self._dump_tag = self._val_calls
+             
+         # Initial observations from the environment
+         if self.config.algorithm.filter_groups.enable and is_train:
+diff --git a/gigpo/core_gaca.py b/gigpo/core_gaca.py
+new file mode 100644
+index 0000000..dd93f1a
+--- /dev/null
++++ b/gigpo/core_gaca.py
+@@ -0,0 +1,50 @@
++"""GRPO / GACA / GACA+reliability inside verl-agent.
++
++A thin adapter: every batch row (one environment step) becomes the step record
++consumed by `gaca_advantages.compute_advantages` -- a symlink to the term
++project's src/advantages.py, the exact code its unit tests pin -- so all
++compared arms share one implementation and differ only in `method` / `rel`.
++
++Row fields used (all present in verl-agent's batch before the advantage step):
++  uid          -> group (prompt group)
++  traj_uid     -> traj
++  token_level_rewards.sum(-1) -> ret (episode reward + that step's invalid
++                  penalty, exactly what verl-agent's GiGPO uses)
++  step_rewards -> g_hat (discounted step return)
++  anchor_obs   -> anchor
++  old_log_probs, response_mask -> nll = H_t, the mean token NLL of the whole
++                  response (reasoning + action), Eq. 4
++"""
++
++import hashlib
++
++import numpy as np
++import torch
++
++from gigpo import gaca_advantages as ADV
++
++
++def _anchor_key(x):
++    return hashlib.md5(repr(x).encode()).hexdigest()[:16]
++
++
++def compute_gaca_family_advantage(token_level_rewards, step_rewards, response_mask, anchor_obs, index, traj_index,
++                                  old_log_probs, method="gaca", norm="mean_std", w=1.0, lam0=0.5, alpha_lam=0.5,
++                                  beta_lam=0.5, alpha_c=1.0, score_mode="entropy", rel="none", seed=0):
++    mask = response_mask.float()
++    ret = token_level_rewards.sum(-1).detach().float().cpu().numpy()
++    g_hat = step_rewards.detach().float().cpu().numpy()
++    nll = (-(old_log_probs.float() * mask).sum(-1) / mask.sum(-1).clamp(min=1)).detach().cpu().numpy()
++    # Step index within a trajectory is only needed by the reward-change
++    # score (alpha_c < 1); rows of one trajectory keep their rollout order.
++    t_of, steps = {}, []
++    for i in range(len(ret)):
++        tr = traj_index[i]
++        t_of[tr] = t_of.get(tr, -1) + 1
++        steps.append({"group": index[i], "traj": tr, "t": t_of[tr], "ret": float(ret[i]), "g_hat": float(g_hat[i]),
++                      "anchor": _anchor_key(anchor_obs[i]), "nll": float(nll[i])})
++    adv, diag = ADV.compute_advantages(steps, method=method, norm=norm, w=w, lam0=lam0, alpha_lam=alpha_lam,
++                                       beta_lam=beta_lam, alpha_c=alpha_c, score_mode=score_mode,
++                                       rng=np.random.default_rng(seed), rel=rel)
++    a = torch.as_tensor(adv, dtype=torch.float32, device=response_mask.device).unsqueeze(-1) * mask
++    return a, a, {f"gaca/{k}": float(v) for k, v in diag.items()}
+diff --git a/verl/trainer/config/ppo_trainer.yaml b/verl/trainer/config/ppo_trainer.yaml
+index d0f68ba..8fb0d62 100644
+--- a/verl/trainer/config/ppo_trainer.yaml
++++ b/verl/trainer/config/ppo_trainer.yaml
+@@ -247,6 +247,16 @@ algorithm:
+   pf_ppo:
+     reweight_method: pow  # ["pow", "max_min", "max_random"]
+     weight_pow: 2.0
++  gaca:  # used when adv_estimator=gaca (term project); see gigpo/core_gaca.py
++    method: gaca        # grpo | gigpo | fixed | gaca
++    norm: mean_std      # mean | mean_std
++    w: 1.0
++    lam0: 0.5
++    alpha_lam: 0.5
++    beta_lam: 0.5
++    alpha_c: 1.0
++    score_mode: entropy # entropy | uniform | random | loo
++    rel: none           # none | msize (anchor-group-size reliability gate)
+   gigpo:
+     step_advantage_w: 1.0
+     mode: "mean_norm" # "mean_norm" or "mean_std_norm"
+diff --git a/verl/trainer/ppo/ray_trainer.py b/verl/trainer/ppo/ray_trainer.py
+index d85e23a..639c438 100644
+--- a/verl/trainer/ppo/ray_trainer.py
++++ b/verl/trainer/ppo/ray_trainer.py
+@@ -94,6 +94,7 @@ class AdvantageEstimator(str, Enum):
+     RLOO = "rloo"
+     GRPO_PASSK = "grpo_passk"
+     GiGPO = 'gigpo'
++    GACA = 'gaca'  # GRPO / GACA / GACA+reliability via gigpo/core_gaca.py
+ 
+ 
+ @dataclass
+@@ -357,6 +358,22 @@ def compute_advantage(data: DataProto, adv_estimator, gamma=1.0, lam=1.0, num_re
+             )
+         data.batch['advantages'] = advantages
+         data.batch['returns'] = returns
++    elif adv_estimator == AdvantageEstimator.GACA:
++        from gigpo import core_gaca
++        g = kwargs["gaca_cfg"]
++        advantages, returns, diag = core_gaca.compute_gaca_family_advantage(
++            token_level_rewards=data.batch['token_level_rewards'],
++            step_rewards=data.batch['step_rewards'],
++            response_mask=data.batch['response_mask'],
++            anchor_obs=data.non_tensor_batch['anchor_obs'],
++            index=data.non_tensor_batch['uid'],
++            traj_index=data.non_tensor_batch['traj_uid'],
++            old_log_probs=data.batch['old_log_probs'],
++            method=g.method, norm=g.norm, w=g.w, lam0=g.lam0, alpha_lam=g.alpha_lam, beta_lam=g.beta_lam,
++            alpha_c=g.alpha_c, score_mode=g.score_mode, rel=g.rel, seed=kwargs.get("step", 0))
++        data.batch['advantages'] = advantages
++        data.batch['returns'] = returns
++        data.meta_info['gaca_diag'] = diag
+     else:
+         raise NotImplementedError
+     return data
+@@ -451,7 +468,8 @@ class RayPPOTrainer:
+             AdvantageEstimator.REMAX,
+             AdvantageEstimator.RLOO,
+             AdvantageEstimator.REINFORCE_PLUS_PLUS_BASELINE,
+-            AdvantageEstimator.GiGPO
++            AdvantageEstimator.GiGPO,
++            AdvantageEstimator.GACA
+         ]:
+             self.use_critic = False
+         else:
+@@ -1108,7 +1126,7 @@ class RayPPOTrainer:
+                     del batch
+                     batch = gen_batch_output
+ 
+-                    if self.config.algorithm.adv_estimator == AdvantageEstimator.GiGPO:
++                    if self.config.algorithm.adv_estimator in (AdvantageEstimator.GiGPO, AdvantageEstimator.GACA):
+                         step_rewards_tensor = core_gigpo.compute_step_discounted_returns(
+                             batch=batch,
+                             gamma=self.config.algorithm.gamma
+@@ -1233,7 +1251,10 @@ class RayPPOTrainer:
+                             gigpo_mode=self.config.algorithm.gigpo.mode,
+                             gigpo_enable_similarity= self.config.algorithm.gigpo.enable_similarity,
+                             gigpo_similarity_thresh=self.config.algorithm.gigpo.similarity_thresh,
++                            gaca_cfg=self.config.algorithm.get("gaca", None),
++                            step=self.global_steps,
+                         )
++                        metrics.update(batch.meta_info.pop("gaca_diag", {}))
+ 
+                     # update critic
+                     if self.use_critic:

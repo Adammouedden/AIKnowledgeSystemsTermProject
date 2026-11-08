@@ -34,6 +34,47 @@ import env as E
 # ----------------------------------------------------------------- rollout
 
 
+def amp(model):
+    """bf16 autocast for full fine-tuning, whose master weights are fp32 (see
+    build_model); a no-op for the LoRA path, whose weights are bf16 already."""
+    return torch.autocast("cuda", dtype=torch.bfloat16, enabled=bool(getattr(model, "_amp", False)))
+
+
+_TURN = "<|im_start|>user\n"
+
+
+def encode_prompts(model, tok, texts, args):
+    """Tokenize a batch of chat prompts, sharing the KV cache of their common prefix.
+
+    In text mode every prompt starts with the same system message and few-shot
+    turns (~1700 tokens), and only the final user turn differs. Re-prefilling
+    that prefix for every sequence at every step dominated generation time, so
+    it is run once at batch 1 and its cache is repeated across the batch. The
+    layout is [prefix][left pad][suffix]; generate() derives position ids from
+    the attention-mask cumsum, so the hole leaves every position exactly as in
+    an unpadded prompt (pinned by test_prefix_cache_matches).
+
+    Returns (enc, cache): enc has input_ids / attention_mask over the full
+    sequence; cache is None when there is no shared prefix.
+    """
+    dev = model.device
+    cut = texts[0].rfind(_TURN)
+    prefix = texts[0][:cut] if cut > 0 else ""
+    if not getattr(args, "prefix_cache", True) or not prefix or any(not t.startswith(prefix) for t in texts):
+        enc = tok(texts, return_tensors="pt", padding=True, truncation=True, max_length=args.max_prompt_len).to(dev)
+        return {"input_ids": enc.input_ids, "attention_mask": enc.attention_mask}, None
+    pre = tok(prefix, return_tensors="pt", add_special_tokens=False).input_ids.to(dev)
+    suf = tok([t[len(prefix) :] for t in texts], return_tensors="pt", padding=True, add_special_tokens=False).to(dev)
+    with torch.no_grad(), amp(model):
+        cache = model(input_ids=pre, use_cache=True).past_key_values
+    cache.batch_repeat_interleave(len(texts))
+    B, P = len(texts), pre.shape[1]
+    ids = torch.cat([pre.expand(B, P), suf.input_ids], dim=1)
+    mask = torch.cat([torch.ones(B, P, dtype=suf.attention_mask.dtype, device=dev), suf.attention_mask], dim=1)
+    assert ids.shape[1] <= args.max_prompt_len, (ids.shape, args.max_prompt_len)
+    return {"input_ids": ids, "attention_mask": mask}, cache
+
+
 def rollout(model, tok, pool, jobs, args, train: bool):
     """Run one lockstep batch of episodes.
 
@@ -45,9 +86,7 @@ def rollout(model, tok, pool, jobs, args, train: bool):
     action NLL. `episodes` are per-episode summaries.
     """
     assert len(jobs) <= len(pool), (len(jobs), len(pool))
-    envs = pool[: len(jobs)]
-    for e, (_, gf) in zip(envs, jobs):
-        e.load(gf)
+    envs = pool.load([gf for _, gf in jobs])
     hists = [[] for _ in jobs]
     rows = [[] for _ in jobs]  # per-episode list of step records
     rewards = [[] for _ in jobs]
@@ -60,19 +99,18 @@ def rollout(model, tok, pool, jobs, args, train: bool):
         batch = alive[: args.gen_batch]
         texts = [
             tok.apply_chat_template(
-                E.build_prompt(envs[i], hists[i], history_len=args.history_len),
+                E.build_prompt(envs[i], hists[i], history_len=args.history_len, mode=args.action_mode),
                 tokenize=False,
                 add_generation_prompt=True,
             )
             for i in batch
         ]
-        enc = tok(texts, return_tensors="pt", padding=True, truncation=True, max_length=args.max_prompt_len).to(
-            model.device
-        )
-        plen = enc.input_ids.shape[1]
-        with torch.no_grad():
+        enc, cache = encode_prompts(model, tok, texts, args)
+        plen = enc["input_ids"].shape[1]
+        with torch.no_grad(), amp(model):
             out = model.generate(
                 **enc,
+                past_key_values=cache,
                 max_new_tokens=args.max_new_tokens,
                 do_sample=train,
                 temperature=1.0,
@@ -93,6 +131,7 @@ def rollout(model, tok, pool, jobs, args, train: bool):
             logp = torch.log_softmax(logits, dim=-1).gather(-1, comp.unsqueeze(-1)).squeeze(-1)
         texts_out = tok.batch_decode(comp, skip_special_tokens=True)
 
+        acts = []
         for k, i in enumerate(batch):
             ids = comp[k].tolist()
             # Keep tokens up to and including the first terminator.
@@ -101,9 +140,14 @@ def rollout(model, tok, pool, jobs, args, train: bool):
                 if tid in eos_ids:
                     cut = j + 1
                     break
-            act = E.parse_action(texts_out[k], envs[i].admissible)
+            if args.action_mode == "think":
+                act, _ = E.parse_think_action(texts_out[k], envs[i].admissible)
+            elif args.action_mode == "text":
+                act, _ = E.parse_text_action(texts_out[k], envs[i].admissible)
+            else:
+                act = E.parse_action(texts_out[k], envs[i].admissible)
             anchor = envs[i].anchor()
-            prompt_ids = [t for t, m in zip(enc.input_ids[k].tolist(), enc.attention_mask[k].tolist()) if m]
+            prompt_ids = [t for t, m in zip(enc["input_ids"][k].tolist(), enc["attention_mask"][k].tolist()) if m]
             rec = {
                 "group": jobs[i][0],
                 "traj": i,
@@ -111,12 +155,16 @@ def rollout(model, tok, pool, jobs, args, train: bool):
                 "anchor": anchor,
                 "prompt_ids": prompt_ids,
                 "completion_ids": ids[:cut],
+                "action": act,
             }
             if train:
                 rec["nll"] = float(-logp[k, :cut].mean())
             rows[i].append(rec)
+            acts.append(act)
 
-            obs, done, w, valid = envs[i].step(act)
+        results = pool.step(batch, acts)
+        envs = pool.views[: len(jobs)]
+        for i, act, (obs, done, w, valid) in zip(batch, acts, results):
             hists[i].append((act, obs))
             won[i] = won[i] or w
             if not valid:
@@ -143,6 +191,7 @@ def rollout(model, tok, pool, jobs, args, train: bool):
                 "steps": len(rows[i]),
                 "ret": ret,
                 "invalid": n_invalid[i] / max(1, len(rows[i])),
+                "tokens": float(np.mean([len(r["completion_ids"]) for r in rows[i]])) if rows[i] else 0.0,
             }
         )
     return steps, episodes
@@ -167,7 +216,8 @@ def _pad_batch(recs, pad_id, device):
 
 
 def _token_logps(model, ids, mask, pos, lp, lc):
-    out = model(input_ids=ids, attention_mask=mask, position_ids=pos, logits_to_keep=lc + 1, use_cache=False)
+    with amp(model):
+            out = model(input_ids=ids, attention_mask=mask, position_ids=pos, logits_to_keep=lc + 1, use_cache=False)
     tgt = ids[:, lp : lp + lc]
     return torch.log_softmax(out.logits[:, :-1].float(), dim=-1).gather(-1, tgt.unsqueeze(-1)).squeeze(-1)
 
@@ -186,8 +236,15 @@ def surrogate_loss(model, recs, adv, pad_id, device, clip_eps, beta_kl=0.0):
         # it costs one extra forward pass and no extra parameters. k3 estimator
         # (Schulman): exp(d) - d - 1 with d = log pi_ref - log pi_theta, which
         # is non-negative and lower-variance than the plain log-ratio.
-        with torch.no_grad(), model.disable_adapter():
-            ref_logp = _token_logps(model, ids, mask, pos, lp, lc)
+        # Full fine-tuning has no adapter to switch off and keeps a frozen bf16
+        # copy of the initial weights instead (build_model).
+        ref = model.__dict__.get("_ref")
+        with torch.no_grad():
+            if ref is not None:
+                ref_logp = _token_logps(ref, ids, mask, pos, lp, lc)
+            else:
+                with model.disable_adapter():
+                    ref_logp = _token_logps(model, ids, mask, pos, lp, lc)
         d = (ref_logp - logp).clamp(-10.0, 10.0)
         kl = torch.exp(d) - d - 1.0
         per_tok = per_tok + beta_kl * kl
@@ -217,7 +274,7 @@ def update(model, opt, steps, adv, args, device, pad_id):
         order = order[: args.rows_per_update]
     total = len(order)
     if total == 0:
-        return 0.0, 0.0, 0.0
+        return 0.0, 0.0, 0.0, 0.0
     model.train()
     opt.zero_grad(set_to_none=True)
     loss_sum, lp_sum, kl_sum = 0.0, 0.0, 0.0
@@ -249,7 +306,10 @@ def save_ckpt(path, model, opt, rng, it, cursor, best, elapsed):
     tmp, old = path + ".tmp", path + ".old"
     shutil.rmtree(tmp, ignore_errors=True)
     os.makedirs(tmp, exist_ok=True)
-    model.save_pretrained(tmp)
+    if _is_full(model):  # fp32 master weights, so a resume is exact
+        torch.save(model.state_dict(), os.path.join(tmp, "weights.pt"))
+    else:
+        model.save_pretrained(tmp)
     torch.save(
         {
             "opt": opt.state_dict(),
@@ -271,10 +331,26 @@ def save_ckpt(path, model, opt, rng, it, cursor, best, elapsed):
     shutil.rmtree(old, ignore_errors=True)
 
 
-def load_ckpt(path, model, opt, rng):
-    from peft import load_peft_weights, set_peft_model_state_dict
+def _is_full(model):
+    return bool(getattr(model, "_amp", False))
 
-    set_peft_model_state_dict(model, load_peft_weights(path))
+
+def save_policy(model, path):
+    """Policy weights for evaluation: the adapter (LoRA) or a bf16 copy of the
+    full model (3 GB rather than 6 GB of fp32 master weights; the disk is 32 GB)."""
+    if _is_full(model):
+        model.save_pretrained(path, state_dict={k: v.to(torch.bfloat16) for k, v in model.state_dict().items()})
+    else:
+        model.save_pretrained(path)
+
+
+def load_ckpt(path, model, opt, rng):
+    if _is_full(model):
+        model.load_state_dict(torch.load(os.path.join(path, "weights.pt"), map_location="cuda"))
+    else:
+        from peft import load_peft_weights, set_peft_model_state_dict
+
+        set_peft_model_state_dict(model, load_peft_weights(path))
     st = torch.load(os.path.join(path, "state.pt"), weights_only=False, map_location="cpu")
     opt.load_state_dict(st["opt"])
     random.setstate(st["rng_py"])
@@ -287,11 +363,21 @@ def load_ckpt(path, model, opt, rng):
 # ----------------------------------------------------------------- main
 
 
-def build_model(args, lora: bool = True):
+def build_model(args, lora: bool = True, weights: str = ""):
+    """lora=True: the trainable policy (LoRA or full, per args.finetune).
+    lora=False: a frozen bf16 policy for evaluation, from `weights` if given
+    (a full-model directory or a LoRA adapter directory) else the backbone."""
     tok = AutoTokenizer.from_pretrained(args.model, padding_side="left")
-    model = AutoModelForCausalLM.from_pretrained(args.model, dtype=torch.bfloat16, attn_implementation="sdpa").to(
-        "cuda"
-    )
+    full = lora and getattr(args, "finetune", "lora") == "full"
+    src = args.model
+    if weights and weights != "base" and not os.path.exists(os.path.join(weights, "adapter_config.json")):
+        src = weights  # a saved full model
+    # Full fine-tuning keeps fp32 master weights and runs under bf16 autocast:
+    # at the paper's lr of 1e-6 an update is ~1e-4 of a typical weight, below
+    # bf16's ~4e-3 resolution, so pure-bf16 weights would round most updates away.
+    model = AutoModelForCausalLM.from_pretrained(
+        src, dtype=torch.float32 if full else torch.bfloat16, attn_implementation="sdpa"
+    ).to("cuda")
     # Qwen ships a sampling preset (temperature 0.7, top_p 0.8, top_k 20,
     # repetition_penalty 1.1). Those are logits processors: leaving them on
     # would mean the recorded log-probs are not the policy's and that sampling
@@ -305,6 +391,20 @@ def build_model(args, lora: bool = True):
     model.generation_config.renormalize_logits = False
     model.config.use_cache = True
     if not lora:
+        if weights and os.path.exists(os.path.join(weights, "adapter_config.json")):
+            from peft import PeftModel
+
+            model = PeftModel.from_pretrained(model, weights)
+            model.config.use_cache = True
+        model.eval()
+        return tok, model
+    if full:
+        model._amp = True
+        ref = AutoModelForCausalLM.from_pretrained(args.model, dtype=torch.bfloat16, attn_implementation="sdpa")
+        ref = ref.to("cuda").eval().requires_grad_(False)
+        model.__dict__["_ref"] = ref  # bypass nn.Module registration: not a submodule, never saved
+        model.gradient_checkpointing_enable(gradient_checkpointing_kwargs={"use_reentrant": False})
+        model.config.use_cache = True
         model.eval()
         return tok, model
     cfg = LoraConfig(
@@ -333,6 +433,7 @@ def evaluate(model, tok, pool, tasks, args, detail=False):
         "success": float(np.mean([x["won"] for x in eps])),
         "steps": float(np.mean([x["steps"] for x in eps])),
         "invalid": float(np.mean([x["invalid"] for x in eps])),
+        "tokens_per_step": float(np.mean([x["tokens"] for x in eps])),
         "n": len(eps),
     }
     if detail:
@@ -371,12 +472,14 @@ def main():
     p.add_argument("--clip_eps", type=float, default=0.2)
     p.add_argument("--max_grad_norm", type=float, default=1.0)
     p.add_argument("--lora_r", type=int, default=32)
+    p.add_argument("--finetune", default="lora", choices=["lora", "full"])
     p.add_argument("--micro_bs", type=int, default=8)
     p.add_argument("--rows_per_update", type=int, default=96, help="cap on step rows per optimizer step (0=all)")
     p.add_argument("--gen_batch", type=int, default=16)
     p.add_argument("--eval_batch", type=int, default=16)
-    p.add_argument("--max_new_tokens", type=int, default=8)
-    p.add_argument("--max_prompt_len", type=int, default=2048)
+    p.add_argument("--max_new_tokens", type=int, default=0, help="0 = 8 for index actions, 24 for text")
+    p.add_argument("--action_mode", default="index", choices=["index", "text", "think"])
+    p.add_argument("--max_prompt_len", type=int, default=0, help="0 = 2048 for index actions, 4096 for text (few-shot turns)")
     p.add_argument("--history_len", type=int, default=10)
     # data
     p.add_argument("--task_types", default="pick_and_place_simple,look_at_obj_in_light")
@@ -389,6 +492,10 @@ def main():
     p.add_argument("--ckpt_every", type=int, default=10, help="write a resumable checkpoint every N iterations")
     p.add_argument("--resume", action="store_true", help="continue from <out>_ckpt if it exists")
     args = p.parse_args()
+    if not args.max_new_tokens:
+        args.max_new_tokens = {"think": 512, "text": 24}.get(args.action_mode, 8)
+    if not args.max_prompt_len:
+        args.max_prompt_len = 4096 if args.action_mode == "text" else 2048  # think: the paper's 2048
 
     os.makedirs(os.path.dirname(args.out) or ".", exist_ok=True)
     random.seed(args.seed)
@@ -411,12 +518,8 @@ def main():
     eval_tasks = eval_tasks[: args.n_eval]
 
     if args.eval_only:
-        from peft import PeftModel
-
-        tok, base = build_model(args, lora=False)
-        model = PeftModel.from_pretrained(base, args.eval_only)
-        model.config.use_cache = True
-        model.eval()
+        # "base" evaluates the untrained backbone (zero-shot baseline).
+        tok, model = build_model(args, lora=False, weights=args.eval_only)
         pool = E.make_pool(args.eval_batch, eval_tasks[0]["gamefile"], args.max_steps)
         ev = evaluate(model, tok, pool, eval_tasks, args, detail=True)
         ev.update(event="eval_only", adapter=args.eval_only, method=args.method)
@@ -428,7 +531,13 @@ def main():
     tok, model = build_model(args)
     pool = E.make_pool(max(args.tasks_per_iter * args.G, args.eval_batch), train_tasks[0]["gamefile"], args.max_steps)
     trainable = sum(p.numel() for p in model.parameters() if p.requires_grad)
-    opt = torch.optim.AdamW([p for p in model.parameters() if p.requires_grad], lr=args.lr, weight_decay=0.0)
+    params = [p for p in model.parameters() if p.requires_grad]
+    if args.finetune == "full":
+        import bitsandbytes as bnb
+
+        opt = bnb.optim.AdamW8bit(params, lr=args.lr, weight_decay=0.0)
+    else:
+        opt = torch.optim.AdamW(params, lr=args.lr, weight_decay=0.0)
 
     log_path = args.out + ".jsonl"
     log = open(log_path, "a", buffering=1)
@@ -467,7 +576,7 @@ def main():
             print(json.dumps(ev), flush=True)
             if ev["success"] > best:
                 best = ev["success"]
-                model.save_pretrained(args.out + "_best")
+                save_policy(model, args.out + "_best")
 
         jobs = []
         for k in range(args.tasks_per_iter):
@@ -536,8 +645,9 @@ def main():
     log.write(json.dumps(ev) + "\n")
     print(json.dumps(ev), flush=True)
     if ev["success"] > best:
-        model.save_pretrained(args.out + "_best")
-    model.save_pretrained(args.out + "_last")
+        save_policy(model, args.out + "_best")
+    save_policy(model, args.out + "_last")
+    shutil.rmtree(ckpt_dir, ignore_errors=True)  # run complete: the resume state is dead weight on a 32 GB disk
     log.close()
 
 
