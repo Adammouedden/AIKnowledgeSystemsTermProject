@@ -12,17 +12,19 @@ export GACA_TIME_BUDGET_H=${GACA_TIME_BUDGET_H:-3.75} GACA_VAL_SECS=${GACA_VAL_S
 for arm in $ARMS; do
   # one training process at a time
   while pgrep -f "verl.trainer.main_ppo" > /dev/null; do sleep 30; done
+  extra=""
   case $arm in
     grpo)       m=grpo; r=none ;;
     gaca)       m=gaca; r=none ;;
     gaca_msize) m=gaca; r=msize ;;
+    gaca_random) m=gaca; r=none; extra="algorithm.gaca.score_mode=random" ;;  # paper's cleanest control
     *) echo "unknown arm $arm"; continue ;;
   esac
   if grep -q "Training Progress: 100%" $ROOT/runs/verl/$arm/train.log 2>/dev/null; then
     echo "$arm already finished, skipping"; continue
   fi
   echo "[$(date +%T)] start $arm ($m, rel=$r)" | tee -a $ROOT/runs/verl/arms.log
-  $ROOT/verl/run_arm.sh $arm $m $r > /dev/null 2>&1
+  $ROOT/verl/run_arm.sh $arm $m $r $extra > /dev/null 2>&1
   /workspace/verl-agent/.venv/bin/ray stop --force > /dev/null 2>&1
   echo "[$(date +%T)] end $arm" | tee -a $ROOT/runs/verl/arms.log
 done
