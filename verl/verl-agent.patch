@@ -210,7 +210,7 @@ index d0f68ba..8fb0d62 100644
      step_advantage_w: 1.0
      mode: "mean_norm" # "mean_norm" or "mean_std_norm"
 diff --git a/verl/trainer/ppo/ray_trainer.py b/verl/trainer/ppo/ray_trainer.py
-index d85e23a..639c438 100644
+index d85e23a..3911eab 100644
 --- a/verl/trainer/ppo/ray_trainer.py
 +++ b/verl/trainer/ppo/ray_trainer.py
 @@ -94,6 +94,7 @@ class AdvantageEstimator(str, Enum):
@@ -254,7 +254,29 @@ index d85e23a..639c438 100644
          ]:
              self.use_critic = False
          else:
-@@ -1108,7 +1126,7 @@ class RayPPOTrainer:
+@@ -1067,6 +1085,21 @@ class RayPPOTrainer:
+                 )
+ 
+                 is_last_step = self.global_steps >= self.total_training_steps
++                # Term project: wall-clock budget (GACA_TIME_BUDGET_H). The step
++                # that crosses it becomes the last one, so it still runs the final
++                # validation. The projection uses the mean iteration time so far
++                # plus one validation pass, so the run ends *inside* the budget.
++                _budget = float(os.environ.get("GACA_TIME_BUDGET_H", "0") or 0) * 3600
++                if _budget > 0:
++                    import time as _t
++                    if not hasattr(self, "_t0"):
++                        self._t0, self._n_done = _t.time(), 0
++                    _el = _t.time() - self._t0
++                    _per = _el / max(1, self._n_done)
++                    _val = float(os.environ.get("GACA_VAL_SECS", "400"))
++                    if self._n_done and _el + 2 * _per + _val > _budget:
++                        is_last_step = True
++                    self._n_done += 1
+ 
+                 with _timer("step", timing_raw):
+                     # generate a batch
+@@ -1108,7 +1141,7 @@ class RayPPOTrainer:
                      del batch
                      batch = gen_batch_output
  
@@ -263,7 +285,7 @@ index d85e23a..639c438 100644
                          step_rewards_tensor = core_gigpo.compute_step_discounted_returns(
                              batch=batch,
                              gamma=self.config.algorithm.gamma
-@@ -1233,7 +1251,10 @@ class RayPPOTrainer:
+@@ -1233,7 +1266,10 @@ class RayPPOTrainer:
                              gigpo_mode=self.config.algorithm.gigpo.mode,
                              gigpo_enable_similarity= self.config.algorithm.gigpo.enable_similarity,
                              gigpo_similarity_thresh=self.config.algorithm.gigpo.similarity_thresh,

@@ -817,3 +817,52 @@ LoRA-on-7 GB policy above zero reward. Under verl-agent the paper's own
 setting -- all six task types, its 128 validation episodes -- is the default
 and costs nothing extra, and it is the only setting the paper's numbers refer
 to. We use it.
+
+## 2026-11-08 — Batch shape and per-arm budget (measured on verl-agent)
+
+Measured, one A100 40 GB, paper recipe otherwise:
+
+| tasks x G | rollout | old+ref log-probs | update | **iteration** | trajectories / h |
+|---|---|---|---|---|---|
+| 16 x 8 (paper) | 334 s | 109 + 147 s | 482 s | **1076 s** | 428 |
+| 4 x 8 (used) | 228 s | 32 + 44 s | 145 s | **451 s** | 255 |
+| paper, Table 5 (16 x 8, larger hardware) | 319 s | 23 s | 30 s | 371 s | 1242 |
+
+Rollout now matches the paper; the training passes are 10-16x slower than
+theirs (one GPU against what must be several). Rollout is latency-bound by
+the 50-step lockstep, so it barely shrinks with the batch, which makes the
+paper's 16 x 8 the more trajectory-efficient shape (~1.7x).
+
+**Chosen: 4 x 8, wall-clock budget 3.75 h of training per arm** (+ ~10 min of
+setup and the initial validation, = the user's ~4 h per arm), up to the paper's
+150 iterations, validation on 128 episodes every 10 iterations and at the end.
+That is ~29 iterations / ~930 trajectories per arm, against 150 / 19,200 in
+the paper (~19% of its iterations, ~5% of its trajectories). 16 x 8 would give
+~12 iterations / ~1,500 trajectories. With one PPO update per iteration at
+this batch (the 256-prompt mini-batch exceeds the batch), 4 x 8 gives ~2.4x
+more policy updates, and at a ~4% starting success rate the number of
+improvement steps is the scarcer resource. Same for every arm.
+
+The budget is enforced inside verl's loop (`GACA_TIME_BUDGET_H`): the
+iteration that would cross it becomes the last one, so the final validation
+still runs.
+
+## 2026-11-08 — Invalid-action penalty back to the paper's 0.1
+
+Attempt 1-3 set it to 0 because index actions made inadmissible output nearly
+impossible, so the penalty became the only learnable signal. Under the paper's
+free-form reasoning format that premise is gone: 16-17% of steps are
+format-invalid zero-shot (valid_action_ratio 0.83-0.84), a genuine failure mode
+the penalty exists to correct. The brief anticipated exactly this ("revisit
+... the penalty may become legitimate again"). It is the paper's value and is
+identical across arms. Watch item: if valid_action_ratio rises to ~1 while
+success falls, the attempt-1 failure is recurring.
+
+## 2026-11-08 — First measurements under the paper's format
+
+Base model, paper protocol (all six task types, 128 in-distribution validation
+episodes, T=0.4): **4.7% (6/128)**. GACA's diagnostics on the first 16 x 8
+iteration now sit next to the paper's Table 7: c_t std 0.40 [0.31], lambda_t
+std 0.10 [0.08], clamped 0.001 [<0.01], step coverage 0.96 [0.86]. Under index
+actions they were 1.04 / 0.22 / 0.056 / 0.82; matching the response format is
+what closed that gap.
