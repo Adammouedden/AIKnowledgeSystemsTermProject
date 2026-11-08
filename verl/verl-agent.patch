@@ -188,11 +188,139 @@ index 0000000..dd93f1a
 +                                       rng=np.random.default_rng(seed), rel=rel)
 +    a = torch.as_tensor(adv, dtype=torch.float32, device=response_mask.device).unsqueeze(-1) * mask
 +    return a, a, {f"gaca/{k}": float(v) for k, v in diag.items()}
+diff --git a/gigpo/core_probe.py b/gigpo/core_probe.py
+new file mode 100644
+index 0000000..4a5eea2
+--- /dev/null
++++ b/gigpo/core_probe.py
+@@ -0,0 +1,122 @@
++"""Probe-weighted token credit (term project, IDEAS.md treatment 1).
++
++For each step row with a well-formed response, the commitment probe
++q(c) = P(original action | prompt + response[:c] + "</think>\\n<action>") is
++scored at cut points c every `every` tokens through the reasoning plus the
++<action> tag, with one teacher-forced pass per cut (no generation). The rise
++of q across each segment sets that segment's share of the step's advantage
++via gaca_advantages.probe_token_weights -- the same function the offline
++oracle analysis validated (clipped, mean-preserving, uniform == GACA).
++"""
++
++import re
++
++import numpy as np
++import torch
++
++from gigpo import gaca_advantages as ADV
++
++_ACT = re.compile(r"<action>(.*?)</action>", re.S)
++
++
++def _act_start(tok, ids):
++    """Token index at which '<action>' begins in the decoded response, or None."""
++    text, starts = "", []
++    for t in ids:
++        starts.append(len(text))
++        text += tok.decode([t])
++    k = text.find("<action>")
++    if k < 0:
++        return None
++    for j in range(len(ids)):
++        if starts[j] <= k < (starts[j + 1] if j + 1 < len(ids) else len(text) + 1):
++            return j
++    return None
++
++
++def build_probe_requests(tok, prompts, responses, resp_mask, prompt_mask, every=16):
++    """Returns (requests, rows) where requests = [(row, cut, ctx_ids, tgt_ids)]
++    and rows[row] = (L, cuts) for rows that get probe weights."""
++    close = tok("</think>\n<action>", add_special_tokens=False).input_ids
++    reqs, rows = [], {}
++    for i in range(responses.shape[0]):
++        L = int(resp_mask[i].sum())
++        r = responses[i, :L].tolist()
++        p = prompts[i][prompt_mask[i].bool()].tolist()
++        text = tok.decode(r)
++        if "<think>" not in text or "</think>" not in text:
++            continue
++        m = _ACT.findall(text)
++        a0 = _act_start(tok, r)
++        if not m or a0 is None:
++            continue
++        tgt = tok(m[-1] + "</action>", add_special_tokens=False).input_ids
++        cuts = ADV.probe_cuts(L, a0, every)
++        rows[i] = (L, cuts)
++        for c in cuts:
++            reqs.append((i, c, p + r[:c] + close, tgt))
++    return reqs, rows
++
++
++def weights_from_scores(reqs, rows, scores, n_rows, resp_len, clip=(0.25, 4.0)):
++    """scores[k] = summed log-prob of request k's target. Returns (n_rows, resp_len)
++    weights; rows without a probe keep 1."""
++    w = torch.ones(n_rows, resp_len, dtype=torch.float32)
++    q = {}
++    for (i, c, _, _), s in zip(reqs, scores):
++        q.setdefault(i, {})[c] = float(np.exp(s))
++    for i, (L, cuts) in rows.items():
++        if L == 0 or i not in q:
++            continue
++        ww = ADV.probe_token_weights(L, cuts, [q[i][c] for c in cuts], clip=clip)
++        w[i, :L] = torch.as_tensor(ww, dtype=torch.float32)
++    return w
++
++
++def make_probe_batch(reqs, pad_id):
++    """Left-padded contexts + right-padded targets in verl's (prompt | response) layout."""
++    from verl import DataProto
++
++    P = max(len(c) for _, _, c, _ in reqs)
++    R = max(len(t) for _, _, _, t in reqs)
++    ids, att, resp = [], [], []
++    for _, _, c, t in reqs:
++        ids.append([pad_id] * (P - len(c)) + c + t + [pad_id] * (R - len(t)))
++        att.append([0] * (P - len(c)) + [1] * (len(c) + len(t)) + [0] * (R - len(t)))
++        resp.append(t + [pad_id] * (R - len(t)))
++    ids, att, resp = (torch.tensor(x) for x in (ids, att, resp))
++    pos = (att.cumsum(-1) - 1).clamp(min=0)
++    tmask = torch.zeros(len(reqs), R)
++    for k, (_, _, _, t) in enumerate(reqs):
++        tmask[k, : len(t)] = 1
++    return DataProto.from_dict(tensors={"input_ids": ids, "attention_mask": att, "position_ids": pos,
++                                        "responses": resp}), tmask
++
++
++def apply_probe_weights(trainer, batch, every=16, clip=(0.25, 4.0)):
++    """Multiply batch.batch['advantages'] by probe token weights. Returns diagnostics."""
++    from verl.protocol import pad_dataproto_to_divisor, unpad_dataproto
++
++    tok = trainer.tokenizer
++    prompts = batch.batch["prompts"]
++    responses = batch.batch["responses"]
++    resp_mask = batch.batch["response_mask"]
++    plen = prompts.shape[1]
++    prompt_mask = batch.batch["attention_mask"][:, :plen]
++    reqs, rows = build_probe_requests(tok, prompts.cpu(), responses.cpu(), resp_mask.cpu(), prompt_mask.cpu(), every)
++    if not reqs:
++        return {"probe/rows": 0.0}
++    pb, tmask = make_probe_batch(reqs, tok.pad_token_id)
++    pb, pad = pad_dataproto_to_divisor(pb, trainer.actor_rollout_wg.world_size)
++    out = trainer.actor_rollout_wg.compute_log_prob(pb)
++    out = unpad_dataproto(out, pad_size=pad)
++    lp = out.batch["old_log_probs"].float().cpu()
++    scores = (lp * tmask).sum(-1).tolist()
++    w = weights_from_scores(reqs, rows, scores, responses.shape[0], responses.shape[1], clip)
++    w = w.to(batch.batch["advantages"].device) * resp_mask.float()
++    batch.batch["advantages"] = batch.batch["advantages"] * w
++    batch.batch["returns"] = batch.batch["advantages"]
++    wm = w[resp_mask.bool()]
++    return {"probe/rows": float(len(rows)) / responses.shape[0], "probe/requests": float(len(reqs)),
++            "probe/w_max_mean": float(torch.stack([w[i][resp_mask[i].bool()].max() for i in rows]).mean()) if rows else 1.0,
++            "probe/w_std": float(wm.std()), "probe/q0_mean": float(np.mean([np.exp(s) for (i, c, _, _), s in zip(reqs, scores) if c == 0]))}
 diff --git a/verl/trainer/config/ppo_trainer.yaml b/verl/trainer/config/ppo_trainer.yaml
-index d0f68ba..8fb0d62 100644
+index d0f68ba..2077738 100644
 --- a/verl/trainer/config/ppo_trainer.yaml
 +++ b/verl/trainer/config/ppo_trainer.yaml
-@@ -247,6 +247,16 @@ algorithm:
+@@ -247,6 +247,20 @@ algorithm:
    pf_ppo:
      reweight_method: pow  # ["pow", "max_min", "max_random"]
      weight_pow: 2.0
@@ -206,11 +334,15 @@ index d0f68ba..8fb0d62 100644
 +    alpha_c: 1.0
 +    score_mode: entropy # entropy | uniform | random | loo
 +    rel: none           # none | msize (anchor-group-size reliability gate)
++    token_mode: none    # none | probe (probe-weighted token credit, gigpo/core_probe.py)
++    probe_every: 16
++    probe_clip_lo: 0.25
++    probe_clip_hi: 4.0
    gigpo:
      step_advantage_w: 1.0
      mode: "mean_norm" # "mean_norm" or "mean_std_norm"
 diff --git a/verl/trainer/ppo/ray_trainer.py b/verl/trainer/ppo/ray_trainer.py
-index d85e23a..73e2949 100644
+index d85e23a..5e3771e 100644
 --- a/verl/trainer/ppo/ray_trainer.py
 +++ b/verl/trainer/ppo/ray_trainer.py
 @@ -94,6 +94,7 @@ class AdvantageEstimator(str, Enum):
@@ -331,7 +463,7 @@ index d85e23a..73e2949 100644
                          response_masks = batch.batch["response_mask"]
                          loss_agg_mode = self.config.actor_rollout_ref.actor.loss_agg_mode
                          entropy_loss = agg_loss(loss_mat=entropys, loss_mask=response_masks, loss_agg_mode=loss_agg_mode)
-@@ -1233,7 +1298,16 @@ class RayPPOTrainer:
+@@ -1233,7 +1298,26 @@ class RayPPOTrainer:
                              gigpo_mode=self.config.algorithm.gigpo.mode,
                              gigpo_enable_similarity= self.config.algorithm.gigpo.enable_similarity,
                              gigpo_similarity_thresh=self.config.algorithm.gigpo.similarity_thresh,
@@ -339,6 +471,16 @@ index d85e23a..73e2949 100644
 +                            step=self.global_steps,
                          )
 +                        metrics.update(batch.meta_info.pop("gaca_diag", {}))
++                        # Term project: probe-weighted token credit (IDEAS.md treatment 1)
++                        _g = self.config.algorithm.get("gaca", None)
++                        if _g is not None and _g.get("token_mode", "none") == "probe":
++                            from gigpo import core_probe
++                            import time as _tp
++                            _t0 = _tp.time()
++                            metrics.update(core_probe.apply_probe_weights(
++                                self, batch, every=int(_g.get("probe_every", 16)),
++                                clip=(float(_g.get("probe_clip_lo", 0.25)), float(_g.get("probe_clip_hi", 4.0)))))
++                            metrics["timing_s/probe"] = _tp.time() - _t0
 +                        # Term project: per-step dump (logging only, never affects training).
 +                        if os.environ.get("GACA_STEP_DUMP"):
 +                            try:
@@ -348,7 +490,7 @@ index d85e23a..73e2949 100644
  
                      # update critic
                      if self.use_critic:
-@@ -1302,3 +1376,6 @@ class RayPPOTrainer:
+@@ -1302,3 +1386,6 @@ class RayPPOTrainer:
                      pprint(f"Final validation metrics: {last_val_metrics}")
                      progress_bar.close()
                      return

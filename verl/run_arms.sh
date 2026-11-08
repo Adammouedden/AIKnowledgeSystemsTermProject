@@ -18,7 +18,8 @@ for arm in $ARMS; do
     gaca)       m=gaca; r=none ;;
     gaca_msize) m=gaca; r=msize ;;
     gaca_random) m=gaca; r=none; extra="algorithm.gaca.score_mode=random" ;;  # ablation (paper Table 2)
-    gaca_loo)   m=gaca; r=none; extra="algorithm.gaca.score_mode=loo" ;;     # treatment: anchor-pooled score (App. B.4, never trained in the paper)
+    gaca_loo)   m=gaca; r=none; extra="algorithm.gaca.score_mode=loo" ;;
+    gaca_probe) m=gaca; r=none; extra="algorithm.gaca.token_mode=probe" ;;  # treatment: probe-weighted token credit (IDEAS.md 1)     # treatment: anchor-pooled score (App. B.4, never trained in the paper)
     *) echo "unknown arm $arm"; continue ;;
   esac
   if grep -q "Training Progress: 100%" $ROOT/runs/verl/$arm/train.log 2>/dev/null; then
