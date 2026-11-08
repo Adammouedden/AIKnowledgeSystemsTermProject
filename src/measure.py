@@ -301,9 +301,79 @@ def binned(feats):
     return rows
 
 
+# ----------------------------------------------------------------- NLL vs exact entropy
+
+
+def entropy_check(path, out=None):
+    """How much do GACA's sampled-token NLL and the exact mean token entropy
+    disagree per step, and what would the disagreement do to lambda_t?
+
+    Input: the per-step dump of a verl-agent run (GACA_STEP_DUMP). Both scores
+    come from the same forward pass on the same responses, so every difference
+    is the single-sample noise of the NLL, not a different policy."""
+    rows = [json.loads(l) for l in open(path)]
+    nll = np.array([r["nll"] for r in rows])
+    ent = np.array([r["ent"] for r in rows])
+    rep = {"rows": len(rows), "iters": len({r["it"] for r in rows})}
+
+    def spearman(a, b):
+        ra, rb = np.argsort(np.argsort(a)), np.argsort(np.argsort(b))
+        return float(np.corrcoef(ra, rb)[0, 1])
+
+    rep["pearson"] = float(np.corrcoef(nll, ent)[0, 1])
+    rep["spearman"] = spearman(nll, ent)
+    rep["mean_nll"], rep["mean_ent"] = float(nll.mean()), float(ent.mean())
+
+    # GACA normalizes the score within each trajectory (Eq. 5) and feeds it to Eq. 7.
+    by_traj = {}
+    for i, r in enumerate(rows):
+        by_traj.setdefault((r["it"], r["traj"]), []).append(i)
+    lam_n, lam_e, within_rho, topq_agree = np.zeros(len(rows)), np.zeros(len(rows)), [], []
+    for idx in by_traj.values():
+        idx = np.array(idx)
+        cn = nll[idx] / (nll[idx].mean() + ADV.EPS)
+        ce = ent[idx] / (ent[idx].mean() + ADV.EPS)
+        lam_n[idx] = ADV.mixing_weight(cn, 0.5, 0.5, 0.5)
+        lam_e[idx] = ADV.mixing_weight(ce, 0.5, 0.5, 0.5)
+        if len(idx) >= 4:
+            within_rho.append(spearman(nll[idx], ent[idx]))
+            k = max(1, len(idx) // 4)  # the steps each score calls most critical
+            tn, te = set(idx[np.argsort(-nll[idx])[:k]]), set(idx[np.argsort(-ent[idx])[:k]])
+            topq_agree.append(len(tn & te) / k)
+    d = np.abs(lam_n - lam_e)
+    rep["within_traj_spearman_mean"] = float(np.mean(within_rho))
+    rep["top_quartile_overlap"] = float(np.mean(topq_agree))
+    rep["lambda_absdiff_mean"] = float(d.mean())
+    rep["lambda_absdiff_p90"] = float(np.percentile(d, 90))
+    rep["frac_lambda_diff_gt_0.05"] = float(np.mean(d > 0.05))
+    rep["frac_lambda_diff_gt_0.1"] = float(np.mean(d > 0.1))
+    rep["lambda_std_nll"], rep["lambda_std_ent"] = float(lam_n.std()), float(lam_e.std())
+    rep["clamped_nll"] = float(np.mean((lam_n <= 0) | (lam_n >= 1)))
+    rep["clamped_ent"] = float(np.mean((lam_e <= 0) | (lam_e >= 1)))
+
+    # Noise share: visits to the *same* anchor state in the same group differ only
+    # by which response was drawn, so within-state variance / total variance is
+    # the fraction of each score that is single-sample noise rather than state.
+    groups = {}
+    for i, r in enumerate(rows):
+        groups.setdefault((r["it"], r["uid"], r["anchor"]), []).append(i)
+    multi = [np.array(g) for g in groups.values() if len(g) >= 2]
+    rep["anchor_groups_m>=2"] = len(multi)
+    for name, x in (("nll", nll), ("ent", ent)):
+        within = np.concatenate([x[g] - x[g].mean() for g in multi])
+        pooled = np.concatenate([x[g] for g in multi])
+        rep[f"noise_share_{name}"] = float(np.sum(within ** 2) / np.sum((pooled - pooled.mean()) ** 2))
+    rep["top20_entropy_share_mean"] = float(np.mean([r["top20"] for r in rows]))
+    rep["resp_len_mean"] = float(np.mean([r["len"] for r in rows]))
+    print(json.dumps(rep, indent=1))
+    if out:
+        json.dump(rep, open(out, "w"), indent=1)
+    return rep
+
+
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("cmd", choices=["collect", "analyze"])
+    p.add_argument("cmd", choices=["collect", "analyze", "entropy"])
     p.add_argument("paths", nargs="*")
     p.add_argument("--out", default="runs/measure/base")
     p.add_argument("--adapter", default="base")
@@ -329,6 +399,8 @@ def main():
     args = p.parse_args()
     if args.cmd == "collect":
         collect(args)
+    elif args.cmd == "entropy":
+        entropy_check(args.paths[0], os.path.splitext(args.paths[0])[0] + ".entropy.json")
     else:
         rep, ng, ns = analyze(args.paths)
         print(json.dumps(rep, indent=1))
