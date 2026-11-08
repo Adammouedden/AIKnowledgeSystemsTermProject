@@ -1,0 +1,23 @@
+{
+ "rows": 7864,
+ "iters": 5,
+ "pearson": 0.9353896294264333,
+ "spearman": 0.9133901831859196,
+ "mean_nll": 0.9772957712795589,
+ "mean_ent": 0.9794180647049399,
+ "within_traj_spearman_mean": 0.9017465224089014,
+ "top_quartile_overlap": 0.8109655448717948,
+ "lambda_absdiff_mean": 0.02691637780068134,
+ "lambda_absdiff_p90": 0.055435475187778964,
+ "frac_lambda_diff_gt_0.05": 0.13466429298067142,
+ "frac_lambda_diff_gt_0.1": 0.009028484231943032,
+ "lambda_std_nll": 0.09379771974932234,
+ "lambda_std_ent": 0.07942814916537314,
+ "clamped_nll": 0.0003814852492370295,
+ "clamped_ent": 0.0,
+ "anchor_groups_m>=2": 575,
+ "noise_share_nll": 0.8728359668967736,
+ "noise_share_ent": 0.8489940797514669,
+ "top20_entropy_share_mean": 0.5193036835780889,
+ "resp_len_mean": 95.10897761953204
+}
