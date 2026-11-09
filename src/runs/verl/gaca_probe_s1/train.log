@@ -713,3 +713,1770 @@ ray init kwargs: {'num_cpus': None, 'runtime_env': {'env_vars': {'NCCL_DEBUG': '
 [36m(TaskRunner pid=152196)[0m step:16 - global_seqlen/min:909811.000 - global_seqlen/max:909811.000 - global_seqlen/minmax_diff:0.000 - global_seqlen/balanced_min:909811.000 - global_seqlen/balanced_max:909811.000 - global_seqlen/mean:909811.000 - actor/entropy_loss:1.044 - training/rollout_probs_diff_max:0.154 - training/rollout_probs_diff_mean:0.006 - training/rollout_probs_diff_std:0.009 - episode/valid_action_ratio:0.998 - gaca/adv_episode_abs:0.190 - gaca/step_coverage:0.952 - gaca/adv_step_abs:0.129 - gaca/c_mean:1.000 - gaca/c_std:0.365 - gaca/lam_mean:0.500 - gaca/lam_std:0.091 - gaca/clamped:0.001 - gaca/adv_abs:0.155 - probe/rows:0.886 - probe/requests:7935.000 - probe/w_max_mean:3.074 - probe/w_std:1.036 - probe/q0_mean:0.198 - timing_s/probe:132.466 - actor/kl_loss:0.079 - actor/kl_coef:0.010 - actor/pg_loss:-0.013 - actor/pg_clipfrac:0.004 - actor/ppo_kl:0.001 - actor/pg_clipfrac_lower:0.000 - actor/grad_norm:0.708 - perf/mfu/actor:0.275 - perf/max_memory_allocated_gb:40.120 - perf/max_memory_reserved_gb:46.248 - perf/cpu_memory_used_gb:51.422 - actor/lr:0.000 - training/global_step:16.000 - training/epoch:15.000 - critic/score/mean:0.220 - critic/score/max:10.000 - critic/score/min:-0.100 - critic/rewards/mean:0.220 - critic/rewards/max:10.000 - critic/rewards/min:-0.100 - critic/advantages/mean:0.017 - critic/advantages/max:14.467 - critic/advantages/min:-14.557 - critic/returns/mean:0.017 - critic/returns/max:14.467 - critic/returns/min:-14.557 - response_length/mean:79.398 - response_length/max:511.000 - response_length/min:22.000 - response_length/clip_ratio:0.000 - prompt_length/mean:492.091 - prompt_length/max:908.000 - prompt_length/min:322.000 - prompt_length/clip_ratio:0.000 - episode/reward/mean:0.312 - episode/reward/max:10.000 - episode/reward/min:0.000 - episode/length/mean:49.531 - episode/length/max:50.000 - episode/length/min:35.000 - episode/tool_call_count/mean:0.000 - episode/success_rate:0.031 - episode/look_at_obj_in_light_success_rate:0.000 - episode/pick_two_obj_and_place_success_rate:0.000 - episode/pick_heat_then_place_in_recep_success_rate:0.125 - timing_s/gen:188.802 - timing_s/reward:0.401 - timing_s/old_log_prob:26.231 - timing_s/ref:35.218 - timing_s/adv:132.749 - timing_s/update_actor:117.012 - timing_s/step:500.668 - timing_per_token_ms/adv:0.146 - timing_per_token_ms/update_actor:0.129 - timing_per_token_ms/ref:0.039 - timing_per_token_ms/gen:1.494 - perf/total_num_tokens:909811.000 - perf/time_per_step:500.668 - perf/throughput:1817.195
 [36m(TaskRunner pid=152196)[0m Training Progress:  47%|████▋     | 16/34 [2:17:10<2:29:10, 497.23s/it]
 [36m(TaskRunner pid=152196)[0m list(reward_extra_infos_dict.keys())=[]
+[36m(TaskRunner pid=152196)[0m step:17 - global_seqlen/min:710937.000 - global_seqlen/max:710937.000 - global_seqlen/minmax_diff:0.000 - global_seqlen/balanced_min:710937.000 - global_seqlen/balanced_max:710937.000 - global_seqlen/mean:710937.000 - actor/entropy_loss:0.990 - training/rollout_probs_diff_max:0.155 - training/rollout_probs_diff_mean:0.005 - training/rollout_probs_diff_std:0.009 - episode/valid_action_ratio:0.998 - gaca/adv_episode_abs:0.481 - gaca/step_coverage:0.954 - gaca/adv_step_abs:0.345 - gaca/c_mean:1.000 - gaca/c_std:0.388 - gaca/lam_mean:0.500 - gaca/lam_std:0.097 - gaca/clamped:0.000 - gaca/adv_abs:0.398 - probe/rows:0.987 - probe/requests:7339.000 - probe/w_max_mean:3.031 - probe/w_std:1.063 - probe/q0_mean:0.264 - timing_s/probe:115.972 - actor/kl_loss:0.014 - actor/kl_coef:0.010 - actor/pg_loss:0.007 - actor/pg_clipfrac:0.002 - actor/ppo_kl:-0.000 - actor/pg_clipfrac_lower:0.000 - actor/grad_norm:1.413 - perf/mfu/actor:0.271 - perf/max_memory_allocated_gb:40.120 - perf/max_memory_reserved_gb:46.248 - perf/cpu_memory_used_gb:51.292 - actor/lr:0.000 - training/global_step:17.000 - training/epoch:16.000 - critic/score/mean:1.428 - critic/score/max:10.000 - critic/score/min:-0.100 - critic/rewards/mean:1.428 - critic/rewards/max:10.000 - critic/rewards/min:-0.100 - critic/advantages/mean:-0.001 - critic/advantages/max:17.312 - critic/advantages/min:-13.541 - critic/returns/mean:-0.001 - critic/returns/max:17.312 - critic/returns/min:-13.541 - response_length/mean:83.513 - response_length/max:512.000 - response_length/min:28.000 - response_length/clip_ratio:0.001 - prompt_length/mean:468.457 - prompt_length/max:990.000 - prompt_length/min:346.000 - prompt_length/clip_ratio:0.000 - episode/reward/mean:3.125 - episode/reward/max:10.000 - episode/reward/min:0.000 - episode/length/mean:40.125 - episode/length/max:50.000 - episode/length/min:5.000 - episode/tool_call_count/mean:0.000 - episode/success_rate:0.312 - episode/pick_and_place_success_rate:0.562 - episode/pick_heat_then_place_in_recep_success_rate:0.125 - episode/look_at_obj_in_light_success_rate:0.000 - timing_s/gen:181.039 - timing_s/reward:0.331 - timing_s/old_log_prob:20.641 - timing_s/ref:28.274 - timing_s/adv:116.182 - timing_s/update_actor:92.593 - timing_s/step:439.273 - timing_per_token_ms/adv:0.163 - timing_per_token_ms/update_actor:0.130 - timing_per_token_ms/ref:0.040 - timing_per_token_ms/gen:1.683 - perf/total_num_tokens:710937.000 - perf/time_per_step:439.273 - perf/throughput:1618.439
+[36m(TaskRunner pid=152196)[0m Training Progress:  50%|█████     | 17/34 [2:24:30<2:15:58, 479.91s/it]
+[36m(TaskRunner pid=152196)[0m list(reward_extra_infos_dict.keys())=[]
+[36m(TaskRunner pid=152196)[0m step:18 - global_seqlen/min:887785.000 - global_seqlen/max:887785.000 - global_seqlen/minmax_diff:0.000 - global_seqlen/balanced_min:887785.000 - global_seqlen/balanced_max:887785.000 - global_seqlen/mean:887785.000 - actor/entropy_loss:0.968 - training/rollout_probs_diff_max:0.154 - training/rollout_probs_diff_mean:0.005 - training/rollout_probs_diff_std:0.009 - episode/valid_action_ratio:0.999 - gaca/adv_episode_abs:0.287 - gaca/step_coverage:0.959 - gaca/adv_step_abs:0.198 - gaca/c_mean:1.000 - gaca/c_std:0.368 - gaca/lam_mean:0.500 - gaca/lam_std:0.092 - gaca/clamped:0.000 - gaca/adv_abs:0.242 - probe/rows:0.988 - probe/requests:8551.000 - probe/w_max_mean:2.994 - probe/w_std:1.052 - probe/q0_mean:0.177 - timing_s/probe:140.233 - actor/kl_loss:0.009 - actor/kl_coef:0.010 - actor/pg_loss:-0.001 - actor/pg_clipfrac:0.001 - actor/ppo_kl:0.000 - actor/pg_clipfrac_lower:0.000 - actor/grad_norm:0.955 - perf/mfu/actor:0.276 - perf/max_memory_allocated_gb:40.120 - perf/max_memory_reserved_gb:46.248 - perf/cpu_memory_used_gb:51.204 - actor/lr:0.000 - training/global_step:18.000 - training/epoch:17.000 - critic/score/mean:0.497 - critic/score/max:10.000 - critic/score/min:-0.100 - critic/rewards/mean:0.497 - critic/rewards/max:10.000 - critic/rewards/min:-0.100 - critic/advantages/mean:0.009 - critic/advantages/max:21.048 - critic/advantages/min:-2.352 - critic/returns/mean:0.009 - critic/returns/max:21.048 - critic/returns/min:-2.352 - response_length/mean:82.941 - response_length/max:449.000 - response_length/min:27.000 - response_length/clip_ratio:0.000 - prompt_length/mean:498.070 - prompt_length/max:933.000 - prompt_length/min:333.000 - prompt_length/clip_ratio:0.000 - episode/reward/mean:0.938 - episode/reward/max:10.000 - episode/reward/min:0.000 - episode/length/mean:47.688 - episode/length/max:50.000 - episode/length/min:19.000 - episode/tool_call_count/mean:0.000 - episode/success_rate:0.094 - episode/pick_two_obj_and_place_success_rate:0.000 - episode/pick_cool_then_place_in_recep_success_rate:0.250 - episode/pick_and_place_success_rate:0.125 - timing_s/gen:183.671 - timing_s/reward:0.388 - timing_s/old_log_prob:25.622 - timing_s/ref:33.906 - timing_s/adv:140.501 - timing_s/update_actor:113.877 - timing_s/step:498.196 - timing_per_token_ms/adv:0.158 - timing_per_token_ms/update_actor:0.128 - timing_per_token_ms/ref:0.038 - timing_per_token_ms/gen:1.449 - perf/total_num_tokens:887785.000 - perf/time_per_step:498.196 - perf/throughput:1782.001
+[36m(TaskRunner pid=152196)[0m Training Progress:  53%|█████▎    | 18/34 [2:32:49<2:09:28, 485.53s/it]
+[36m(TaskRunner pid=152196)[0m list(reward_extra_infos_dict.keys())=[]
+[36m(TaskRunner pid=152196)[0m step:19 - global_seqlen/min:993479.000 - global_seqlen/max:993479.000 - global_seqlen/minmax_diff:0.000 - global_seqlen/balanced_min:993479.000 - global_seqlen/balanced_max:993479.000 - global_seqlen/mean:993479.000 - actor/entropy_loss:0.955 - training/rollout_probs_diff_max:0.122 - training/rollout_probs_diff_mean:0.005 - training/rollout_probs_diff_std:0.009 - episode/valid_action_ratio:0.996 - gaca/adv_episode_abs:0.148 - gaca/step_coverage:0.960 - gaca/adv_step_abs:0.092 - gaca/c_mean:1.000 - gaca/c_std:0.378 - gaca/lam_mean:0.500 - gaca/lam_std:0.094 - gaca/clamped:0.000 - gaca/adv_abs:0.121 - probe/rows:0.981 - probe/requests:9512.000 - probe/w_max_mean:3.075 - probe/w_std:1.052 - probe/q0_mean:0.151 - timing_s/probe:168.396 - actor/kl_loss:0.018 - actor/kl_coef:0.010 - actor/pg_loss:0.012 - actor/pg_clipfrac:0.002 - actor/ppo_kl:0.000 - actor/pg_clipfrac_lower:0.000 - actor/grad_norm:0.783 - perf/mfu/actor:0.288 - perf/max_memory_allocated_gb:40.120 - perf/max_memory_reserved_gb:46.248 - perf/cpu_memory_used_gb:53.638 - actor/lr:0.000 - training/global_step:19.000 - training/epoch:18.000 - critic/score/mean:0.064 - critic/score/max:10.000 - critic/score/min:-0.100 - critic/rewards/mean:0.064 - critic/rewards/max:10.000 - critic/rewards/min:-0.100 - critic/advantages/mean:-0.034 - critic/advantages/max:27.630 - critic/advantages/min:-31.961 - critic/returns/mean:-0.034 - critic/returns/max:27.630 - critic/returns/min:-31.961 - response_length/mean:93.974 - response_length/max:512.000 - response_length/min:24.000 - response_length/clip_ratio:0.001 - prompt_length/mean:542.872 - prompt_length/max:1192.000 - prompt_length/min:301.000 - prompt_length/clip_ratio:0.000 - episode/reward/mean:0.312 - episode/reward/max:10.000 - episode/reward/min:0.000 - episode/length/mean:48.750 - episode/length/max:50.000 - episode/length/min:10.000 - episode/tool_call_count/mean:0.000 - episode/success_rate:0.031 - episode/pick_clean_then_place_in_recep_success_rate:0.000 - episode/pick_two_obj_and_place_success_rate:0.000 - episode/pick_cool_then_place_in_recep_success_rate:0.125 - timing_s/gen:221.758 - timing_s/reward:0.412 - timing_s/old_log_prob:28.166 - timing_s/ref:35.278 - timing_s/adv:168.673 - timing_s/update_actor:122.327 - timing_s/step:576.774 - timing_per_token_ms/adv:0.170 - timing_per_token_ms/update_actor:0.123 - timing_per_token_ms/ref:0.036 - timing_per_token_ms/gen:1.513 - perf/total_num_tokens:993479.000 - perf/time_per_step:576.774 - perf/throughput:1722.475
+[36m(TaskRunner pid=152196)[0m Training Progress:  56%|█████▌    | 19/34 [2:42:26<2:08:15, 513.04s/it]
+[36m(TaskRunner pid=152196)[0m list(reward_extra_infos_dict.keys())=[]
+[36m(TaskRunner pid=152196)[0m test_gen_batch meta info: {'eos_token_id': 151645, 'pad_token_id': 151643, 'recompute_log_prob': False, 'do_sample': True, 'validate': True}
+[36m(TaskRunner pid=152196)[0m validation generation end
+[36m(TaskRunner pid=152196)[0m [text][prompt] <|im_start|>system
+[36m(TaskRunner pid=152196)[0m You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
+[36m(TaskRunner pid=152196)[0m <|im_start|>user
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m You are an expert agent operating in the ALFRED Embodied Environment. Your task is to: heat some egg and put it in countertop.
+[36m(TaskRunner pid=152196)[0m Prior to this step, you have already taken 5 step(s). Below are the most recent 2 observations and the corresponding actions you took: [Observation 4: 'You arrive at countertop 2. On the countertop 2, you see a bread 2, a bread 1, a cellphone 1, a egg 3, a egg 2, a egg 1, a fork 2, a kettle 1, a knife 1, a ladle 1, a lettuce 1, a pot 2, a potato 2, a spatula 2, and a tomato 3.', Action 4: 'take egg 1 from countertop 2']
+[36m(TaskRunner pid=152196)[0m [Observation 5: 'You pick up the egg 1 from the countertop 2.', Action 5: 'move egg 1 to countertop 2']
+[36m(TaskRunner pid=152196)[0m You are now at step 6 and your current observation is: You move the egg 1 to the countertop 2.
+[36m(TaskRunner pid=152196)[0m Your admissible actions of the current situation are: ['examine countertop 2'
+[36m(TaskRunner pid=152196)[0m  'go to cabinet 1'
+[36m(TaskRunner pid=152196)[0m  'go to cabinet 2'
+[36m(TaskRunner pid=152196)[0m  'go to cabinet 3'
+[36m(TaskRunner pid=152196)[0m  'go to cabinet 4'
+[36m(TaskRunner pid=152196)[0m  'go to cabinet 5'
+[36m(TaskRunner pid=152196)[0m  'go to cabinet 6'
+[36m(TaskRunner pid=152196)[0m  'go to cabinet 7'
+[36m(TaskRunner pid=152196)[0m  'go to cabinet 8'
+[36m(TaskRunner pid=152196)[0m  'go to cabinet 9'
+[36m(TaskRunner pid=152196)[0m  'go to coffeemachine 1'
+[36m(TaskRunner pid=152196)[0m  'go to countertop 1'
+[36m(TaskRunner pid=152196)[0m  'go to drawer 1'
+[36m(TaskRunner pid=152196)[0m  'go to drawer 10'
+[36m(TaskRunner pid=152196)[0m  'go to drawer 11'
+[36m(TaskRunner pid=152196)[0m  'go to drawer 12'
+[36m(TaskRunner pid=152196)[0m  'go to drawer 13'
+[36m(TaskRunner pid=152196)[0m  'go to drawer 2'
+[36m(TaskRunner pid=152196)[0m  'go to drawer 3'
+[36m(TaskRunner pid=152196)[0m  'go to drawer 4'
+[36m(TaskRunner pid=152196)[0m  'go to drawer 5'
+[36m(TaskRunner pid=152196)[0m  'go to drawer 6'
+[36m(TaskRunner pid=152196)[0m  'go to drawer 7'
+[36m(TaskRunner pid=152196)[0m  'go to drawer 8'
+[36m(TaskRunner pid=152196)[0m  'go to drawer 9'
+[36m(TaskRunner pid=152196)[0m  'go to fridge 1'
+[36m(TaskRunner pid=152196)[0m  'go to garbagecan 1'
+[36m(TaskRunner pid=152196)[0m  'go to microwave 1'
+[36m(TaskRunner pid=152196)[0m  'go to sinkbasin 1'
+[36m(TaskRunner pid=152196)[0m  'go to stoveburner 1'
+[36m(TaskRunner pid=152196)[0m  'go to stoveburner 2'
+[36m(TaskRunner pid=152196)[0m  'go to stoveburner 3'
+[36m(TaskRunner pid=152196)[0m  'go to stoveburner 4'
+[36m(TaskRunner pid=152196)[0m  'go to stoveburner 5'
+[36m(TaskRunner pid=152196)[0m  'go to stoveburner 6'
+[36m(TaskRunner pid=152196)[0m  'go to toaster 1'
+[36m(TaskRunner pid=152196)[0m  'inventory'
+[36m(TaskRunner pid=152196)[0m  'look'
+[36m(TaskRunner pid=152196)[0m  'take bread 1 from countertop 2'
+[36m(TaskRunner pid=152196)[0m  'take bread 2 from countertop 2'
+[36m(TaskRunner pid=152196)[0m  'take cellphone 1 from countertop 2'
+[36m(TaskRunner pid=152196)[0m  'take egg 1 from countertop 2'
+[36m(TaskRunner pid=152196)[0m  'take egg 2 from countertop 2'
+[36m(TaskRunner pid=152196)[0m  'take egg 3 from countertop 2'
+[36m(TaskRunner pid=152196)[0m  'take fork 2 from countertop 2'
+[36m(TaskRunner pid=152196)[0m  'take kettle 1 from countertop 2'
+[36m(TaskRunner pid=152196)[0m  'take knife 1 from countertop 2'
+[36m(TaskRunner pid=152196)[0m  'take ladle 1 from countertop 2'
+[36m(TaskRunner pid=152196)[0m  'take lettuce 1 from countertop 2'
+[36m(TaskRunner pid=152196)[0m  'take pot 2 from countertop 2'
+[36m(TaskRunner pid=152196)[0m  'take potato 2 from countertop 2'
+[36m(TaskRunner pid=152196)[0m  'take spatula 2 from countertop 2'
+[36m(TaskRunner pid=152196)[0m  'take tomato 3 from countertop 2'].
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m Now it's your turn to take an action.
+[36m(TaskRunner pid=152196)[0m You should first reason step-by-step about the current situation. This reasoning process MUST be enclosed within <think> </think> tags. 
+[36m(TaskRunner pid=152196)[0m Once you've finished your reasoning, you should choose an admissible action for current step and present it within <action> </action> tags.
+[36m(TaskRunner pid=152196)[0m <|im_end|>
+[36m(TaskRunner pid=152196)[0m <|im_start|>assistant
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m [text][response] <think>
+[36m(TaskRunner pid=152196)[0m The current situation is that you are at countertop 2, and you have already taken the egg 1. You need to heat the egg and put it in the countertop.
+[36m(TaskRunner pid=152196)[0m </think>
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m <action>take egg 1 from countertop 2</action><|im_end|>
+[36m(TaskRunner pid=152196)[0m [text][score] 10.0
+[36m(TaskRunner pid=152196)[0m step:20 - global_seqlen/min:760995.000 - global_seqlen/max:760995.000 - global_seqlen/minmax_diff:0.000 - global_seqlen/balanced_min:760995.000 - global_seqlen/balanced_max:760995.000 - global_seqlen/mean:760995.000 - actor/entropy_loss:1.026 - training/rollout_probs_diff_max:0.121 - training/rollout_probs_diff_mean:0.005 - training/rollout_probs_diff_std:0.009 - episode/valid_action_ratio:0.998 - gaca/adv_episode_abs:0.533 - gaca/step_coverage:0.961 - gaca/adv_step_abs:0.417 - gaca/c_mean:1.000 - gaca/c_std:0.355 - gaca/lam_mean:0.500 - gaca/lam_std:0.089 - gaca/clamped:0.001 - gaca/adv_abs:0.467 - probe/rows:0.973 - probe/requests:8743.000 - probe/w_max_mean:3.163 - probe/w_std:1.074 - probe/q0_mean:0.156 - timing_s/probe:132.114 - actor/kl_loss:0.014 - actor/kl_coef:0.010 - actor/pg_loss:-0.001 - actor/pg_clipfrac:0.001 - actor/ppo_kl:0.000 - actor/pg_clipfrac_lower:0.000 - actor/grad_norm:1.202 - perf/mfu/actor:0.263 - perf/max_memory_allocated_gb:40.120 - perf/max_memory_reserved_gb:46.248 - perf/cpu_memory_used_gb:53.291 - actor/lr:0.000 - val/text/test_score:0.515 - val/text/tool_call_count/mean:0.000 - val/success_rate:0.125 - val/pick_heat_then_place_in_recep_success_rate:0.059 - val/pick_cool_then_place_in_recep_success_rate:0.136 - val/pick_two_obj_and_place_success_rate:0.095 - val/pick_and_place_success_rate:0.333 - val/pick_clean_then_place_in_recep_success_rate:0.000 - val/look_at_obj_in_light_success_rate:0.091 - training/global_step:20.000 - training/epoch:19.000 - critic/score/mean:1.592 - critic/score/max:10.000 - critic/score/min:0.000 - critic/rewards/mean:1.592 - critic/rewards/max:10.000 - critic/rewards/min:0.000 - critic/advantages/mean:0.005 - critic/advantages/max:19.122 - critic/advantages/min:-3.876 - critic/returns/mean:0.005 - critic/returns/max:19.122 - critic/returns/min:-3.876 - response_length/mean:93.402 - response_length/max:512.000 - response_length/min:31.000 - response_length/clip_ratio:0.001 - prompt_length/mean:438.020 - prompt_length/max:844.000 - prompt_length/min:262.000 - prompt_length/clip_ratio:0.000 - episode/reward/mean:2.500 - episode/reward/max:10.000 - episode/reward/min:0.000 - episode/length/mean:44.594 - episode/length/max:50.000 - episode/length/min:10.000 - episode/tool_call_count/mean:0.000 - episode/success_rate:0.250 - episode/pick_and_place_success_rate:0.438 - episode/pick_two_obj_and_place_success_rate:0.125 - episode/pick_cool_then_place_in_recep_success_rate:0.000 - timing_s/gen:164.292 - timing_s/reward:0.348 - timing_s/old_log_prob:22.179 - timing_s/ref:31.240 - timing_s/adv:132.368 - timing_s/update_actor:102.248 - timing_s/testing:325.583 - timing_s/step:778.882 - timing_per_token_ms/adv:0.174 - timing_per_token_ms/update_actor:0.134 - timing_per_token_ms/ref:0.041 - timing_per_token_ms/gen:1.228 - perf/total_num_tokens:760995.000 - perf/time_per_step:778.882 - perf/throughput:977.035
+[36m(TaskRunner pid=152196)[0m Training Progress:  59%|█████▉    | 20/34 [2:55:25<2:18:21, 592.96s/it]
+[36m(TaskRunner pid=152196)[0m list(reward_extra_infos_dict.keys())=[]
+[36m(TaskRunner pid=152196)[0m step:21 - global_seqlen/min:1065871.000 - global_seqlen/max:1065871.000 - global_seqlen/minmax_diff:0.000 - global_seqlen/balanced_min:1065871.000 - global_seqlen/balanced_max:1065871.000 - global_seqlen/mean:1065871.000 - actor/entropy_loss:1.063 - training/rollout_probs_diff_max:0.171 - training/rollout_probs_diff_mean:0.006 - training/rollout_probs_diff_std:0.009 - episode/valid_action_ratio:0.998 - gaca/adv_episode_abs:0.236 - gaca/step_coverage:0.940 - gaca/adv_step_abs:0.158 - gaca/c_mean:1.000 - gaca/c_std:0.364 - gaca/lam_mean:0.500 - gaca/lam_std:0.091 - gaca/clamped:0.000 - gaca/adv_abs:0.194 - probe/rows:0.967 - probe/requests:9435.000 - probe/w_max_mean:3.161 - probe/w_std:1.072 - probe/q0_mean:0.140 - timing_s/probe:178.370 - actor/kl_loss:0.024 - actor/kl_coef:0.010 - actor/pg_loss:0.008 - actor/pg_clipfrac:0.002 - actor/ppo_kl:0.000 - actor/pg_clipfrac_lower:0.000 - actor/grad_norm:0.742 - perf/mfu/actor:0.295 - perf/max_memory_allocated_gb:40.120 - perf/max_memory_reserved_gb:46.248 - perf/cpu_memory_used_gb:54.424 - actor/lr:0.000 - training/global_step:21.000 - training/epoch:20.000 - critic/score/mean:0.692 - critic/score/max:10.000 - critic/score/min:-0.100 - critic/rewards/mean:0.692 - critic/rewards/max:10.000 - critic/rewards/min:-0.100 - critic/advantages/mean:-0.013 - critic/advantages/max:8.393 - critic/advantages/min:-38.666 - critic/returns/mean:-0.013 - critic/returns/max:8.393 - critic/returns/min:-38.666 - response_length/mean:92.059 - response_length/max:512.000 - response_length/min:25.000 - response_length/clip_ratio:0.001 - prompt_length/mean:591.192 - prompt_length/max:982.000 - prompt_length/min:459.000 - prompt_length/clip_ratio:0.000 - episode/reward/mean:0.938 - episode/reward/max:10.000 - episode/reward/min:0.000 - episode/length/mean:48.688 - episode/length/max:50.000 - episode/length/min:15.000 - episode/tool_call_count/mean:0.000 - episode/success_rate:0.094 - episode/pick_heat_then_place_in_recep_success_rate:0.000 - episode/pick_clean_then_place_in_recep_success_rate:0.188 - episode/pick_cool_then_place_in_recep_success_rate:0.000 - timing_s/gen:203.711 - timing_s/reward:0.438 - timing_s/old_log_prob:30.071 - timing_s/ref:35.879 - timing_s/adv:178.638 - timing_s/update_actor:128.044 - timing_s/step:577.054 - timing_per_token_ms/adv:0.168 - timing_per_token_ms/update_actor:0.120 - timing_per_token_ms/ref:0.034 - timing_per_token_ms/gen:1.418 - perf/total_num_tokens:1065871.000 - perf/time_per_step:577.054 - perf/throughput:1847.089
+[36m(TaskRunner pid=152196)[0m Training Progress:  62%|██████▏   | 21/34 [3:05:02<2:07:27, 588.30s/it]
+[36m(TaskRunner pid=152196)[0m list(reward_extra_infos_dict.keys())=[]
+[36m(TaskRunner pid=152196)[0m step:22 - global_seqlen/min:953989.000 - global_seqlen/max:953989.000 - global_seqlen/minmax_diff:0.000 - global_seqlen/balanced_min:953989.000 - global_seqlen/balanced_max:953989.000 - global_seqlen/mean:953989.000 - actor/entropy_loss:1.126 - training/rollout_probs_diff_max:0.128 - training/rollout_probs_diff_mean:0.006 - training/rollout_probs_diff_std:0.009 - episode/valid_action_ratio:0.998 - gaca/adv_episode_abs:0.139 - gaca/step_coverage:0.951 - gaca/adv_step_abs:0.093 - gaca/c_mean:1.000 - gaca/c_std:0.357 - gaca/lam_mean:0.500 - gaca/lam_std:0.089 - gaca/clamped:0.000 - gaca/adv_abs:0.115 - probe/rows:0.948 - probe/requests:10052.000 - probe/w_max_mean:3.241 - probe/w_std:1.054 - probe/q0_mean:0.148 - timing_s/probe:169.715 - actor/kl_loss:0.017 - actor/kl_coef:0.010 - actor/pg_loss:-0.002 - actor/pg_clipfrac:0.001 - actor/ppo_kl:0.000 - actor/pg_clipfrac_lower:0.000 - actor/grad_norm:0.517 - perf/mfu/actor:0.282 - perf/max_memory_allocated_gb:40.120 - perf/max_memory_reserved_gb:46.248 - perf/cpu_memory_used_gb:54.508 - actor/lr:0.000 - training/global_step:22.000 - training/epoch:21.000 - critic/score/mean:0.146 - critic/score/max:10.000 - critic/score/min:-0.100 - critic/rewards/mean:0.146 - critic/rewards/max:10.000 - critic/rewards/min:-0.100 - critic/advantages/mean:-0.007 - critic/advantages/max:16.033 - critic/advantages/min:-9.178 - critic/returns/mean:-0.007 - critic/returns/max:16.033 - critic/returns/min:-9.178 - response_length/mean:100.468 - response_length/max:512.000 - response_length/min:35.000 - response_length/clip_ratio:0.001 - prompt_length/mean:504.855 - prompt_length/max:1175.000 - prompt_length/min:308.000 - prompt_length/clip_ratio:0.000 - episode/reward/mean:0.312 - episode/reward/max:10.000 - episode/reward/min:0.000 - episode/length/mean:49.156 - episode/length/max:50.000 - episode/length/min:23.000 - episode/tool_call_count/mean:0.000 - episode/success_rate:0.031 - episode/pick_two_obj_and_place_success_rate:0.062 - episode/pick_clean_then_place_in_recep_success_rate:0.000 - episode/look_at_obj_in_light_success_rate:0.000 - timing_s/gen:229.310 - timing_s/reward:0.409 - timing_s/old_log_prob:27.069 - timing_s/ref:35.257 - timing_s/adv:169.979 - timing_s/update_actor:120.023 - timing_s/step:582.283 - timing_per_token_ms/adv:0.178 - timing_per_token_ms/update_actor:0.126 - timing_per_token_ms/ref:0.037 - timing_per_token_ms/gen:1.448 - perf/total_num_tokens:953989.000 - perf/time_per_step:582.283 - perf/throughput:1638.360
+[36m(TaskRunner pid=152196)[0m Training Progress:  65%|██████▍   | 22/34 [3:14:45<1:57:19, 586.61s/it]
+[36m(TaskRunner pid=152196)[0m list(reward_extra_infos_dict.keys())=[]
+[36m(TaskRunner pid=152196)[0m step:23 - global_seqlen/min:865714.000 - global_seqlen/max:865714.000 - global_seqlen/minmax_diff:0.000 - global_seqlen/balanced_min:865714.000 - global_seqlen/balanced_max:865714.000 - global_seqlen/mean:865714.000 - actor/entropy_loss:1.106 - training/rollout_probs_diff_max:0.155 - training/rollout_probs_diff_mean:0.006 - training/rollout_probs_diff_std:0.009 - episode/valid_action_ratio:0.996 - gaca/adv_episode_abs:0.214 - gaca/step_coverage:0.970 - gaca/adv_step_abs:0.125 - gaca/c_mean:1.000 - gaca/c_std:0.370 - gaca/lam_mean:0.500 - gaca/lam_std:0.092 - gaca/clamped:0.001 - gaca/adv_abs:0.163 - probe/rows:0.912 - probe/requests:9538.000 - probe/w_max_mean:3.174 - probe/w_std:1.036 - probe/q0_mean:0.151 - timing_s/probe:148.186 - actor/kl_loss:0.014 - actor/kl_coef:0.010 - actor/pg_loss:0.012 - actor/pg_clipfrac:0.003 - actor/ppo_kl:0.000 - actor/pg_clipfrac_lower:0.000 - actor/grad_norm:0.878 - perf/mfu/actor:0.272 - perf/max_memory_allocated_gb:40.120 - perf/max_memory_reserved_gb:46.248 - perf/cpu_memory_used_gb:54.722 - actor/lr:0.000 - training/global_step:23.000 - training/epoch:22.000 - critic/score/mean:0.183 - critic/score/max:10.000 - critic/score/min:-0.100 - critic/rewards/mean:0.183 - critic/rewards/max:10.000 - critic/rewards/min:-0.100 - critic/advantages/mean:-0.039 - critic/advantages/max:16.322 - critic/advantages/min:-33.520 - critic/returns/mean:-0.039 - critic/returns/max:16.322 - critic/returns/min:-33.520 - response_length/mean:97.721 - response_length/max:512.000 - response_length/min:30.000 - response_length/clip_ratio:0.001 - prompt_length/mean:448.816 - prompt_length/max:777.000 - prompt_length/min:335.000 - prompt_length/clip_ratio:0.000 - episode/reward/mean:0.312 - episode/reward/max:10.000 - episode/reward/min:0.000 - episode/length/mean:49.344 - episode/length/max:50.000 - episode/length/min:29.000 - episode/tool_call_count/mean:0.000 - episode/success_rate:0.031 - episode/pick_two_obj_and_place_success_rate:0.000 - episode/pick_clean_then_place_in_recep_success_rate:0.062 - episode/pick_heat_then_place_in_recep_success_rate:0.000 - timing_s/gen:188.020 - timing_s/reward:0.422 - timing_s/old_log_prob:24.987 - timing_s/ref:34.674 - timing_s/adv:148.453 - timing_s/update_actor:112.544 - timing_s/step:509.370 - timing_per_token_ms/adv:0.171 - timing_per_token_ms/update_actor:0.130 - timing_per_token_ms/ref:0.040 - timing_per_token_ms/gen:1.215 - perf/total_num_tokens:865714.000 - perf/time_per_step:509.370 - perf/throughput:1699.577
+[36m(TaskRunner pid=152196)[0m Training Progress:  68%|██████▊   | 23/34 [3:23:15<1:43:18, 563.54s/it]
+[36m(TaskRunner pid=152196)[0m list(reward_extra_infos_dict.keys())=[]
+[36m(TaskRunner pid=152196)[0m step:24 - global_seqlen/min:949027.000 - global_seqlen/max:949027.000 - global_seqlen/minmax_diff:0.000 - global_seqlen/balanced_min:949027.000 - global_seqlen/balanced_max:949027.000 - global_seqlen/mean:949027.000 - actor/entropy_loss:1.039 - training/rollout_probs_diff_max:0.191 - training/rollout_probs_diff_mean:0.006 - training/rollout_probs_diff_std:0.009 - episode/valid_action_ratio:0.998 - gaca/adv_episode_abs:0.199 - gaca/step_coverage:0.950 - gaca/adv_step_abs:0.151 - gaca/c_mean:1.000 - gaca/c_std:0.350 - gaca/lam_mean:0.500 - gaca/lam_std:0.088 - gaca/clamped:0.000 - gaca/adv_abs:0.174 - probe/rows:0.946 - probe/requests:8968.000 - probe/w_max_mean:3.147 - probe/w_std:1.059 - probe/q0_mean:0.181 - timing_s/probe:162.026 - actor/kl_loss:0.031 - actor/kl_coef:0.010 - actor/pg_loss:-0.001 - actor/pg_clipfrac:0.002 - actor/ppo_kl:0.000 - actor/pg_clipfrac_lower:0.000 - actor/grad_norm:0.993 - perf/mfu/actor:0.287 - perf/max_memory_allocated_gb:40.120 - perf/max_memory_reserved_gb:46.248 - perf/cpu_memory_used_gb:54.542 - actor/lr:0.000 - training/global_step:24.000 - training/epoch:23.000 - critic/score/mean:0.475 - critic/score/max:10.000 - critic/score/min:-0.100 - critic/rewards/mean:0.475 - critic/rewards/max:10.000 - critic/rewards/min:-0.100 - critic/advantages/mean:0.002 - critic/advantages/max:9.604 - critic/advantages/min:-45.232 - critic/returns/mean:0.002 - critic/returns/max:9.604 - critic/returns/min:-45.232 - response_length/mean:93.439 - response_length/max:455.000 - response_length/min:29.000 - response_length/clip_ratio:0.000 - prompt_length/mean:551.281 - prompt_length/max:961.000 - prompt_length/min:347.000 - prompt_length/clip_ratio:0.000 - episode/reward/mean:1.250 - episode/reward/max:10.000 - episode/reward/min:0.000 - episode/length/mean:45.938 - episode/length/max:50.000 - episode/length/min:4.000 - episode/tool_call_count/mean:0.000 - episode/success_rate:0.125 - episode/pick_heat_then_place_in_recep_success_rate:0.000 - episode/pick_and_place_success_rate:0.500 - episode/pick_clean_then_place_in_recep_success_rate:0.000 - episode/pick_two_obj_and_place_success_rate:0.000 - timing_s/gen:200.551 - timing_s/reward:0.390 - timing_s/old_log_prob:26.831 - timing_s/ref:33.353 - timing_s/adv:162.278 - timing_s/update_actor:117.010 - timing_s/step:540.661 - timing_per_token_ms/adv:0.171 - timing_per_token_ms/update_actor:0.123 - timing_per_token_ms/ref:0.035 - timing_per_token_ms/gen:1.458 - perf/total_num_tokens:949027.000 - perf/time_per_step:540.661 - perf/throughput:1755.309
+[36m(TaskRunner pid=152196)[0m Training Progress:  71%|███████   | 24/34 [3:32:16<1:32:47, 556.79s/it]
+[36m(TaskRunner pid=152196)[0m list(reward_extra_infos_dict.keys())=[]
+[36m(TaskRunner pid=152196)[0m step:25 - global_seqlen/min:863389.000 - global_seqlen/max:863389.000 - global_seqlen/minmax_diff:0.000 - global_seqlen/balanced_min:863389.000 - global_seqlen/balanced_max:863389.000 - global_seqlen/mean:863389.000 - actor/entropy_loss:1.070 - training/rollout_probs_diff_max:0.131 - training/rollout_probs_diff_mean:0.006 - training/rollout_probs_diff_std:0.009 - episode/valid_action_ratio:0.997 - gaca/adv_episode_abs:0.346 - gaca/step_coverage:0.945 - gaca/adv_step_abs:0.272 - gaca/c_mean:1.000 - gaca/c_std:0.346 - gaca/lam_mean:0.500 - gaca/lam_std:0.087 - gaca/clamped:0.000 - gaca/adv_abs:0.299 - probe/rows:0.964 - probe/requests:8243.000 - probe/w_max_mean:3.171 - probe/w_std:1.084 - probe/q0_mean:0.176 - timing_s/probe:138.187 - actor/kl_loss:0.047 - actor/kl_coef:0.010 - actor/pg_loss:-0.002 - actor/pg_clipfrac:0.001 - actor/ppo_kl:0.000 - actor/pg_clipfrac_lower:0.000 - actor/grad_norm:1.027 - perf/mfu/actor:0.279 - perf/max_memory_allocated_gb:40.120 - perf/max_memory_reserved_gb:46.248 - perf/cpu_memory_used_gb:54.424 - actor/lr:0.000 - training/global_step:25.000 - training/epoch:24.000 - critic/score/mean:0.937 - critic/score/max:10.000 - critic/score/min:-0.100 - critic/rewards/mean:0.937 - critic/rewards/max:10.000 - critic/rewards/min:-0.100 - critic/advantages/mean:-0.013 - critic/advantages/max:11.446 - critic/advantages/min:-7.262 - critic/returns/mean:-0.013 - critic/returns/max:11.446 - critic/returns/min:-7.262 - response_length/mean:85.965 - response_length/max:512.000 - response_length/min:27.000 - response_length/clip_ratio:0.001 - prompt_length/mean:513.610 - prompt_length/max:779.000 - prompt_length/min:364.000 - prompt_length/clip_ratio:0.000 - episode/reward/mean:1.875 - episode/reward/max:10.000 - episode/reward/min:0.000 - episode/length/mean:44.781 - episode/length/max:50.000 - episode/length/min:13.000 - episode/tool_call_count/mean:0.000 - episode/success_rate:0.188 - episode/pick_and_place_success_rate:0.250 - episode/pick_cool_then_place_in_recep_success_rate:0.000 - episode/look_at_obj_in_light_success_rate:0.500 - timing_s/gen:165.756 - timing_s/reward:0.387 - timing_s/old_log_prob:24.761 - timing_s/ref:32.118 - timing_s/adv:138.432 - timing_s/update_actor:109.620 - timing_s/step:471.302 - timing_per_token_ms/adv:0.160 - timing_per_token_ms/update_actor:0.127 - timing_per_token_ms/ref:0.037 - timing_per_token_ms/gen:1.339 - perf/total_num_tokens:863389.000 - perf/time_per_step:471.302 - perf/throughput:1831.922
+[36m(TaskRunner pid=152196)[0m Training Progress:  74%|███████▎  | 25/34 [3:40:07<1:19:41, 531.24s/it]
+[36m(TaskRunner pid=152196)[0m list(reward_extra_infos_dict.keys())=[]
+[36m(TaskRunner pid=152196)[0m step:26 - global_seqlen/min:793007.000 - global_seqlen/max:793007.000 - global_seqlen/minmax_diff:0.000 - global_seqlen/balanced_min:793007.000 - global_seqlen/balanced_max:793007.000 - global_seqlen/mean:793007.000 - actor/entropy_loss:1.001 - training/rollout_probs_diff_max:0.165 - training/rollout_probs_diff_mean:0.005 - training/rollout_probs_diff_std:0.009 - episode/valid_action_ratio:0.999 - gaca/adv_episode_abs:0.527 - gaca/step_coverage:0.955 - gaca/adv_step_abs:0.392 - gaca/c_mean:1.000 - gaca/c_std:0.366 - gaca/lam_mean:0.500 - gaca/lam_std:0.092 - gaca/clamped:0.000 - gaca/adv_abs:0.457 - probe/rows:0.985 - probe/requests:7884.000 - probe/w_max_mean:3.011 - probe/w_std:1.069 - probe/q0_mean:0.211 - timing_s/probe:129.222 - actor/kl_loss:0.031 - actor/kl_coef:0.010 - actor/pg_loss:-0.010 - actor/pg_clipfrac:0.002 - actor/ppo_kl:0.000 - actor/pg_clipfrac_lower:0.000 - actor/grad_norm:1.620 - perf/mfu/actor:0.277 - perf/max_memory_allocated_gb:40.120 - perf/max_memory_reserved_gb:46.248 - perf/cpu_memory_used_gb:54.365 - actor/lr:0.000 - training/global_step:26.000 - training/epoch:25.000 - critic/score/mean:1.228 - critic/score/max:10.000 - critic/score/min:-0.100 - critic/rewards/mean:1.228 - critic/rewards/max:10.000 - critic/rewards/min:-0.100 - critic/advantages/mean:0.014 - critic/advantages/max:31.962 - critic/advantages/min:-4.646 - critic/returns/mean:0.014 - critic/returns/max:31.962 - critic/returns/min:-4.646 - response_length/mean:85.864 - response_length/max:512.000 - response_length/min:30.000 - response_length/clip_ratio:0.001 - prompt_length/mean:493.819 - prompt_length/max:850.000 - prompt_length/min:331.000 - prompt_length/clip_ratio:0.000 - episode/reward/mean:2.500 - episode/reward/max:10.000 - episode/reward/min:0.000 - episode/length/mean:42.750 - episode/length/max:50.000 - episode/length/min:13.000 - episode/tool_call_count/mean:0.000 - episode/success_rate:0.250 - episode/look_at_obj_in_light_success_rate:0.625 - episode/pick_clean_then_place_in_recep_success_rate:0.125 - episode/pick_and_place_success_rate:0.125 - episode/pick_heat_then_place_in_recep_success_rate:0.125 - timing_s/gen:165.705 - timing_s/reward:0.363 - timing_s/old_log_prob:22.883 - timing_s/ref:30.325 - timing_s/adv:129.462 - timing_s/update_actor:101.164 - timing_s/step:450.036 - timing_per_token_ms/adv:0.163 - timing_per_token_ms/update_actor:0.128 - timing_per_token_ms/ref:0.038 - timing_per_token_ms/gen:1.411 - perf/total_num_tokens:793007.000 - perf/time_per_step:450.036 - perf/throughput:1762.097
+[36m(TaskRunner pid=152196)[0m Training Progress:  76%|███████▋  | 26/34 [3:47:38<1:07:35, 506.98s/it]
+[36m(TaskRunner pid=152196)[0m list(reward_extra_infos_dict.keys())=[]
+[36m(TaskRunner pid=152196)[0m step:27 - global_seqlen/min:869371.000 - global_seqlen/max:869371.000 - global_seqlen/minmax_diff:0.000 - global_seqlen/balanced_min:869371.000 - global_seqlen/balanced_max:869371.000 - global_seqlen/mean:869371.000 - actor/entropy_loss:1.084 - training/rollout_probs_diff_max:0.151 - training/rollout_probs_diff_mean:0.005 - training/rollout_probs_diff_std:0.009 - episode/valid_action_ratio:0.997 - gaca/adv_episode_abs:0.223 - gaca/step_coverage:0.954 - gaca/adv_step_abs:0.151 - gaca/c_mean:1.000 - gaca/c_std:0.362 - gaca/lam_mean:0.500 - gaca/lam_std:0.090 - gaca/clamped:0.001 - gaca/adv_abs:0.184 - probe/rows:0.980 - probe/requests:9965.000 - probe/w_max_mean:3.137 - probe/w_std:1.070 - probe/q0_mean:0.169 - timing_s/probe:155.270 - actor/kl_loss:0.022 - actor/kl_coef:0.010 - actor/pg_loss:0.027 - actor/pg_clipfrac:0.002 - actor/ppo_kl:0.000 - actor/pg_clipfrac_lower:0.000 - actor/grad_norm:0.782 - perf/mfu/actor:0.270 - perf/max_memory_allocated_gb:40.120 - perf/max_memory_reserved_gb:46.248 - perf/cpu_memory_used_gb:54.641 - actor/lr:0.000 - training/global_step:27.000 - training/epoch:26.000 - critic/score/mean:0.463 - critic/score/max:10.000 - critic/score/min:-0.100 - critic/rewards/mean:0.463 - critic/rewards/max:10.000 - critic/rewards/min:-0.100 - critic/advantages/mean:-0.064 - critic/advantages/max:12.681 - critic/advantages/min:-56.420 - critic/returns/mean:-0.064 - critic/returns/max:12.681 - critic/returns/min:-56.420 - response_length/mean:94.070 - response_length/max:512.000 - response_length/min:32.000 - response_length/clip_ratio:0.001 - prompt_length/mean:457.561 - prompt_length/max:928.000 - prompt_length/min:318.000 - prompt_length/clip_ratio:0.000 - episode/reward/mean:0.625 - episode/reward/max:10.000 - episode/reward/min:0.000 - episode/length/mean:49.156 - episode/length/max:50.000 - episode/length/min:23.000 - episode/tool_call_count/mean:0.000 - episode/success_rate:0.062 - episode/pick_cool_then_place_in_recep_success_rate:0.000 - episode/pick_two_obj_and_place_success_rate:0.125 - episode/pick_heat_then_place_in_recep_success_rate:0.000 - timing_s/gen:178.447 - timing_s/reward:0.391 - timing_s/old_log_prob:25.196 - timing_s/ref:34.548 - timing_s/adv:155.536 - timing_s/update_actor:113.560 - timing_s/step:507.913 - timing_per_token_ms/adv:0.179 - timing_per_token_ms/update_actor:0.131 - timing_per_token_ms/ref:0.040 - timing_per_token_ms/gen:1.204 - perf/total_num_tokens:869371.000 - perf/time_per_step:507.913 - perf/throughput:1711.653
+[36m(TaskRunner pid=152196)[0m Training Progress:  79%|███████▉  | 27/34 [3:56:06<59:11, 507.37s/it]  
+[36m(TaskRunner pid=152196)[0m list(reward_extra_infos_dict.keys())=[]
+[36m(TaskRunner pid=152196)[0m step:28 - global_seqlen/min:831654.000 - global_seqlen/max:831654.000 - global_seqlen/minmax_diff:0.000 - global_seqlen/balanced_min:831654.000 - global_seqlen/balanced_max:831654.000 - global_seqlen/mean:831654.000 - actor/entropy_loss:1.157 - training/rollout_probs_diff_max:0.090 - training/rollout_probs_diff_mean:0.005 - training/rollout_probs_diff_std:0.008 - episode/valid_action_ratio:0.996 - gaca/adv_episode_abs:0.365 - gaca/step_coverage:0.962 - gaca/adv_step_abs:0.243 - gaca/c_mean:1.000 - gaca/c_std:0.349 - gaca/lam_mean:0.500 - gaca/lam_std:0.087 - gaca/clamped:0.000 - gaca/adv_abs:0.294 - probe/rows:0.984 - probe/requests:9931.000 - probe/w_max_mean:3.203 - probe/w_std:1.076 - probe/q0_mean:0.163 - timing_s/probe:159.126 - actor/kl_loss:0.017 - actor/kl_coef:0.010 - actor/pg_loss:0.005 - actor/pg_clipfrac:0.002 - actor/ppo_kl:0.000 - actor/pg_clipfrac_lower:0.000 - actor/grad_norm:1.333 - perf/mfu/actor:0.276 - perf/max_memory_allocated_gb:40.120 - perf/max_memory_reserved_gb:46.248 - perf/cpu_memory_used_gb:54.510 - actor/lr:0.000 - training/global_step:28.000 - training/epoch:27.000 - critic/score/mean:0.693 - critic/score/max:10.000 - critic/score/min:-0.100 - critic/rewards/mean:0.693 - critic/rewards/max:10.000 - critic/rewards/min:-0.100 - critic/advantages/mean:-0.019 - critic/advantages/max:16.953 - critic/advantages/min:-62.766 - critic/returns/mean:-0.019 - critic/returns/max:16.953 - critic/returns/min:-62.766 - response_length/mean:102.125 - response_length/max:447.000 - response_length/min:30.000 - response_length/clip_ratio:0.000 - prompt_length/mean:469.066 - prompt_length/max:892.000 - prompt_length/min:321.000 - prompt_length/clip_ratio:0.000 - episode/reward/mean:1.562 - episode/reward/max:10.000 - episode/reward/min:0.000 - episode/length/mean:45.344 - episode/length/max:50.000 - episode/length/min:7.000 - episode/tool_call_count/mean:0.000 - episode/success_rate:0.156 - episode/pick_heat_then_place_in_recep_success_rate:0.000 - episode/pick_clean_then_place_in_recep_success_rate:0.000 - episode/pick_and_place_success_rate:0.312 - timing_s/gen:184.936 - timing_s/reward:0.364 - timing_s/old_log_prob:23.774 - timing_s/ref:32.111 - timing_s/adv:159.369 - timing_s/update_actor:106.524 - timing_s/step:507.310 - timing_per_token_ms/adv:0.192 - timing_per_token_ms/update_actor:0.128 - timing_per_token_ms/ref:0.039 - timing_per_token_ms/gen:1.244 - perf/total_num_tokens:831654.000 - perf/time_per_step:507.310 - perf/throughput:1639.341
+[36m(TaskRunner pid=152196)[0m Training Progress:  82%|████████▏ | 28/34 [4:04:34<50:44, 507.46s/it]
+[36m(TaskRunner pid=152196)[0m list(reward_extra_infos_dict.keys())=[]
+[36m(TaskRunner pid=152196)[0m step:29 - global_seqlen/min:648170.000 - global_seqlen/max:648170.000 - global_seqlen/minmax_diff:0.000 - global_seqlen/balanced_min:648170.000 - global_seqlen/balanced_max:648170.000 - global_seqlen/mean:648170.000 - actor/entropy_loss:1.059 - training/rollout_probs_diff_max:0.151 - training/rollout_probs_diff_mean:0.005 - training/rollout_probs_diff_std:0.008 - episode/valid_action_ratio:1.000 - gaca/adv_episode_abs:0.417 - gaca/step_coverage:0.970 - gaca/adv_step_abs:0.487 - gaca/c_mean:1.000 - gaca/c_std:0.359 - gaca/lam_mean:0.500 - gaca/lam_std:0.090 - gaca/clamped:0.000 - gaca/adv_abs:0.427 - probe/rows:0.972 - probe/requests:7451.000 - probe/w_max_mean:3.144 - probe/w_std:1.061 - probe/q0_mean:0.203 - timing_s/probe:117.285 - actor/kl_loss:0.022 - actor/kl_coef:0.010 - actor/pg_loss:0.003 - actor/pg_clipfrac:0.001 - actor/ppo_kl:0.000 - actor/pg_clipfrac_lower:0.000 - actor/grad_norm:0.944 - perf/mfu/actor:0.272 - perf/max_memory_allocated_gb:40.120 - perf/max_memory_reserved_gb:46.248 - perf/cpu_memory_used_gb:54.443 - actor/lr:0.000 - training/global_step:29.000 - training/epoch:28.000 - critic/score/mean:3.898 - critic/score/max:10.000 - critic/score/min:0.000 - critic/rewards/mean:3.898 - critic/rewards/max:10.000 - critic/rewards/min:0.000 - critic/advantages/mean:-0.009 - critic/advantages/max:12.040 - critic/advantages/min:-7.676 - critic/returns/mean:-0.009 - critic/returns/max:12.040 - critic/returns/min:-7.676 - response_length/mean:98.078 - response_length/max:483.000 - response_length/min:31.000 - response_length/clip_ratio:0.000 - prompt_length/mean:464.569 - prompt_length/max:890.000 - prompt_length/min:368.000 - prompt_length/clip_ratio:0.000 - episode/reward/mean:5.625 - episode/reward/max:10.000 - episode/reward/min:0.000 - episode/length/mean:35.906 - episode/length/max:50.000 - episode/length/min:9.000 - episode/tool_call_count/mean:0.000 - episode/success_rate:0.562 - episode/pick_clean_then_place_in_recep_success_rate:0.375 - episode/look_at_obj_in_light_success_rate:0.938 - episode/pick_heat_then_place_in_recep_success_rate:0.000 - timing_s/gen:169.689 - timing_s/reward:0.296 - timing_s/old_log_prob:18.616 - timing_s/ref:25.315 - timing_s/adv:117.481 - timing_s/update_actor:84.011 - timing_s/step:415.600 - timing_per_token_ms/adv:0.181 - timing_per_token_ms/update_actor:0.130 - timing_per_token_ms/ref:0.039 - timing_per_token_ms/gen:1.502 - perf/total_num_tokens:648170.000 - perf/time_per_step:415.600 - perf/throughput:1559.602
+[36m(TaskRunner pid=152196)[0m Training Progress:  85%|████████▌ | 29/34 [4:11:30<39:59, 480.00s/it]
+[36m(TaskRunner pid=152196)[0m list(reward_extra_infos_dict.keys())=[]
+[36m(TaskRunner pid=152196)[0m test_gen_batch meta info: {'eos_token_id': 151645, 'pad_token_id': 151643, 'recompute_log_prob': False, 'do_sample': True, 'validate': True}
+[36m(TaskRunner pid=152196)[0m validation generation end
+[36m(TaskRunner pid=152196)[0m [text][prompt] <|im_start|>system
+[36m(TaskRunner pid=152196)[0m You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
+[36m(TaskRunner pid=152196)[0m <|im_start|>user
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m You are an expert agent operating in the ALFRED Embodied Environment. Your task is to: put a cool pot in diningtable.
+[36m(TaskRunner pid=152196)[0m Prior to this step, you have already taken 4 step(s). Below are the most recent 2 observations and the corresponding actions you took: [Observation 3: 'You arrive at diningtable 1. On the diningtable 1, you see nothing.', Action 3: 'go to coffeemachine 1']
+[36m(TaskRunner pid=152196)[0m [Observation 4: 'You arrive at coffeemachine 1. On the coffeemachine 1, you see nothing.', Action 4: 'examine coffeemachine 1']
+[36m(TaskRunner pid=152196)[0m You are now at step 5 and your current observation is: On the coffeemachine 1, you see nothing.
+[36m(TaskRunner pid=152196)[0m Your admissible actions of the current situation are: ['examine coffeemachine 1'
+[36m(TaskRunner pid=152196)[0m  'go to cabinet 1'
+[36m(TaskRunner pid=152196)[0m  'go to cabinet 2'
+[36m(TaskRunner pid=152196)[0m  'go to cabinet 3'
+[36m(TaskRunner pid=152196)[0m  'go to cabinet 4'
+[36m(TaskRunner pid=152196)[0m  'go to countertop 1'
+[36m(TaskRunner pid=152196)[0m  'go to diningtable 1'
+[36m(TaskRunner pid=152196)[0m  'go to diningtable 2'
+[36m(TaskRunner pid=152196)[0m  'go to diningtable 3'
+[36m(TaskRunner pid=152196)[0m  'go to drawer 1'
+[36m(TaskRunner pid=152196)[0m  'go to fridge 1'
+[36m(TaskRunner pid=152196)[0m  'go to garbagecan 1'
+[36m(TaskRunner pid=152196)[0m  'go to microwave 1'
+[36m(TaskRunner pid=152196)[0m  'go to sidetable 1'
+[36m(TaskRunner pid=152196)[0m  'go to sinkbasin 1'
+[36m(TaskRunner pid=152196)[0m  'go to stoveburner 1'
+[36m(TaskRunner pid=152196)[0m  'go to stoveburner 2'
+[36m(TaskRunner pid=152196)[0m  'go to stoveburner 3'
+[36m(TaskRunner pid=152196)[0m  'go to stoveburner 4'
+[36m(TaskRunner pid=152196)[0m  'go to toaster 1'
+[36m(TaskRunner pid=152196)[0m  'inventory'
+[36m(TaskRunner pid=152196)[0m  'look'].
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m Now it's your turn to take an action.
+[36m(TaskRunner pid=152196)[0m You should first reason step-by-step about the current situation. This reasoning process MUST be enclosed within <think> </think> tags. 
+[36m(TaskRunner pid=152196)[0m Once you've finished your reasoning, you should choose an admissible action for current step and present it within <action> </action> tags.
+[36m(TaskRunner pid=152196)[0m <|im_end|>
+[36m(TaskRunner pid=152196)[0m <|im_start|>assistant
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m [text][response] <think>
+[36m(TaskRunner pid=152196)[0m The task is to put a cool pot on the dining table. I have already visited the coffeemachine 1, but there is nothing on it. I need to find a pot and put it on the dining table.
+[36m(TaskRunner pid=152196)[0m </think>
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m <action>go to cabinet 1</action><|im_end|>
+[36m(TaskRunner pid=152196)[0m [text][score] 0.0
+[36m(TaskRunner pid=152196)[0m step:30 - global_seqlen/min:1165845.000 - global_seqlen/max:1165845.000 - global_seqlen/minmax_diff:0.000 - global_seqlen/balanced_min:1165845.000 - global_seqlen/balanced_max:1165845.000 - global_seqlen/mean:1165845.000 - actor/entropy_loss:1.087 - training/rollout_probs_diff_max:0.124 - training/rollout_probs_diff_mean:0.005 - training/rollout_probs_diff_std:0.009 - episode/valid_action_ratio:0.994 - gaca/adv_episode_abs:0.422 - gaca/step_coverage:0.949 - gaca/adv_step_abs:0.284 - gaca/c_mean:1.000 - gaca/c_std:0.347 - gaca/lam_mean:0.500 - gaca/lam_std:0.087 - gaca/clamped:0.000 - gaca/adv_abs:0.352 - probe/rows:0.977 - probe/requests:9954.000 - probe/w_max_mean:3.146 - probe/w_std:1.075 - probe/q0_mean:0.174 - timing_s/probe:203.581 - actor/kl_loss:0.026 - actor/kl_coef:0.010 - actor/pg_loss:0.040 - actor/pg_clipfrac:0.004 - actor/ppo_kl:0.000 - actor/pg_clipfrac_lower:0.000 - actor/grad_norm:1.184 - perf/mfu/actor:0.302 - perf/max_memory_allocated_gb:40.120 - perf/max_memory_reserved_gb:46.248 - perf/cpu_memory_used_gb:54.742 - actor/lr:0.000 - val/text/test_score:0.637 - val/text/tool_call_count/mean:0.000 - val/success_rate:0.148 - val/pick_cool_then_place_in_recep_success_rate:0.125 - val/pick_clean_then_place_in_recep_success_rate:0.139 - val/pick_two_obj_and_place_success_rate:0.045 - val/look_at_obj_in_light_success_rate:0.200 - val/pick_and_place_success_rate:0.241 - val/pick_heat_then_place_in_recep_success_rate:0.133 - training/global_step:30.000 - training/epoch:29.000 - critic/score/mean:0.726 - critic/score/max:10.000 - critic/score/min:-0.100 - critic/rewards/mean:0.726 - critic/rewards/max:10.000 - critic/rewards/min:-0.100 - critic/advantages/mean:-0.082 - critic/advantages/max:17.723 - critic/advantages/min:-35.249 - critic/returns/mean:-0.082 - critic/returns/max:17.723 - critic/returns/min:-35.249 - response_length/mean:94.997 - response_length/max:512.000 - response_length/min:22.000 - response_length/clip_ratio:0.001 - prompt_length/mean:648.526 - prompt_length/max:1169.000 - prompt_length/min:504.000 - prompt_length/clip_ratio:0.000 - episode/reward/mean:0.938 - episode/reward/max:10.000 - episode/reward/min:0.000 - episode/length/mean:48.875 - episode/length/max:50.000 - episode/length/min:27.000 - episode/tool_call_count/mean:0.000 - episode/success_rate:0.094 - episode/pick_clean_then_place_in_recep_success_rate:0.083 - episode/pick_cool_then_place_in_recep_success_rate:0.125 - timing_s/gen:228.459 - timing_s/reward:0.464 - timing_s/old_log_prob:32.235 - timing_s/ref:36.724 - timing_s/adv:203.847 - timing_s/update_actor:137.179 - timing_s/testing:333.320 - timing_s/step:972.460 - timing_per_token_ms/adv:0.175 - timing_per_token_ms/update_actor:0.118 - timing_per_token_ms/ref:0.031 - timing_per_token_ms/gen:1.534 - perf/total_num_tokens:1165845.000 - perf/time_per_step:972.460 - perf/throughput:1198.862
+[36m(TaskRunner pid=152196)[0m Training Progress:  88%|████████▊ | 30/34 [4:27:42<41:51, 627.84s/it]
+[36m(TaskRunner pid=152196)[0m list(reward_extra_infos_dict.keys())=[]
+[36m(TaskRunner pid=152196)[0m step:31 - global_seqlen/min:973142.000 - global_seqlen/max:973142.000 - global_seqlen/minmax_diff:0.000 - global_seqlen/balanced_min:973142.000 - global_seqlen/balanced_max:973142.000 - global_seqlen/mean:973142.000 - actor/entropy_loss:1.126 - training/rollout_probs_diff_max:0.146 - training/rollout_probs_diff_mean:0.005 - training/rollout_probs_diff_std:0.008 - episode/valid_action_ratio:0.998 - gaca/adv_episode_abs:0.431 - gaca/step_coverage:0.971 - gaca/adv_step_abs:0.347 - gaca/c_mean:1.000 - gaca/c_std:0.333 - gaca/lam_mean:0.500 - gaca/lam_std:0.083 - gaca/clamped:0.000 - gaca/adv_abs:0.371 - probe/rows:0.971 - probe/requests:9351.000 - probe/w_max_mean:3.195 - probe/w_std:1.075 - probe/q0_mean:0.153 - timing_s/probe:173.819 - actor/kl_loss:0.019 - actor/kl_coef:0.010 - actor/pg_loss:-0.004 - actor/pg_clipfrac:0.002 - actor/ppo_kl:0.000 - actor/pg_clipfrac_lower:0.000 - actor/grad_norm:0.963 - perf/mfu/actor:0.293 - perf/max_memory_allocated_gb:40.120 - perf/max_memory_reserved_gb:46.248 - perf/cpu_memory_used_gb:54.853 - actor/lr:0.000 - training/global_step:31.000 - training/epoch:30.000 - critic/score/mean:1.993 - critic/score/max:10.000 - critic/score/min:-0.100 - critic/rewards/mean:1.993 - critic/rewards/max:10.000 - critic/rewards/min:-0.100 - critic/advantages/mean:0.005 - critic/advantages/max:10.162 - critic/advantages/min:-23.493 - critic/returns/mean:0.005 - critic/returns/max:10.162 - critic/returns/min:-23.493 - response_length/mean:97.618 - response_length/max:512.000 - response_length/min:30.000 - response_length/clip_ratio:0.001 - prompt_length/mean:578.175 - prompt_length/max:1091.000 - prompt_length/min:361.000 - prompt_length/clip_ratio:0.000 - episode/reward/mean:2.812 - episode/reward/max:10.000 - episode/reward/min:0.000 - episode/length/mean:44.906 - episode/length/max:50.000 - episode/length/min:6.000 - episode/tool_call_count/mean:0.000 - episode/success_rate:0.281 - episode/pick_and_place_success_rate:0.750 - episode/pick_clean_then_place_in_recep_success_rate:0.000 - episode/pick_heat_then_place_in_recep_success_rate:0.375 - episode/pick_cool_then_place_in_recep_success_rate:0.000 - timing_s/gen:219.284 - timing_s/reward:0.396 - timing_s/old_log_prob:27.169 - timing_s/ref:33.108 - timing_s/adv:174.054 - timing_s/update_actor:118.105 - timing_s/step:572.346 - timing_per_token_ms/adv:0.179 - timing_per_token_ms/update_actor:0.121 - timing_per_token_ms/ref:0.034 - timing_per_token_ms/gen:1.560 - perf/total_num_tokens:973142.000 - perf/time_per_step:572.346 - perf/throughput:1700.268
+[36m(TaskRunner pid=152196)[0m Training Progress:  91%|█████████ | 31/34 [4:37:15<30:33, 611.31s/it]
+[36m(TaskRunner pid=152196)[0m list(reward_extra_infos_dict.keys())=[]
+[36m(TaskRunner pid=152196)[0m step:32 - global_seqlen/min:1071682.000 - global_seqlen/max:1071682.000 - global_seqlen/minmax_diff:0.000 - global_seqlen/balanced_min:1071682.000 - global_seqlen/balanced_max:1071682.000 - global_seqlen/mean:1071682.000 - actor/entropy_loss:1.137 - training/rollout_probs_diff_max:0.267 - training/rollout_probs_diff_mean:0.005 - training/rollout_probs_diff_std:0.009 - episode/valid_action_ratio:0.997 - gaca/adv_episode_abs:0.211 - gaca/step_coverage:0.957 - gaca/adv_step_abs:0.138 - gaca/c_mean:1.000 - gaca/c_std:0.347 - gaca/lam_mean:0.500 - gaca/lam_std:0.086 - gaca/clamped:0.001 - gaca/adv_abs:0.172 - probe/rows:0.973 - probe/requests:10857.000 - probe/w_max_mean:3.296 - probe/w_std:1.093 - probe/q0_mean:0.129 - timing_s/probe:201.996 - actor/kl_loss:0.015 - actor/kl_coef:0.010 - actor/pg_loss:-0.001 - actor/pg_clipfrac:0.002 - actor/ppo_kl:0.001 - actor/pg_clipfrac_lower:0.000 - actor/grad_norm:1.246 - perf/mfu/actor:0.295 - perf/max_memory_allocated_gb:40.120 - perf/max_memory_reserved_gb:46.248 - perf/cpu_memory_used_gb:54.964 - actor/lr:0.000 - training/global_step:32.000 - training/epoch:31.000 - critic/score/mean:0.232 - critic/score/max:10.000 - critic/score/min:-0.100 - critic/rewards/mean:0.232 - critic/rewards/max:10.000 - critic/rewards/min:-0.100 - critic/advantages/mean:0.003 - critic/advantages/max:15.614 - critic/advantages/min:-37.587 - critic/returns/mean:0.003 - critic/returns/max:15.614 - critic/returns/min:-37.587 - response_length/mean:102.777 - response_length/max:404.000 - response_length/min:24.000 - response_length/clip_ratio:0.000 - prompt_length/mean:570.390 - prompt_length/max:1183.000 - prompt_length/min:406.000 - prompt_length/clip_ratio:0.000 - episode/reward/mean:0.312 - episode/reward/max:10.000 - episode/reward/min:0.000 - episode/length/mean:49.594 - episode/length/max:50.000 - episode/length/min:37.000 - episode/tool_call_count/mean:0.000 - episode/success_rate:0.031 - episode/pick_clean_then_place_in_recep_success_rate:0.042 - episode/pick_cool_then_place_in_recep_success_rate:0.000 - timing_s/gen:202.934 - timing_s/reward:0.445 - timing_s/old_log_prob:30.064 - timing_s/ref:36.431 - timing_s/adv:202.267 - timing_s/update_actor:129.009 - timing_s/step:601.403 - timing_per_token_ms/adv:0.189 - timing_per_token_ms/update_actor:0.120 - timing_per_token_ms/ref:0.034 - timing_per_token_ms/gen:1.240 - perf/total_num_tokens:1071682.000 - perf/time_per_step:601.403 - perf/throughput:1781.971
+[36m(TaskRunner pid=152196)[0m Training Progress:  94%|█████████▍| 32/34 [4:47:17<20:16, 608.44s/it]
+[36m(TaskRunner pid=152196)[0m list(reward_extra_infos_dict.keys())=[]
+[36m(TaskRunner pid=152196)[0m step:33 - global_seqlen/min:932162.000 - global_seqlen/max:932162.000 - global_seqlen/minmax_diff:0.000 - global_seqlen/balanced_min:932162.000 - global_seqlen/balanced_max:932162.000 - global_seqlen/mean:932162.000 - actor/entropy_loss:1.217 - training/rollout_probs_diff_max:0.156 - training/rollout_probs_diff_mean:0.005 - training/rollout_probs_diff_std:0.009 - episode/valid_action_ratio:0.999 - gaca/adv_episode_abs:0.345 - gaca/step_coverage:0.954 - gaca/adv_step_abs:0.255 - gaca/c_mean:1.000 - gaca/c_std:0.333 - gaca/lam_mean:0.500 - gaca/lam_std:0.083 - gaca/clamped:0.000 - gaca/adv_abs:0.299 - probe/rows:0.973 - probe/requests:10741.000 - probe/w_max_mean:3.317 - probe/w_std:1.086 - probe/q0_mean:0.123 - timing_s/probe:184.910 - actor/kl_loss:0.058 - actor/kl_coef:0.010 - actor/pg_loss:-0.010 - actor/pg_clipfrac:0.002 - actor/ppo_kl:0.000 - actor/pg_clipfrac_lower:0.000 - actor/grad_norm:1.123 - perf/mfu/actor:0.282 - perf/max_memory_allocated_gb:40.120 - perf/max_memory_reserved_gb:46.248 - perf/cpu_memory_used_gb:55.106 - actor/lr:0.000 - training/global_step:33.000 - training/epoch:32.000 - critic/score/mean:0.658 - critic/score/max:10.000 - critic/score/min:-0.100 - critic/rewards/mean:0.658 - critic/rewards/max:10.000 - critic/rewards/min:-0.100 - critic/advantages/mean:0.017 - critic/advantages/max:17.968 - critic/advantages/min:-35.774 - critic/returns/mean:0.017 - critic/returns/max:17.968 - critic/returns/min:-35.774 - response_length/mean:107.666 - response_length/max:488.000 - response_length/min:22.000 - response_length/clip_ratio:0.000 - prompt_length/mean:512.123 - prompt_length/max:836.000 - prompt_length/min:403.000 - prompt_length/clip_ratio:0.000 - episode/reward/mean:1.250 - episode/reward/max:10.000 - episode/reward/min:0.000 - episode/length/mean:46.812 - episode/length/max:50.000 - episode/length/min:4.000 - episode/tool_call_count/mean:0.000 - episode/success_rate:0.125 - episode/pick_clean_then_place_in_recep_success_rate:0.125 - episode/pick_and_place_success_rate:0.375 - episode/pick_cool_then_place_in_recep_success_rate:0.000 - timing_s/gen:191.693 - timing_s/reward:0.396 - timing_s/old_log_prob:26.538 - timing_s/ref:33.869 - timing_s/adv:185.173 - timing_s/update_actor:116.790 - timing_s/step:554.694 - timing_per_token_ms/adv:0.199 - timing_per_token_ms/update_actor:0.125 - timing_per_token_ms/ref:0.036 - timing_per_token_ms/gen:1.184 - perf/total_num_tokens:932162.000 - perf/time_per_step:554.694 - perf/throughput:1680.497
+[36m(TaskRunner pid=152196)[0m Training Progress:  97%|█████████▋| 33/34 [4:56:32<09:52, 592.42s/it]
+[36m(TaskRunner pid=152196)[0m list(reward_extra_infos_dict.keys())=[]
+[36m(TaskRunner pid=152196)[0m test_gen_batch meta info: {'eos_token_id': 151645, 'pad_token_id': 151643, 'recompute_log_prob': False, 'do_sample': True, 'validate': True}
+[36m(TaskRunner pid=152196)[0m validation generation end
+[36m(TaskRunner pid=152196)[0m [text][prompt] <|im_start|>system
+[36m(TaskRunner pid=152196)[0m You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
+[36m(TaskRunner pid=152196)[0m <|im_start|>user
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m You are an expert agent operating in the ALFRED Embodied Environment. Your task is to: put two creditcard in safe.
+[36m(TaskRunner pid=152196)[0m Prior to this step, you have already taken 9 step(s). Below are the most recent 2 observations and the corresponding actions you took: [Observation 8: 'There's nothing special about creditcard 1.', Action 8: 'examine creditcard 1']
+[36m(TaskRunner pid=152196)[0m [Observation 9: 'There's nothing special about creditcard 1.', Action 9: 'go to safe 1']
+[36m(TaskRunner pid=152196)[0m You are now at step 10 and your current observation is: Nothing happens.
+[36m(TaskRunner pid=152196)[0m Your admissible actions of the current situation are: ['examine creditcard 1'
+[36m(TaskRunner pid=152196)[0m  'examine safe 1'
+[36m(TaskRunner pid=152196)[0m  'go to bed 1'
+[36m(TaskRunner pid=152196)[0m  'go to bed 2'
+[36m(TaskRunner pid=152196)[0m  'go to desk 1'
+[36m(TaskRunner pid=152196)[0m  'go to drawer 1'
+[36m(TaskRunner pid=152196)[0m  'go to drawer 10'
+[36m(TaskRunner pid=152196)[0m  'go to drawer 11'
+[36m(TaskRunner pid=152196)[0m  'go to drawer 2'
+[36m(TaskRunner pid=152196)[0m  'go to drawer 3'
+[36m(TaskRunner pid=152196)[0m  'go to drawer 4'
+[36m(TaskRunner pid=152196)[0m  'go to drawer 5'
+[36m(TaskRunner pid=152196)[0m  'go to drawer 6'
+[36m(TaskRunner pid=152196)[0m  'go to drawer 7'
+[36m(TaskRunner pid=152196)[0m  'go to drawer 8'
+[36m(TaskRunner pid=152196)[0m  'go to drawer 9'
+[36m(TaskRunner pid=152196)[0m  'go to dresser 1'
+[36m(TaskRunner pid=152196)[0m  'go to garbagecan 1'
+[36m(TaskRunner pid=152196)[0m  'go to sidetable 1'
+[36m(TaskRunner pid=152196)[0m  'go to sidetable 2'
+[36m(TaskRunner pid=152196)[0m  'inventory'
+[36m(TaskRunner pid=152196)[0m  'look'
+[36m(TaskRunner pid=152196)[0m  'open safe 1'].
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m Now it's your turn to take an action.
+[36m(TaskRunner pid=152196)[0m You should first reason step-by-step about the current situation. This reasoning process MUST be enclosed within <think> </think> tags. 
+[36m(TaskRunner pid=152196)[0m Once you've finished your reasoning, you should choose an admissible action for current step and present it within <action> </action> tags.
+[36m(TaskRunner pid=152196)[0m <|im_end|>
+[36m(TaskRunner pid=152196)[0m <|im_start|>assistant
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m [text][response] <think> 
+[36m(TaskRunner pid=152196)[0m In the previous steps, you examined creditcard 1 and went to safe 1. However, nothing happened in the current observation. This suggests that the creditcard may not be inside the safe or that there is no safe in this environment. Additionally, the observation "Nothing happens" implies that there might be an issue with the action you are trying to take. 
+[36m(TaskRunner pid=152196)[0m </think> 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m <action>go to drawer 1</action><|im_end|>
+[36m(TaskRunner pid=152196)[0m [text][score] 0.0
+[36m(TaskRunner pid=152196)[0m step:34 - global_seqlen/min:965620.000 - global_seqlen/max:965620.000 - global_seqlen/minmax_diff:0.000 - global_seqlen/balanced_min:965620.000 - global_seqlen/balanced_max:965620.000 - global_seqlen/mean:965620.000 - actor/entropy_loss:1.250 - training/rollout_probs_diff_max:0.218 - training/rollout_probs_diff_mean:0.005 - training/rollout_probs_diff_std:0.009 - episode/valid_action_ratio:0.996 - gaca/adv_episode_abs:0.349 - gaca/step_coverage:0.956 - gaca/adv_step_abs:0.235 - gaca/c_mean:1.000 - gaca/c_std:0.327 - gaca/lam_mean:0.500 - gaca/lam_std:0.082 - gaca/clamped:0.000 - gaca/adv_abs:0.290 - probe/rows:0.972 - probe/requests:11907.000 - probe/w_max_mean:3.349 - probe/w_std:1.081 - probe/q0_mean:0.140 - timing_s/probe:200.718 - actor/kl_loss:0.052 - actor/kl_coef:0.010 - actor/pg_loss:0.001 - actor/pg_clipfrac:0.002 - actor/ppo_kl:0.000 - actor/pg_clipfrac_lower:0.000 - actor/grad_norm:1.134 - perf/mfu/actor:0.285 - perf/max_memory_allocated_gb:40.120 - perf/max_memory_reserved_gb:46.248 - perf/cpu_memory_used_gb:52.459 - actor/lr:0.000 - val/text/test_score:1.096 - val/text/tool_call_count/mean:0.000 - val/success_rate:0.203 - val/pick_two_obj_and_place_success_rate:0.037 - val/pick_and_place_success_rate:0.275 - val/pick_clean_then_place_in_recep_success_rate:0.261 - val/look_at_obj_in_light_success_rate:0.444 - val/pick_heat_then_place_in_recep_success_rate:0.000 - val/pick_cool_then_place_in_recep_success_rate:0.222 - training/global_step:34.000 - training/epoch:33.000 - critic/score/mean:0.469 - critic/score/max:10.000 - critic/score/min:-0.100 - critic/rewards/mean:0.469 - critic/rewards/max:10.000 - critic/rewards/min:-0.100 - critic/advantages/mean:-0.009 - critic/advantages/max:17.160 - critic/advantages/min:-15.118 - critic/returns/mean:-0.009 - critic/returns/max:17.160 - critic/returns/min:-15.118 - response_length/mean:113.869 - response_length/max:481.000 - response_length/min:31.000 - response_length/clip_ratio:0.000 - prompt_length/mean:498.834 - prompt_length/max:933.000 - prompt_length/min:375.000 - prompt_length/clip_ratio:0.000 - episode/reward/mean:0.625 - episode/reward/max:10.000 - episode/reward/min:0.000 - episode/length/mean:49.188 - episode/length/max:50.000 - episode/length/min:33.000 - episode/tool_call_count/mean:0.000 - episode/success_rate:0.062 - episode/pick_clean_then_place_in_recep_success_rate:0.062 - episode/pick_two_obj_and_place_success_rate:0.000 - episode/pick_and_place_success_rate:0.125 - timing_s/gen:208.797 - timing_s/reward:0.446 - timing_s/old_log_prob:27.518 - timing_s/ref:35.348 - timing_s/adv:200.977 - timing_s/update_actor:119.905 - timing_s/testing:308.851 - timing_s/step:902.080 - timing_per_token_ms/adv:0.208 - timing_per_token_ms/update_actor:0.124 - timing_per_token_ms/ref:0.037 - timing_per_token_ms/gen:1.163 - perf/total_num_tokens:965620.000 - perf/time_per_step:902.080 - perf/throughput:1070.437
+[36m(TaskRunner pid=152196)[0m Training Progress: 100%|██████████| 34/34 [5:11:34<00:00, 685.43s/it]
+[36m(WorkerDict pid=153629)[0m /workspace/verl-agent/.venv/lib/python3.12/site-packages/torch/distributed/fsdp/fully_sharded_data_parallel.py:678: FutureWarning: FSDP.state_dict_type() and FSDP.set_state_dict_type() are being deprecated. Please use APIs, get_state_dict() and set_state_dict(), which can support different parallelisms, FSDP1, FSDP2, DDP. API doc: https://pytorch.org/docs/stable/distributed.checkpoint.html#torch.distributed.checkpoint.state_dict.get_state_dict .Tutorial: https://pytorch.org/tutorials/recipes/distributed_checkpoint_recipe.html .
+[36m(WorkerDict pid=153629)[0m   warnings.warn(
+[36m(TaskRunner pid=152196)[0m Processing Files (0 / 0)      : |          |  0.00B /  0.00B            
+[36m(TaskRunner pid=152196)[0m New Data Upload               : |          |  0.00B /  0.00B            [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[AProcessing Files (1 / 2)      :   0%|          | 11.4MB / 3.57GB,   ???B/s  
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:   0%|          |  602kB / 3.55GB            [A[A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:   0%|          |  602kB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :   0%|          | 12.0MB / 3.57GB, 1.11MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :   0%|          |  602kB /  134MB, 58.4kB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:   0%|          | 7.83MB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :   1%|          | 19.3MB / 3.57GB, 1.78MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :   4%|▍         | 7.83MB /  201MB,  753kB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:   0%|          | 13.9MB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :   1%|          | 25.3MB / 3.57GB, 2.31MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :   7%|▋         | 13.9MB /  201MB, 1.31MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:   1%|          | 18.7MB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :   1%|          | 30.1MB / 3.57GB, 2.72MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :   9%|▉         | 18.7MB /  201MB, 1.74MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:   1%|          | 23.5MB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :   1%|          | 34.9MB / 3.57GB, 3.11MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  12%|█▏        | 23.5MB /  201MB, 2.15MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:   1%|          | 31.3MB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :   1%|          | 42.7MB / 3.57GB, 3.77MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  16%|█▌        | 31.3MB /  201MB, 2.84MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:   1%|          | 40.4MB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :   1%|▏         | 51.8MB / 3.57GB, 4.52MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  20%|██        | 40.4MB /  201MB, 3.61MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:   1%|▏         | 46.4MB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :   2%|▏         | 57.8MB / 3.57GB, 4.98MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  23%|██▎       | 46.4MB /  201MB, 4.09MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:   1%|▏         | 51.8MB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :   2%|▏         | 63.2MB / 3.57GB, 5.36MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  26%|██▌       | 51.8MB /  201MB, 4.49MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:   2%|▏         | 57.2MB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :   2%|▏         | 68.6MB / 3.57GB, 5.74MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  28%|██▊       | 57.2MB /  201MB, 4.89MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:   2%|▏         | 63.2MB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :   2%|▏         | 74.7MB / 3.57GB, 6.15MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  31%|███▏      | 63.2MB /  201MB, 5.32MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:   2%|▏         | 69.3MB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :   2%|▏         | 80.7MB / 3.57GB, 6.56MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  34%|███▍      | 69.3MB /  201MB, 5.75MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:   2%|▏         | 73.1MB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :   2%|▏         | 84.5MB / 3.57GB, 6.76MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  36%|███▋      | 73.1MB /  201MB, 5.97MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:   2%|▏         | 73.7MB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :   2%|▏         | 85.1MB / 3.57GB, 6.66MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  37%|███▋      | 73.7MB /  201MB, 5.89MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:   2%|▏         | 74.3MB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :   2%|▏         | 85.7MB / 3.57GB, 6.57MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  37%|███▋      | 74.3MB /  201MB, 5.81MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:   2%|▏         | 74.9MB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :   2%|▏         | 86.3MB / 3.57GB, 6.48MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  37%|███▋      | 74.9MB /  201MB, 5.73MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:   2%|▏         | 75.5MB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :   2%|▏         | 86.9MB / 3.57GB, 6.39MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  28%|██▊       | 75.5MB /  268MB, 5.66MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:   2%|▏         | 79.1MB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :   3%|▎         | 90.6MB / 3.57GB, 6.56MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  24%|██▎       | 79.1MB /  335MB, 5.85MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:   2%|▏         | 88.8MB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :   3%|▎         |  100MB / 3.57GB, 7.26MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  22%|██▏       | 88.8MB /  402MB, 6.57MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:   3%|▎         |  109MB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :   3%|▎         |  120MB / 3.57GB, 8.83MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  27%|██▋       |  109MB /  402MB, 8.15MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:   5%|▌         |  193MB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :   6%|▌         |  204MB / 3.57GB, 15.9MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  31%|███▏      |  126MB /  402MB, 9.48MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:   9%|▊         |  305MB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :   9%|▉         |  316MB / 3.57GB, 25.2MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  38%|███▊      |  154MB /  402MB, 11.7MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  10%|█         |  365MB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  11%|█         |  377MB / 3.57GB, 29.9MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  39%|███▉      |  183MB /  470MB, 13.9MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  12%|█▏        |  430MB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  12%|█▏        |  442MB / 3.57GB, 34.8MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  40%|████      |  215MB /  537MB, 16.4MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  13%|█▎        |  469MB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  13%|█▎        |  480MB / 3.57GB, 37.4MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  44%|████▎     |  235MB /  537MB, 17.7MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  15%|█▍        |  526MB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  15%|█▌        |  537MB / 3.57GB, 41.4MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  44%|████▍     |  266MB /  604MB, 20.0MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  16%|█▌        |  567MB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  16%|█▌        |  578MB / 3.57GB, 44.0MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  48%|████▊     |  291MB /  604MB, 21.6MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  17%|█▋        |  599MB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  17%|█▋        |  611MB / 3.57GB, 45.8MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  47%|████▋     |  315MB /  671MB, 23.2MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  18%|█▊        |  644MB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  18%|█▊        |  655MB / 3.57GB, 48.6MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  51%|█████▏    |  345MB /  671MB, 25.2MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  19%|█▉        |  667MB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  19%|█▉        |  678MB / 3.57GB, 49.4MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  49%|████▉     |  361MB /  738MB, 26.1MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  20%|█▉        |  694MB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  20%|█▉        |  706MB / 3.57GB, 50.7MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  52%|█████▏    |  382MB /  738MB, 27.3MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  21%|██        |  730MB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  21%|██        |  741MB / 3.57GB, 52.6MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  56%|█████▌    |  411MB /  738MB, 29.1MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  21%|██▏       |  759MB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  22%|██▏       |  771MB / 3.57GB, 53.9MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  54%|█████▍    |  433MB /  805MB, 30.3MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  22%|██▏       |  792MB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  23%|██▎       |  804MB / 3.57GB, 55.5MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  53%|█████▎    |  458MB /  872MB, 31.7MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  23%|██▎       |  814MB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  23%|██▎       |  825MB / 3.57GB, 56.2MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  54%|█████▍    |  475MB /  872MB, 32.5MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  24%|██▍       |  854MB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  24%|██▍       |  865MB / 3.57GB, 58.3MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  54%|█████▍    |  508MB /  939MB, 34.5MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  25%|██▍       |  876MB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  25%|██▍       |  888MB / 3.57GB, 59.0MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  52%|█████▏    |  526MB / 1.01GB, 35.3MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  26%|██▌       |  910MB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  26%|██▌       |  921MB / 3.57GB, 60.5MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  52%|█████▏    |  556MB / 1.07GB, 37.0MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  26%|██▌       |  929MB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  26%|██▋       |  941MB / 3.57GB, 60.8MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  50%|█████     |  574MB / 1.14GB, 37.7MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  27%|██▋       |  948MB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  27%|██▋       |  959MB / 3.57GB, 61.1MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  52%|█████▏    |  593MB / 1.14GB, 38.5MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  27%|██▋       |  968MB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  27%|██▋       |  980MB / 3.57GB, 61.5MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  51%|█████     |  613MB / 1.21GB, 39.3MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  28%|██▊       |  994MB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  28%|██▊       | 1.01GB / 3.57GB, 62.4MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  50%|█████     |  638MB / 1.27GB, 40.6MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  29%|██▊       | 1.02GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  29%|██▉       | 1.03GB / 3.57GB, 63.0MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  49%|████▉     |  662MB / 1.34GB, 41.6MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  29%|██▉       | 1.04GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  29%|██▉       | 1.05GB / 3.57GB, 63.4MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  48%|████▊     |  681MB / 1.41GB, 42.4MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  30%|███       | 1.07GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  30%|███       | 1.08GB / 3.57GB, 64.5MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  48%|████▊     |  710MB / 1.48GB, 43.8MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  31%|███       | 1.10GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  31%|███       | 1.11GB / 3.57GB, 65.7MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  50%|█████     |  741MB / 1.48GB, 45.4MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  32%|███▏      | 1.13GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  32%|███▏      | 1.14GB / 3.57GB, 66.7MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  50%|████▉     |  771MB / 1.54GB, 46.9MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  33%|███▎      | 1.16GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  33%|███▎      | 1.17GB / 3.57GB, 67.6MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  50%|████▉     |  798MB / 1.61GB, 48.1MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  33%|███▎      | 1.19GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  34%|███▎      | 1.20GB / 3.57GB, 68.7MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  49%|████▉     |  828MB / 1.68GB, 49.5MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  34%|███▍      | 1.22GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  35%|███▍      | 1.23GB / 3.57GB, 69.8MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  51%|█████▏    |  860MB / 1.68GB, 51.0MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  35%|███▌      | 1.26GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  36%|███▌      | 1.27GB / 3.57GB, 71.7MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  52%|█████▏    |  900MB / 1.74GB, 53.2MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  37%|███▋      | 1.30GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  37%|███▋      | 1.31GB / 3.57GB, 73.4MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  52%|█████▏    |  941MB / 1.81GB, 55.3MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  38%|███▊      | 1.34GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  38%|███▊      | 1.35GB / 3.57GB, 74.8MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  54%|█████▍    |  975MB / 1.81GB, 56.9MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  39%|███▊      | 1.37GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  39%|███▊      | 1.38GB / 3.57GB, 76.0MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  54%|█████▎    | 1.01GB / 1.88GB, 58.4MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  40%|███▉      | 1.40GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  40%|███▉      | 1.42GB / 3.57GB, 77.2MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  56%|█████▌    | 1.04GB / 1.88GB, 60.0MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  40%|████      | 1.44GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  41%|████      | 1.45GB / 3.57GB, 78.3MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  55%|█████▌    | 1.08GB / 1.94GB, 61.4MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  41%|████▏     | 1.47GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  42%|████▏     | 1.48GB / 3.57GB, 79.4MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  55%|█████▌    | 1.11GB / 2.01GB, 62.8MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  42%|████▏     | 1.50GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  42%|████▏     | 1.51GB / 3.57GB, 79.7MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  56%|█████▋    | 1.13GB / 2.01GB, 63.4MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  43%|████▎     | 1.53GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  43%|████▎     | 1.54GB / 3.57GB, 80.6MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  56%|█████▌    | 1.16GB / 2.08GB, 64.5MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  44%|████▎     | 1.55GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  44%|████▎     | 1.56GB / 3.57GB, 80.5MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  55%|█████▌    | 1.18GB / 2.15GB, 64.8MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  44%|████▍     | 1.58GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  45%|████▍     | 1.59GB / 3.57GB, 81.6MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  57%|█████▋    | 1.22GB / 2.15GB, 66.1MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  45%|████▌     | 1.62GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  46%|████▌     | 1.63GB / 3.57GB, 82.7MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  57%|█████▋    | 1.25GB / 2.21GB, 67.5MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  46%|████▋     | 1.65GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  47%|████▋     | 1.66GB / 3.57GB, 83.8MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  58%|█████▊    | 1.29GB / 2.21GB, 68.9MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  47%|████▋     | 1.69GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  48%|████▊     | 1.70GB / 3.57GB, 85.0MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  58%|█████▊    | 1.32GB / 2.28GB, 70.3MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  49%|████▊     | 1.73GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  49%|████▊     | 1.74GB / 3.57GB, 86.3MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  58%|█████▊    | 1.36GB / 2.35GB, 71.8MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  49%|████▉     | 1.76GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  50%|████▉     | 1.77GB / 3.57GB, 87.2MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  58%|█████▊    | 1.39GB / 2.41GB, 73.0MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  51%|█████     | 1.80GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  51%|█████     | 1.81GB / 3.57GB, 88.4MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  58%|█████▊    | 1.43GB / 2.48GB, 74.4MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  51%|█████▏    | 1.83GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  52%|█████▏    | 1.84GB / 3.57GB, 89.0MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  57%|█████▋    | 1.46GB / 2.55GB, 75.3MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  53%|█████▎    | 1.87GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  53%|█████▎    | 1.88GB / 3.57GB, 90.5MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  59%|█████▉    | 1.50GB / 2.55GB, 77.0MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  53%|█████▎    | 1.90GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  53%|█████▎    | 1.91GB / 3.57GB, 90.8MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  58%|█████▊    | 1.53GB / 2.62GB, 77.5MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  55%|█████▍    | 1.94GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  55%|█████▍    | 1.95GB / 3.57GB, 92.5MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  59%|█████▊    | 1.57GB / 2.68GB, 79.5MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  56%|█████▌    | 1.98GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  56%|█████▌    | 1.99GB / 3.57GB, 93.5MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  60%|█████▉    | 1.61GB / 2.68GB, 80.7MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  57%|█████▋    | 2.01GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  57%|█████▋    | 2.02GB / 3.57GB, 94.3MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  60%|█████▉    | 1.64GB / 2.75GB, 81.7MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  58%|█████▊    | 2.05GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  58%|█████▊    | 2.06GB / 3.57GB, 95.4MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  60%|█████▉    | 1.68GB / 2.82GB, 83.0MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  59%|█████▊    | 2.08GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  59%|█████▉    | 2.10GB / 3.57GB, 96.2MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  61%|██████    | 1.72GB / 2.82GB, 84.0MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  59%|█████▉    | 2.11GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  60%|█████▉    | 2.13GB / 3.57GB, 96.6MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  61%|██████    | 1.75GB / 2.88GB, 84.8MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  61%|██████    | 2.15GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  61%|██████    | 2.16GB / 3.57GB, 97.7MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  60%|██████    | 1.78GB / 2.95GB, 86.0MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  62%|██████▏   | 2.19GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  62%|██████▏   | 2.20GB / 3.57GB, 98.7MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  60%|██████    | 1.82GB / 3.02GB, 87.2MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  63%|██████▎   | 2.23GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  63%|██████▎   | 2.24GB / 3.57GB, 99.8MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  60%|██████    | 1.86GB / 3.09GB, 88.5MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  64%|██████▍   | 2.27GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  64%|██████▍   | 2.28GB / 3.57GB,  101MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  62%|██████▏   | 1.90GB / 3.09GB, 89.8MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  65%|██████▌   | 2.31GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  65%|██████▌   | 2.33GB / 3.57GB,  102MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  63%|██████▎   | 1.95GB / 3.09GB, 91.4MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  66%|██████▌   | 2.35GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  66%|██████▌   | 2.36GB / 3.57GB,  103MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  64%|██████▍   | 1.98GB / 3.09GB, 92.0MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  67%|██████▋   | 2.38GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  67%|██████▋   | 2.39GB / 3.57GB,  103MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  65%|██████▍   | 2.01GB / 3.09GB, 92.6MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  68%|██████▊   | 2.41GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  68%|██████▊   | 2.42GB / 3.57GB,  103MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  66%|██████▌   | 2.04GB / 3.09GB, 93.1MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  68%|██████▊   | 2.43GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  69%|██████▊   | 2.44GB / 3.57GB,  103MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  67%|██████▋   | 2.06GB / 3.09GB, 93.2MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  69%|██████▉   | 2.46GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  69%|██████▉   | 2.47GB / 3.57GB,  103MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  68%|██████▊   | 2.09GB / 3.09GB, 93.3MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  70%|██████▉   | 2.48GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  70%|██████▉   | 2.49GB / 3.57GB,  103MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  68%|██████▊   | 2.11GB / 3.09GB, 93.5MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  70%|███████   | 2.50GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  70%|███████   | 2.51GB / 3.57GB,  103MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  69%|██████▉   | 2.13GB / 3.09GB, 92.9MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  71%|███████   | 2.52GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  71%|███████   | 2.53GB / 3.57GB,  103MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  70%|██████▉   | 2.15GB / 3.09GB, 93.0MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  72%|███████▏  | 2.55GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  72%|███████▏  | 2.56GB / 3.57GB,  102MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  70%|███████   | 2.18GB / 3.09GB, 93.0MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  72%|███████▏  | 2.57GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  72%|███████▏  | 2.58GB / 3.57GB,  102MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  71%|███████   | 2.20GB / 3.09GB, 92.8MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  73%|███████▎  | 2.59GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  73%|███████▎  | 2.60GB / 3.57GB,  102MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  72%|███████▏  | 2.22GB / 3.09GB, 92.8MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  74%|███████▎  | 2.61GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  74%|███████▎  | 2.63GB / 3.57GB,  102MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  73%|███████▎  | 2.24GB / 3.09GB, 92.8MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  74%|███████▍  | 2.63GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  74%|███████▍  | 2.65GB / 3.57GB,  101MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  73%|███████▎  | 2.26GB / 3.09GB, 92.5MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  75%|███████▍  | 2.65GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  75%|███████▍  | 2.66GB / 3.57GB,  101MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  74%|███████▍  | 2.28GB / 3.09GB, 92.1MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  75%|███████▌  | 2.67GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  75%|███████▌  | 2.68GB / 3.57GB,  100MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  74%|███████▍  | 2.30GB / 3.09GB, 91.8MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  76%|███████▌  | 2.69GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  76%|███████▌  | 2.70GB / 3.57GB, 99.8MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  75%|███████▍  | 2.31GB / 3.09GB, 91.4MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  76%|███████▌  | 2.71GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  76%|███████▋  | 2.72GB / 3.57GB, 99.4MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  76%|███████▌  | 2.33GB / 3.09GB, 91.1MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  77%|███████▋  | 2.72GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  77%|███████▋  | 2.73GB / 3.57GB, 98.6MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  76%|███████▌  | 2.35GB / 3.09GB, 90.4MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  77%|███████▋  | 2.74GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  77%|███████▋  | 2.75GB / 3.57GB, 98.2MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  77%|███████▋  | 2.37GB / 3.09GB, 90.1MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  78%|███████▊  | 2.76GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  78%|███████▊  | 2.77GB / 3.57GB, 97.6MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  77%|███████▋  | 2.38GB / 3.09GB, 89.7MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  78%|███████▊  | 2.77GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  78%|███████▊  | 2.78GB / 3.57GB, 96.9MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  78%|███████▊  | 2.40GB / 3.09GB, 89.1MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  78%|███████▊  | 2.79GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  78%|███████▊  | 2.80GB / 3.57GB, 96.2MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  78%|███████▊  | 2.41GB / 3.09GB, 88.5MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  79%|███████▉  | 2.80GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  79%|███████▉  | 2.82GB / 3.57GB, 95.7MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  79%|███████▊  | 2.43GB / 3.09GB, 88.1MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  79%|███████▉  | 2.81GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  79%|███████▉  | 2.82GB / 3.57GB, 94.6MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  79%|███████▉  | 2.44GB / 3.09GB, 87.1MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  80%|███████▉  | 2.83GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  80%|███████▉  | 2.84GB / 3.57GB, 94.0MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  79%|███████▉  | 2.45GB / 3.09GB, 86.6MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  80%|███████▉  | 2.84GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  80%|███████▉  | 2.85GB / 3.57GB, 93.2MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  80%|███████▉  | 2.46GB / 3.09GB, 85.9MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  80%|████████  | 2.85GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  80%|████████  | 2.86GB / 3.57GB, 92.3MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  80%|████████  | 2.47GB / 3.09GB, 85.1MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  80%|████████  | 2.86GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  81%|████████  | 2.87GB / 3.57GB, 91.2MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  80%|████████  | 2.48GB / 3.09GB, 84.2MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  81%|████████  | 2.87GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  81%|████████  | 2.88GB / 3.57GB, 90.5MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  81%|████████  | 2.49GB / 3.09GB, 83.5MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  81%|████████  | 2.88GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  81%|████████  | 2.90GB / 3.57GB, 89.7MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  81%|████████  | 2.50GB / 3.09GB, 82.8MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  81%|████████▏ | 2.89GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  81%|████████▏ | 2.90GB / 3.57GB, 88.7MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  81%|████████▏ | 2.51GB / 3.09GB, 81.9MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  82%|████████▏ | 2.91GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  82%|████████▏ | 2.92GB / 3.57GB, 88.1MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  82%|████████▏ | 2.52GB / 3.09GB, 81.3MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  82%|████████▏ | 2.92GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  82%|████████▏ | 2.93GB / 3.57GB, 87.4MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  82%|████████▏ | 2.54GB / 3.09GB, 80.8MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  82%|████████▏ | 2.93GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  82%|████████▏ | 2.94GB / 3.57GB, 86.6MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  82%|████████▏ | 2.55GB / 3.09GB, 80.0MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  83%|████████▎ | 2.94GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  83%|████████▎ | 2.95GB / 3.57GB, 85.8MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  83%|████████▎ | 2.56GB / 3.09GB, 79.4MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  83%|████████▎ | 2.95GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  83%|████████▎ | 2.96GB / 3.57GB, 85.2MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  83%|████████▎ | 2.57GB / 3.09GB, 78.8MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  83%|████████▎ | 2.96GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  83%|████████▎ | 2.97GB / 3.57GB, 84.0MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  83%|████████▎ | 2.57GB / 3.09GB, 77.7MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  83%|████████▎ | 2.97GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  84%|████████▎ | 2.98GB / 3.57GB, 83.3MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  84%|████████▎ | 2.58GB / 3.09GB, 77.0MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  84%|████████▍ | 2.98GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  84%|████████▍ | 2.99GB / 3.57GB, 82.7MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  84%|████████▍ | 2.60GB / 3.09GB, 76.5MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  84%|████████▍ | 2.99GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  84%|████████▍ | 3.00GB / 3.57GB, 81.8MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  84%|████████▍ | 2.60GB / 3.09GB, 75.7MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  84%|████████▍ | 3.00GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  84%|████████▍ | 3.01GB / 3.57GB, 80.9MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  85%|████████▍ | 2.61GB / 3.09GB, 74.9MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  85%|████████▍ | 3.01GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  85%|████████▍ | 3.02GB / 3.57GB, 80.2MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  85%|████████▍ | 2.62GB / 3.09GB, 74.2MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  85%|████████▍ | 3.01GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  85%|████████▍ | 3.02GB / 3.57GB, 79.2MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  85%|████████▌ | 2.63GB / 3.09GB, 73.3MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  85%|████████▍ | 3.02GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  85%|████████▍ | 3.03GB / 3.57GB, 78.2MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  85%|████████▌ | 2.63GB / 3.09GB, 72.4MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  85%|████████▌ | 3.03GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  85%|████████▌ | 3.04GB / 3.57GB, 77.5MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  86%|████████▌ | 2.64GB / 3.09GB, 71.7MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  85%|████████▌ | 3.04GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  85%|████████▌ | 3.05GB / 3.57GB, 76.7MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  86%|████████▌ | 2.65GB / 3.09GB, 71.0MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  86%|████████▌ | 3.04GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  86%|████████▌ | 3.05GB / 3.57GB, 75.9MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  86%|████████▌ | 2.66GB / 3.09GB, 70.2MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  86%|████████▌ | 3.05GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  86%|████████▌ | 3.06GB / 3.57GB, 75.1MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  86%|████████▌ | 2.66GB / 3.09GB, 69.5MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  86%|████████▌ | 3.06GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  86%|████████▌ | 3.07GB / 3.57GB, 74.6MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  87%|████████▋ | 2.67GB / 3.09GB, 69.0MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  86%|████████▋ | 3.07GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  86%|████████▋ | 3.08GB / 3.57GB, 73.8MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  87%|████████▋ | 2.68GB / 3.09GB, 68.3MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  87%|████████▋ | 3.08GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  87%|████████▋ | 3.09GB / 3.57GB, 73.1MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  87%|████████▋ | 2.69GB / 3.09GB, 67.7MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  87%|████████▋ | 3.09GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  87%|████████▋ | 3.10GB / 3.57GB, 72.6MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  87%|████████▋ | 2.70GB / 3.09GB, 67.2MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  87%|████████▋ | 3.10GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  87%|████████▋ | 3.11GB / 3.57GB, 71.8MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  88%|████████▊ | 2.71GB / 3.09GB, 66.5MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  87%|████████▋ | 3.11GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  87%|████████▋ | 3.12GB / 3.57GB, 71.2MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  88%|████████▊ | 2.71GB / 3.09GB, 65.9MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  88%|████████▊ | 3.12GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  88%|████████▊ | 3.13GB / 3.57GB, 70.6MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  88%|████████▊ | 2.72GB / 3.09GB, 65.3MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  88%|████████▊ | 3.12GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  88%|████████▊ | 3.13GB / 3.57GB, 69.8MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  88%|████████▊ | 2.73GB / 3.09GB, 64.5MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  88%|████████▊ | 3.13GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  88%|████████▊ | 3.14GB / 3.57GB, 69.1MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  89%|████████▊ | 2.73GB / 3.09GB, 63.9MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  88%|████████▊ | 3.14GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  88%|████████▊ | 3.15GB / 3.57GB, 68.6MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  89%|████████▉ | 2.74GB / 3.09GB, 63.5MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  89%|████████▊ | 3.15GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  89%|████████▊ | 3.16GB / 3.57GB, 68.1MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  89%|████████▉ | 2.75GB / 3.09GB, 63.0MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  89%|████████▉ | 3.16GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  89%|████████▉ | 3.17GB / 3.57GB, 67.5MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  89%|████████▉ | 2.76GB / 3.09GB, 62.4MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  89%|████████▉ | 3.17GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  89%|████████▉ | 3.18GB / 3.57GB, 67.0MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  90%|████████▉ | 2.77GB / 3.09GB, 61.9MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  89%|████████▉ | 3.18GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  89%|████████▉ | 3.19GB / 3.57GB, 66.4MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  90%|████████▉ | 2.78GB / 3.09GB, 61.4MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  90%|████████▉ | 3.19GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  90%|████████▉ | 3.20GB / 3.57GB, 66.0MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  90%|█████████ | 2.79GB / 3.09GB, 61.0MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  90%|████████▉ | 3.19GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  90%|████████▉ | 3.21GB / 3.57GB, 65.3MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  90%|█████████ | 2.79GB / 3.09GB, 60.3MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  90%|█████████ | 3.20GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  90%|█████████ | 3.21GB / 3.57GB, 64.8MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  91%|█████████ | 2.80GB / 3.09GB, 59.8MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  90%|█████████ | 3.21GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  90%|█████████ | 3.22GB / 3.57GB, 64.3MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  91%|█████████ | 2.81GB / 3.09GB, 59.5MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  91%|█████████ | 3.22GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  91%|█████████ | 3.23GB / 3.57GB, 63.5MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  91%|█████████ | 2.82GB / 3.09GB, 58.8MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  91%|█████████ | 3.23GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  91%|█████████ | 3.24GB / 3.57GB, 63.1MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  91%|█████████▏| 2.83GB / 3.09GB, 58.4MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  91%|█████████ | 3.23GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  91%|█████████ | 3.24GB / 3.57GB, 62.4MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  92%|█████████▏| 2.83GB / 3.09GB, 57.8MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  91%|█████████ | 3.24GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  91%|█████████ | 3.25GB / 3.57GB, 61.9MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  92%|█████████▏| 2.84GB / 3.09GB, 57.3MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  91%|█████████▏| 3.25GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  91%|█████████▏| 3.26GB / 3.57GB, 61.3MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  92%|█████████▏| 2.85GB / 3.09GB, 56.9MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  92%|█████████▏| 3.26GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  92%|█████████▏| 3.27GB / 3.57GB, 60.7MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  92%|█████████▏| 2.85GB / 3.09GB, 56.4MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  92%|█████████▏| 3.26GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  92%|█████████▏| 3.27GB / 3.57GB, 60.1MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  93%|█████████▎| 2.86GB / 3.09GB, 55.8MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  92%|█████████▏| 3.27GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  92%|█████████▏| 3.28GB / 3.57GB, 59.6MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  93%|█████████▎| 2.87GB / 3.09GB, 55.4MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  92%|█████████▏| 3.28GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  92%|█████████▏| 3.29GB / 3.57GB, 59.2MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  93%|█████████▎| 2.88GB / 3.09GB, 55.1MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  92%|█████████▏| 3.29GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  92%|█████████▏| 3.30GB / 3.57GB, 58.7MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  93%|█████████▎| 2.88GB / 3.09GB, 54.6MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  93%|█████████▎| 3.30GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  93%|█████████▎| 3.31GB / 3.57GB, 58.4MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  94%|█████████▍| 2.90GB / 3.09GB, 54.4MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  93%|█████████▎| 3.30GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  93%|█████████▎| 3.31GB / 3.57GB, 57.8MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  94%|█████████▍| 2.90GB / 3.09GB, 53.9MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  93%|█████████▎| 3.31GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  93%|█████████▎| 3.32GB / 3.57GB, 57.3MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  94%|█████████▍| 2.91GB / 3.09GB, 53.5MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  93%|█████████▎| 3.32GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  93%|█████████▎| 3.33GB / 3.57GB, 57.0MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  95%|█████████▍| 2.92GB / 3.09GB, 53.2MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  94%|█████████▎| 3.33GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  94%|█████████▎| 3.34GB / 3.57GB, 56.5MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  95%|█████████▍| 2.93GB / 3.09GB, 52.7MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  94%|█████████▎| 3.33GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  94%|█████████▎| 3.34GB / 3.57GB, 55.7MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  95%|█████████▍| 2.93GB / 3.09GB, 52.0MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  94%|█████████▍| 3.34GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  94%|█████████▍| 3.35GB / 3.57GB, 55.2MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  95%|█████████▌| 2.94GB / 3.09GB, 51.6MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  94%|█████████▍| 3.34GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  94%|█████████▍| 3.35GB / 3.57GB, 54.5MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  95%|█████████▌| 2.94GB / 3.09GB, 51.0MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  94%|█████████▍| 3.35GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  94%|█████████▍| 3.36GB / 3.57GB, 53.9MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  95%|█████████▌| 2.94GB / 3.09GB, 50.4MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  94%|█████████▍| 3.35GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  94%|█████████▍| 3.36GB / 3.57GB, 53.4MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  96%|█████████▌| 2.95GB / 3.09GB, 50.0MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  94%|█████████▍| 3.36GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  94%|█████████▍| 3.37GB / 3.57GB, 52.7MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  96%|█████████▌| 2.95GB / 3.09GB, 49.3MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  95%|█████████▍| 3.36GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  95%|█████████▍| 3.37GB / 3.57GB, 52.2MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  96%|█████████▌| 2.96GB / 3.09GB, 48.9MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  95%|█████████▍| 3.37GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  95%|█████████▍| 3.38GB / 3.57GB, 51.6MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  96%|█████████▌| 2.96GB / 3.09GB, 48.4MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  95%|█████████▍| 3.37GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  95%|█████████▍| 3.38GB / 3.57GB, 51.1MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  96%|█████████▌| 2.97GB / 3.09GB, 47.9MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  95%|█████████▍| 3.38GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  95%|█████████▌| 3.39GB / 3.57GB, 50.5MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  96%|█████████▋| 2.97GB / 3.09GB, 47.4MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  95%|█████████▌| 3.38GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  95%|█████████▌| 3.39GB / 3.57GB, 50.0MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  97%|█████████▋| 2.98GB / 3.09GB, 47.0MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  95%|█████████▌| 3.39GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  95%|█████████▌| 3.40GB / 3.57GB, 49.5MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  97%|█████████▋| 2.99GB / 3.09GB, 46.5MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  95%|█████████▌| 3.39GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  95%|█████████▌| 3.40GB / 3.57GB, 48.9MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  97%|█████████▋| 2.99GB / 3.09GB, 46.0MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  96%|█████████▌| 3.40GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  96%|█████████▌| 3.41GB / 3.57GB, 48.5MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  97%|█████████▋| 3.00GB / 3.09GB, 45.6MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  96%|█████████▌| 3.40GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  96%|█████████▌| 3.41GB / 3.57GB, 47.9MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  97%|█████████▋| 3.00GB / 3.09GB, 45.1MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  96%|█████████▌| 3.40GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  96%|█████████▌| 3.42GB / 3.57GB, 47.3MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  97%|█████████▋| 3.00GB / 3.09GB, 44.5MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  96%|█████████▌| 3.41GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  96%|█████████▌| 3.42GB / 3.57GB, 46.9MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  97%|█████████▋| 3.01GB / 3.09GB, 44.2MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  96%|█████████▌| 3.41GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  96%|█████████▌| 3.43GB / 3.57GB, 46.4MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  98%|█████████▊| 3.01GB / 3.09GB, 43.7MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  96%|█████████▌| 3.42GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  96%|█████████▌| 3.43GB / 3.57GB, 45.8MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  98%|█████████▊| 3.02GB / 3.09GB, 43.1MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  96%|█████████▋| 3.42GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  96%|█████████▋| 3.43GB / 3.57GB, 45.2MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  98%|█████████▊| 3.02GB / 3.09GB, 42.6MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  96%|█████████▋| 3.43GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  96%|█████████▋| 3.44GB / 3.57GB, 44.8MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  98%|█████████▊| 3.02GB / 3.09GB, 42.2MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  96%|█████████▋| 3.43GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  96%|█████████▋| 3.44GB / 3.57GB, 44.2MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  98%|█████████▊| 3.03GB / 3.09GB, 41.6MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  97%|█████████▋| 3.43GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  97%|█████████▋| 3.45GB / 3.57GB, 43.8MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  98%|█████████▊| 3.03GB / 3.09GB, 41.3MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  97%|█████████▋| 3.44GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  97%|█████████▋| 3.45GB / 3.57GB, 43.3MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  98%|█████████▊| 3.04GB / 3.09GB, 40.9MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  97%|█████████▋| 3.44GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  97%|█████████▋| 3.45GB / 3.57GB, 42.8MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  98%|█████████▊| 3.04GB / 3.09GB, 40.4MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  97%|█████████▋| 3.45GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  97%|█████████▋| 3.46GB / 3.57GB, 42.5MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  99%|█████████▊| 3.05GB / 3.09GB, 40.1MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  97%|█████████▋| 3.45GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  97%|█████████▋| 3.46GB / 3.57GB, 42.0MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  99%|█████████▉| 3.05GB / 3.09GB, 39.7MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  97%|█████████▋| 3.45GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  97%|█████████▋| 3.47GB / 3.57GB, 41.5MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  99%|█████████▉| 3.05GB / 3.09GB, 39.2MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  97%|█████████▋| 3.46GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  97%|█████████▋| 3.47GB / 3.57GB, 41.0MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  99%|█████████▉| 3.06GB / 3.09GB, 38.8MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  97%|█████████▋| 3.46GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  97%|█████████▋| 3.47GB / 3.57GB, 40.5MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  99%|█████████▉| 3.06GB / 3.09GB, 38.3MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  97%|█████████▋| 3.46GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  97%|█████████▋| 3.47GB / 3.57GB, 40.0MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  99%|█████████▉| 3.06GB / 3.09GB, 37.8MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  98%|█████████▊| 3.47GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  98%|█████████▊| 3.48GB / 3.57GB, 39.5MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  99%|█████████▉| 3.06GB / 3.09GB, 37.3MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  98%|█████████▊| 3.47GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  98%|█████████▊| 3.48GB / 3.57GB, 39.0MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  99%|█████████▉| 3.07GB / 3.09GB, 36.9MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  98%|█████████▊| 3.47GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  98%|█████████▊| 3.48GB / 3.57GB, 38.5MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  99%|█████████▉| 3.07GB / 3.09GB, 36.4MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  98%|█████████▊| 3.47GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  98%|█████████▊| 3.49GB / 3.57GB, 38.0MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               :  99%|█████████▉| 3.07GB / 3.09GB, 36.0MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  98%|█████████▊| 3.48GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  98%|█████████▊| 3.49GB / 3.57GB, 37.5MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               : 100%|█████████▉| 3.07GB / 3.09GB, 35.5MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  98%|█████████▊| 3.48GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  98%|█████████▊| 3.49GB / 3.57GB, 37.0MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               : 100%|█████████▉| 3.08GB / 3.09GB, 35.0MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  98%|█████████▊| 3.48GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  98%|█████████▊| 3.49GB / 3.57GB, 36.4MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               : 100%|█████████▉| 3.08GB / 3.09GB, 34.5MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  98%|█████████▊| 3.48GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  98%|█████████▊| 3.49GB / 3.57GB, 35.8MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               : 100%|█████████▉| 3.08GB / 3.09GB, 33.9MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  98%|█████████▊| 3.48GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  98%|█████████▊| 3.49GB / 3.57GB, 35.3MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               : 100%|█████████▉| 3.08GB / 3.09GB, 33.4MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  98%|█████████▊| 3.48GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  98%|█████████▊| 3.49GB / 3.57GB, 34.8MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               : 100%|█████████▉| 3.08GB / 3.09GB, 32.9MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  98%|█████████▊| 3.48GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  98%|█████████▊| 3.49GB / 3.57GB, 34.2MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               : 100%|█████████▉| 3.08GB / 3.09GB, 32.4MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  98%|█████████▊| 3.48GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  98%|█████████▊| 3.50GB / 3.57GB, 33.7MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               : 100%|█████████▉| 3.08GB / 3.09GB, 32.0MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  98%|█████████▊| 3.49GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  98%|█████████▊| 3.50GB / 3.57GB, 33.2MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               : 100%|█████████▉| 3.08GB / 3.09GB, 31.5MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  98%|█████████▊| 3.49GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  98%|█████████▊| 3.50GB / 3.57GB, 32.6MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               : 100%|█████████▉| 3.08GB / 3.09GB, 31.0MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  98%|█████████▊| 3.49GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  98%|█████████▊| 3.50GB / 3.57GB, 31.6MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               : 100%|█████████▉| 3.08GB / 3.09GB, 29.9MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  98%|█████████▊| 3.49GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  98%|█████████▊| 3.50GB / 3.57GB, 31.1MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               : 100%|█████████▉| 3.08GB / 3.09GB, 29.5MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  98%|█████████▊| 3.49GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  98%|█████████▊| 3.50GB / 3.57GB, 30.5MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               : 100%|█████████▉| 3.08GB / 3.09GB, 28.9MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  98%|█████████▊| 3.49GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  98%|█████████▊| 3.50GB / 3.57GB, 30.0MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               : 100%|█████████▉| 3.09GB / 3.09GB, 28.5MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  98%|█████████▊| 3.49GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  98%|█████████▊| 3.50GB / 3.57GB, 29.6MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               : 100%|█████████▉| 3.09GB / 3.09GB, 28.0MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  98%|█████████▊| 3.49GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  98%|█████████▊| 3.50GB / 3.57GB, 29.1MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               : 100%|█████████▉| 3.09GB / 3.09GB, 27.6MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  98%|█████████▊| 3.49GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  98%|█████████▊| 3.50GB / 3.57GB, 28.1MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               : 100%|█████████▉| 3.09GB / 3.09GB, 26.7MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  98%|█████████▊| 3.49GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  98%|█████████▊| 3.50GB / 3.57GB, 27.7MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               : 100%|█████████▉| 3.09GB / 3.09GB, 26.3MB/s  [A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            [A[A
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m 
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  98%|█████████▊| 3.49GB / 3.55GB            [A[A[AProcessing Files (1 / 2)      :  98%|█████████▊| 3.50GB / 3.57GB, 24.9MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               : 100%|██████████| 3.09GB / 3.09GB, 23.7MB/s  [A
+[36m(TaskRunner pid=152196)[0m Processing Files (1 / 2)      :  98%|█████████▊| 3.50GB / 3.57GB, 24.9MB/s  
+[36m(TaskRunner pid=152196)[0m New Data Upload               : 100%|██████████| 3.09GB / 3.09GB, 23.7MB/s  
+[36m(TaskRunner pid=152196)[0m   ...e_s1/final/tokenizer.json: 100%|██████████| 11.4MB / 11.4MB            
+[36m(TaskRunner pid=152196)[0m   ...1/final/model.safetensors:  98%|█████████▊| 3.49GB / 3.55GB            
+[36m(TaskRunner pid=152196)[0m [final save] uploaded /workspace/AIKnowledgeSystemsTermProject/src/runs/verl/gaca_probe_s1/final -> Adammouedden/gaca-term-checkpoints/gaca_probe_s1
+[36m(TaskRunner pid=152196)[0m ("Final validation metrics: {'val/text/test_score': "
+[36m(TaskRunner pid=152196)[0m  "np.float64(1.0963687150837989), 'val/text/tool_call_count/mean': "
+[36m(TaskRunner pid=152196)[0m  "np.float64(0.0), 'val/success_rate': np.float64(0.203125), "
+[36m(TaskRunner pid=152196)[0m  "'val/pick_two_obj_and_place_success_rate': np.float64(0.037037037037037035), "
+[36m(TaskRunner pid=152196)[0m  "'val/pick_and_place_success_rate': np.float64(0.275), "
+[36m(TaskRunner pid=152196)[0m  "'val/pick_clean_then_place_in_recep_success_rate': "
+[36m(TaskRunner pid=152196)[0m  "np.float64(0.2608695652173913), 'val/look_at_obj_in_light_success_rate': "
+[36m(TaskRunner pid=152196)[0m  'np.float64(0.4444444444444444), '
+[36m(TaskRunner pid=152196)[0m  "'val/pick_heat_then_place_in_recep_success_rate': np.float64(0.0), "
+[36m(TaskRunner pid=152196)[0m  "'val/pick_cool_then_place_in_recep_success_rate': "
+[36m(TaskRunner pid=152196)[0m  'np.float64(0.2222222222222222)}')
+[36m(TaskRunner pid=152196)[0m Training Progress: 100%|██████████| 34/34 [5:12:41<00:00, 551.81s/it]
