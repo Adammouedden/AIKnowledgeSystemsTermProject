@@ -1,2 +1,1 @@
-gaca_probe_c05
-gaca_probe_pos
+# gaca_probe_pos held back until the trained-policy probe re-validation (IDEAS 1e.1) finishes
