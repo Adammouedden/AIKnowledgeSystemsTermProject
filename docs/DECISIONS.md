@@ -952,3 +952,14 @@ The q(0) drift tracks the outcome: seed 0 rose 0.20 -> 0.34 (decides before reas
 fell 0.19 -> 0.14 (reasoning more causally important; 20.3%). Two runs cannot establish it, but it is
 the pattern the CIR hypothesis (IDEAS 1c) predicts, and the CIR logging now on lets the remaining arms
 add points. Final weights: `Adammouedden/gaca-term-checkpoints/gaca_probe_s1` (verified listed).
+
+## 2026-11-09 — Clip [0.5, 2]: 14.1%; trained-policy probe re-validation inserted before positive-only
+
+`gaca_probe_c05` ended at 14.1% (18/128): between the two probe seeds (7.8%, 20.3%) and level with GRPO
+(13 vs 13 games, p = 1.0); vs GACA 10 vs 16 (p = 0.33). The tighter clip did bring update size to GACA's
+level (gradient norm 0.93 vs GACA 0.90, probe seed 0 1.28) without a detectable change in outcome.
+At the user's direction the token oracle is re-run with the trained `gaca_probe_s1` policy
+(`src/verl/revalidate_probe.sh`, IDEAS 1e.1) before `gaca_probe_pos`. A launch-shell command line
+containing the text "verl.trainer.main_ppo" made its GPU-free check self-match (as in 2026-11-07); the
+GPU idled ~23 min until the stale shell was killed. Scripts must be launched from files, never heredocs
+that contain the patterns they pgrep for.

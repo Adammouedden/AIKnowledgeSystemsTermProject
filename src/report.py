@@ -35,9 +35,14 @@ VERL_ARMS = [  # (dir, label, role, what differs from GACA/GRPO)
     ("gaca_loo", "GACA-LOO", "treatment", "GACA, criticality = leave-one-out mean NLL of the other visits (App. B.4)"),
     ("gaca_probe", "GACA + probe (seed 0)", "treatment", "GACA, step advantage spread over tokens by the commitment probe"),
     ("gaca_probe_s1", "GACA + probe (seed 1)", "treatment", "as above, training seed 1, same 128 validation games"),
+    ("gaca_probe_c05", "GACA + probe, clip [0.5, 2]", "treatment", "probe with token weights clipped to [0.5, 2] instead of [0.25, 4]"),
+    ("gaca_probe_pos", "GACA + probe, positive A only", "treatment", "probe weights only on steps with a positive advantage; others uniform"),
 ]
 VERL_COLORS = {"grpo": "#2a78d6", "gaca": "#eb6834", "gaca_msize": "#1baf7a", "gaca_loo": "#eda100",
-               "gaca_probe": "#e87ba4", "gaca_probe_s1": "#e87ba4"}  # validated categorical slots 1-5, fixed order
+               "gaca_probe": "#e87ba4", "gaca_probe_s1": "#e87ba4", "gaca_probe_c05": "#e87ba4", "gaca_probe_pos": "#e87ba4"}
+# validated categorical slots 1-5, fixed order; probe variants keep the probe's hue (colour follows the
+# method) and are told apart by line style + legend + direct labels
+VERL_STYLE = {"gaca_probe_s1": ":", "gaca_probe_c05": "--", "gaca_probe_pos": "-."}
 
 
 def _verl_metrics(path):
@@ -116,7 +121,7 @@ def verl_plot(arms):
             continue
         x = [c[0] for c in a["curve"]]
         y = [100 * c[1] / 128 for c in a["curve"]]
-        ls = ":" if a["key"].endswith("_s1") else "-"
+        ls = VERL_STYLE.get(a["key"], "-")
         ax.plot(x, y, color=VERL_COLORS[a["key"]], lw=2.0, ls=ls, marker="o", ms=5, mfc=surface, mew=2.0,
                 zorder=3, label=a["label"] + ("" if a["done"] else " (running)"))
         if a["done"]:  # running arms are identified by the legend only, so labels never sit on other lines
@@ -140,7 +145,7 @@ def verl_plot(arms):
     for side in ("left", "bottom"):
         ax.spines[side].set_color(grid)
     ax.tick_params(colors=ink2, labelsize=9, length=0)
-    ax.set_xlim(-1, 44)
+    ax.set_xlim(-1, 50)
     ax.set_ylim(0, None)
     ax.legend(frameon=False, loc="upper left", fontsize=8.5, labelcolor=ink2)
     fig.tight_layout()

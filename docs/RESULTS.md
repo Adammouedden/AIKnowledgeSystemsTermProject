@@ -26,6 +26,7 @@ is 0.78 points.
 | GACA-LOO | treatment | GACA, criticality = leave-one-out mean NLL of the other visits (App. B.4) | done | 33 | 3.60 | **11.7%** (15/128) | 11.7% (33) |
 | GACA + probe (seed 0) | treatment | GACA, step advantage spread over tokens by the commitment probe | done | 34 | 5.16 | **7.8%** (10/128) | 8.6% (10) |
 | GACA + probe (seed 1) | treatment | as above, training seed 1, same 128 validation games | done | 34 | 5.19 | **20.3%** (26/128) | 20.3% (34) |
+| GACA + probe, clip [0.5, 2] | treatment | probe with token weights clipped to [0.5, 2] instead of [0.25, 4] | done | 34 | 4.96 | **14.1%** (18/128) | 14.1% (34) |
 
 Final = the last evaluation (the end-of-training checkpoint). Best is reported for comparison with the
 paper's best-checkpoint convention but is optimistic: it picks the maximum over five noisy evaluations.
@@ -42,6 +43,7 @@ paper's best-checkpoint convention but is optimistic: it picks the maximum over 
 | GACA-LOO | 4.7 | 7.8 | 10.9 | 10.9 | 11.7 (33) |
 | GACA + probe (seed 0) | 4.7 | 8.6 | 6.2 | 8.6 | 7.8 (34) |
 | GACA + probe (seed 1) | 4.7 | 8.6 | 12.5 | 14.8 | 20.3 (34) |
+| GACA + probe, clip [0.5, 2] | 4.7 | 5.5 | 9.4 | 7.8 | 14.1 (34) |
 
 ## Paired comparison of final checkpoints
 
@@ -56,21 +58,28 @@ the other does not. The base model is each arm's own iteration-0 evaluation.
 | base model vs GACA-LOO | 6 | 15 | 5 | 14 | 1 | 0.064 |
 | base model vs GACA + probe (seed 0) | 6 | 10 | 5 | 9 | 1 | 0.424 |
 | base model vs GACA + probe (seed 1) | 6 | 26 | 6 | 26 | 0 | 0.001 |
+| base model vs GACA + probe, clip [0.5, 2] | 6 | 18 | 5 | 17 | 1 | 0.017 |
 | GRPO vs GACA | 18 | 24 | 7 | 13 | 11 | 0.263 |
 | GRPO vs GACA + m_z | 18 | 16 | 13 | 11 | 5 | 0.839 |
 | GRPO vs GACA-LOO | 18 | 15 | 11 | 8 | 7 | 0.648 |
 | GRPO vs GACA + probe (seed 0) | 18 | 10 | 14 | 6 | 4 | 0.115 |
 | GRPO vs GACA + probe (seed 1) | 18 | 26 | 8 | 16 | 10 | 0.152 |
+| GRPO vs GACA + probe, clip [0.5, 2] | 18 | 18 | 13 | 13 | 5 | 1.000 |
 | GACA vs GACA + m_z | 24 | 16 | 17 | 9 | 7 | 0.169 |
 | GACA vs GACA-LOO | 24 | 15 | 14 | 5 | 10 | 0.064 |
 | GACA vs GACA + probe (seed 0) | 24 | 10 | 18 | 4 | 6 | 0.004 |
 | GACA vs GACA + probe (seed 1) | 24 | 26 | 14 | 16 | 10 | 0.856 |
+| GACA vs GACA + probe, clip [0.5, 2] | 24 | 18 | 16 | 10 | 8 | 0.327 |
 | GACA + m_z vs GACA-LOO | 16 | 15 | 10 | 9 | 6 | 1.000 |
 | GACA + m_z vs GACA + probe (seed 0) | 16 | 10 | 11 | 5 | 5 | 0.210 |
 | GACA + m_z vs GACA + probe (seed 1) | 16 | 26 | 6 | 16 | 10 | 0.052 |
+| GACA + m_z vs GACA + probe, clip [0.5, 2] | 16 | 18 | 8 | 10 | 8 | 0.815 |
 | GACA-LOO vs GACA + probe (seed 0) | 15 | 10 | 13 | 8 | 2 | 0.383 |
 | GACA-LOO vs GACA + probe (seed 1) | 15 | 26 | 8 | 19 | 7 | 0.052 |
+| GACA-LOO vs GACA + probe, clip [0.5, 2] | 15 | 18 | 8 | 11 | 7 | 0.648 |
 | GACA + probe (seed 0) vs GACA + probe (seed 1) | 10 | 26 | 4 | 20 | 6 | 0.002 |
+| GACA + probe (seed 0) vs GACA + probe, clip [0.5, 2] | 10 | 18 | 5 | 13 | 5 | 0.096 |
+| GACA + probe (seed 1) vs GACA + probe, clip [0.5, 2] | 26 | 18 | 16 | 8 | 10 | 0.152 |
 
 ### Final success by task type
 
@@ -83,6 +92,7 @@ the other does not. The base model is each arm's own iteration-0 evaluation.
 | GACA-LOO | 1/9 | 8/40 | 0/23 | 3/18 | 2/11 | 1/27 |
 | GACA + probe (seed 0) | 0/9 | 6/40 | 4/23 | 0/18 | 0/11 | 0/27 |
 | GACA + probe (seed 1) | 4/9 | 11/40 | 6/23 | 4/18 | 0/11 | 1/27 |
+| GACA + probe, clip [0.5, 2] | 2/9 | 9/40 | 4/23 | 3/18 | 0/11 | 0/27 |
 
 ## Training diagnostics (mean over iterations)
 
@@ -94,6 +104,7 @@ the other does not. The base model is each arm's own iteration-0 evaluation.
 | GACA-LOO | 393 | -- | 99.1% | 82 | 0.039 | 0.16 | 0.039 | 0.96 | -- | -- |
 | GACA + probe (seed 0) | 547 | 151 | 99.1% | 89 | 0.028 | 0.34 | 0.086 | 0.96 | 0.20 -> 0.34 | -- |
 | GACA + probe (seed 1) | 550 | 151 | 99.2% | 91 | 0.034 | 0.36 | 0.090 | 0.96 | 0.19 -> 0.14 | -- |
+| GACA + probe, clip [0.5, 2] | 525 | 131 | 99.1% | 81 | 0.021 | 0.37 | 0.092 | 0.96 | 0.20 -> 0.18 | 0.11 -> 0.10 |
 
 Paper Table 7 (ALFWorld): c_t std 0.31, lambda std 0.08, clamped < 0.01, step coverage 0.86.
 q(0): probability of the eventual action before any reasoning (probe arms). CIR: Causal Importance of
