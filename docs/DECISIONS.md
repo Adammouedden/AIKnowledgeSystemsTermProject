@@ -909,3 +909,12 @@ short of the controls (accepted as is, noted in RESULTS).
 Documents moved to `docs/` (DECISIONS, RESULTS, IDEAS, HANDOFF, RESULTS_4060); the 4060-era launchers to
 `legacy/4060/` and their logs to `runs/4060/`. Paths used by running jobs (`verl/`, `src/`, `runs/verl/`)
 were left unchanged; `src/report.py` writes `docs/RESULTS.md` and `docs/RESULTS_4060.md`.
+
+## 2026-11-09 — Probe follow-up queue: second seed, tighter clip, positive-only
+
+Queued after `gaca_probe` (seed 0), all 34 iterations, all uploading final weights: `gaca_probe_s1`
+(training seed 1; validation games pinned by `+env.val_seed=1000`, identical to every other arm's),
+`gaca_probe_c05` (clip [0.5, 2]) and `gaca_probe_pos` (probe weights only on rows with a positive
+advantage). The two variants keep training seed 0 so they compare directly with the controls and with
+probe seed 0. Motivation and the log measurements behind it are in docs/IDEAS.md (1b). The queue is a
+plain file, `runs/verl/queue.txt`, consumed by `verl/queue_runner.sh`, so it can change between arms.

@@ -60,6 +60,21 @@ climbing while held-out success stalls, the upper clip is the suspect;
 [0.5, 2] is the follow-up variant (offline: 1.26x credit on decisive
 segments, vs 1.65x at [0.25, 4]).
 
+### 1b. Variants queued after seed 0 (2026-11-08)
+
+Seed 0 trailed GACA mid-run (6.2% vs 10.2% at iteration 20, 5 games, not significant). Its logs show
+larger, noisier updates than GACA over iterations 1-21: KL 0.027 vs 0.015, gradient norm 1.28 vs 0.90,
+entropy 1.07 vs 0.96, responses 89 vs 82 tokens. Two hypotheses, one arm each:
+
+- **Clip [0.5, 2]** (`gaca_probe_c05`): if concentration makes updates too large, a tighter clip should
+  bring KL down and recover performance (offline: 1.26x credit on decisive segments instead of 1.65x).
+- **Positive advantages only** (`gaca_probe_pos`): the probe moves *where* credit lands, not whether it
+  is right. At 5-15% success many step advantages rest on one or two wins, and a wrong-signed advantage
+  concentrated on the decisive reasoning does the most damage. Probe weights only where A_t > 0;
+  zero/negative rows keep uniform credit, so blame stays diluted.
+
+Plus a second seed of the original (`gaca_probe_s1`) to separate noise from effect.
+
 ### 2. Probe as the step gate
 
 q(0) -- the probability of the eventual action before any reasoning -- says

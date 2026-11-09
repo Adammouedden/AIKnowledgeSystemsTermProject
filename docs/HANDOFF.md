@@ -20,10 +20,13 @@ weighting does not track decision importance; the **commitment probe** does (1.6
 training config, consistent across task types and game halves).
 
 ## Running / queued (automatic)
-1. `gaca_probe` (seed 0): GACA + probe-weighted token credit, 34 iterations, ends ~1:15 AM Eastern.
-2. `verl/launch_probe_s1.sh`: smoke-tests the final-weights save+upload, then `gaca_probe_s1` (seed 1,
-   same validation games, final bf16 weights uploaded), ends ~7 AM Eastern.
-3. `verl/report_after_probe.sh`: regenerates docs/RESULTS.md, commits, pushes and backs up after each probe arm.
+`gaca_probe` (seed 0) is running (ends ~1:15 AM Eastern). After it, **`verl/queue_runner.sh`** runs the
+arms listed in **`runs/verl/queue.txt`**, one at a time, top to bottom -- edit that file to reorder,
+add or drop arms (the runner reads its first line only when it is ready for the next arm). Current
+queue: `save_smoke` (1-iteration check of the final-weights upload), `gaca_probe_s1` (seed 1),
+`gaca_probe_c05` (clip [0.5, 2]), `gaca_probe_pos` (probe weights on positive advantages only). Every
+arm uploads its final bf16 weights to the private HF repo `Adammouedden/gaca-term-checkpoints/<arm>`;
+after each arm the runner regenerates docs/RESULTS.md, commits, tries to push and backs up to HF.
 
 ## Next
 Read the probe arms against both controls (paired McNemar in docs/RESULTS.md). Follow-ups in docs/IDEAS.md:

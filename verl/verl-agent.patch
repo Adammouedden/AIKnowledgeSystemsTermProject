@@ -204,10 +204,10 @@ index 0000000..dd93f1a
 +    return a, a, {f"gaca/{k}": float(v) for k, v in diag.items()}
 diff --git a/gigpo/core_probe.py b/gigpo/core_probe.py
 new file mode 100644
-index 0000000..4a5eea2
+index 0000000..d3f08bd
 --- /dev/null
 +++ b/gigpo/core_probe.py
-@@ -0,0 +1,122 @@
+@@ -0,0 +1,136 @@
 +"""Probe-weighted token credit (term project, IDEAS.md treatment 1).
 +
 +For each step row with a well-formed response, the commitment probe
@@ -303,7 +303,20 @@ index 0000000..4a5eea2
 +                                        "responses": resp}), tmask
 +
 +
-+def apply_probe_weights(trainer, batch, every=16, clip=(0.25, 4.0)):
++def sign_mask_weights(w, adv, resp_mask, sign="both"):
++    """sign='pos': keep probe weights only on rows whose advantage is > 0; rows
++    with a zero or negative advantage get uniform weights (GACA), so blame is
++    never concentrated -- if the advantage's sign is wrong, uniform credit
++    dilutes the damage. sign='both' leaves w unchanged."""
++    if sign == "both":
++        return w
++    m = resp_mask.float()
++    row_adv = (adv * m).sum(-1) / m.sum(-1).clamp(min=1)
++    keep = (row_adv > 0).float().unsqueeze(-1)
++    return keep * w + (1 - keep) * m
++
++
++def apply_probe_weights(trainer, batch, every=16, clip=(0.25, 4.0), sign="both"):
 +    """Multiply batch.batch['advantages'] by probe token weights. Returns diagnostics."""
 +    from verl.protocol import pad_dataproto_to_divisor, unpad_dataproto
 +
@@ -324,6 +337,7 @@ index 0000000..4a5eea2
 +    scores = (lp * tmask).sum(-1).tolist()
 +    w = weights_from_scores(reqs, rows, scores, responses.shape[0], responses.shape[1], clip)
 +    w = w.to(batch.batch["advantages"].device) * resp_mask.float()
++    w = sign_mask_weights(w, batch.batch["advantages"], resp_mask.to(w.device), sign)
 +    batch.batch["advantages"] = batch.batch["advantages"] * w
 +    batch.batch["returns"] = batch.batch["advantages"]
 +    wm = w[resp_mask.bool()]
@@ -331,10 +345,10 @@ index 0000000..4a5eea2
 +            "probe/w_max_mean": float(torch.stack([w[i][resp_mask[i].bool()].max() for i in rows]).mean()) if rows else 1.0,
 +            "probe/w_std": float(wm.std()), "probe/q0_mean": float(np.mean([np.exp(s) for (i, c, _, _), s in zip(reqs, scores) if c == 0]))}
 diff --git a/verl/trainer/config/ppo_trainer.yaml b/verl/trainer/config/ppo_trainer.yaml
-index d0f68ba..2077738 100644
+index d0f68ba..da6c30b 100644
 --- a/verl/trainer/config/ppo_trainer.yaml
 +++ b/verl/trainer/config/ppo_trainer.yaml
-@@ -247,6 +247,20 @@ algorithm:
+@@ -247,6 +247,21 @@ algorithm:
    pf_ppo:
      reweight_method: pow  # ["pow", "max_min", "max_random"]
      weight_pow: 2.0
@@ -352,11 +366,12 @@ index d0f68ba..2077738 100644
 +    probe_every: 16
 +    probe_clip_lo: 0.25
 +    probe_clip_hi: 4.0
++    probe_sign: both    # both | pos (probe weights only where the step advantage is positive)
    gigpo:
      step_advantage_w: 1.0
      mode: "mean_norm" # "mean_norm" or "mean_std_norm"
 diff --git a/verl/trainer/ppo/ray_trainer.py b/verl/trainer/ppo/ray_trainer.py
-index d85e23a..8b8d6be 100644
+index d85e23a..47b672a 100644
 --- a/verl/trainer/ppo/ray_trainer.py
 +++ b/verl/trainer/ppo/ray_trainer.py
 @@ -94,6 +94,7 @@ class AdvantageEstimator(str, Enum):
@@ -477,7 +492,7 @@ index d85e23a..8b8d6be 100644
                          response_masks = batch.batch["response_mask"]
                          loss_agg_mode = self.config.actor_rollout_ref.actor.loss_agg_mode
                          entropy_loss = agg_loss(loss_mat=entropys, loss_mask=response_masks, loss_agg_mode=loss_agg_mode)
-@@ -1233,7 +1298,26 @@ class RayPPOTrainer:
+@@ -1233,7 +1298,27 @@ class RayPPOTrainer:
                              gigpo_mode=self.config.algorithm.gigpo.mode,
                              gigpo_enable_similarity= self.config.algorithm.gigpo.enable_similarity,
                              gigpo_similarity_thresh=self.config.algorithm.gigpo.similarity_thresh,
@@ -493,7 +508,8 @@ index d85e23a..8b8d6be 100644
 +                            _t0 = _tp.time()
 +                            metrics.update(core_probe.apply_probe_weights(
 +                                self, batch, every=int(_g.get("probe_every", 16)),
-+                                clip=(float(_g.get("probe_clip_lo", 0.25)), float(_g.get("probe_clip_hi", 4.0)))))
++                                clip=(float(_g.get("probe_clip_lo", 0.25)), float(_g.get("probe_clip_hi", 4.0))),
++                                sign=str(_g.get("probe_sign", "both"))))
 +                            metrics["timing_s/probe"] = _tp.time() - _t0
 +                        # Term project: per-step dump (logging only, never affects training).
 +                        if os.environ.get("GACA_STEP_DUMP"):
@@ -504,7 +520,7 @@ index d85e23a..8b8d6be 100644
  
                      # update critic
                      if self.use_critic:
-@@ -1298,7 +1382,42 @@ class RayPPOTrainer:
+@@ -1298,7 +1383,42 @@ class RayPPOTrainer:
  
                  progress_bar.update(1)
                  self.global_steps += 1
