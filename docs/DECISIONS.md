@@ -939,3 +939,16 @@ between the probe at each cut and at the full reasoning) and q_T are now logged 
 `core_probe.apply_probe_weights` at no extra cost, from `gaca_probe_c05` on (the running `gaca_probe_s1`
 loaded its code before the change). Motivation: q(0) rose 0.20 -> 0.34 over probe seed 0, consistent with
 the paper's finding that outcome-driven RL makes reasoning less causally important.
+
+## 2026-11-09 — Probe seed 1: 20.3%; the two probe seeds differ more than any two methods
+
+`gaca_probe_s1` finished at **20.3% (26/128)**, the highest final of any arm (GACA 18.8%, GRPO 14.1%),
+against 7.8% for probe seed 0. Paired: seed 1 vs seed 0 20 vs 4 games (p = 0.002); seed 1 vs GACA 16 vs
+14 (p = 0.86); vs GRPO 16 vs 8 (p = 0.15). The gap between the two seeds of the *same* method is larger
+and more significant than any gap between methods, so single-seed comparisons in this table are not
+evidence for or against a method; the probe's mean over its two seeds (14.1%) equals GRPO's single run.
+
+The q(0) drift tracks the outcome: seed 0 rose 0.20 -> 0.34 (decides before reasoning; 7.8%), seed 1
+fell 0.19 -> 0.14 (reasoning more causally important; 20.3%). Two runs cannot establish it, but it is
+the pattern the CIR hypothesis (IDEAS 1c) predicts, and the CIR logging now on lets the remaining arms
+add points. Final weights: `Adammouedden/gaca-term-checkpoints/gaca_probe_s1` (verified listed).

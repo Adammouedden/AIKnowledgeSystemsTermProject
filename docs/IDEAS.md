@@ -95,6 +95,9 @@ whichever segment commits to the action rewards early commitment, so the decisio
 the rest of the reasoning becomes decorative. CIR and q(0) are now logged per iteration (report
 diagnostics) to test this on the remaining arms.
 
+**Update (seed 1 done):** probe seed 1 ended at 20.3% with q(0) *falling* 0.19 -> 0.14, against seed
+0's 7.8% with q(0) rising 0.20 -> 0.34 -- the direction this hypothesis predicts, on two runs.
+
 Candidate arm: **GACA + probe + CIR bonus** -- token redistribution plus the paper's reward term
 (computable from the probe passes already run), so concentration cannot make the reasoning decorative.
 
