@@ -119,6 +119,29 @@ where the signal is reliable and falls back to GACA where it is not. Testable of
 step dumps, check whether |A_t|-sign agreement with the MC oracle (or with a second seed's advantage at
 the same anchor) rises with group win count, before spending an arm.
 
+### 1e. Further probe improvements (2026-11-09)
+
+Ranked by cost and by how directly they address a measured problem:
+
+1. **Re-validate the probe on a trained policy (measurement, ~15 min GPU).** The flip-test oracle that
+   justified the probe ran on the *base* model. `gaca_probe_s1`'s final weights are on HF; rerun
+   `src/measure.py tokens` with them to see whether the probe still tracks decision importance after
+   training. Decides whether (2) matters.
+2. **Score the probe with the frozen reference model.** Today the policy scores its own reasoning: credit
+   goes to the committing segment, which pushes commitment earlier, which moves the credit again -- a
+   feedback loop that may explain seed 0's q(0) drift (0.20 -> 0.34). The reference model is already
+   loaded for the KL term, so this costs nothing. Next arm candidate.
+3. **Pool the probe across visits to the same anchor state** (average the q-rise profiles of the group's
+   visits, as LOO does for the NLL score); GACA's per-visit score was ~85% within-state noise.
+4. **Guard against decorative reasoning:** CIR bonus in the reward (1c), or a penalty on q(0) rising
+   above its starting level.
+5. **Trust-scaled concentration** (1d); positive-only is its sign-only special case.
+6. **Log-space or JS gain instead of raw q differences.** Raw dq over-weights the final jump to
+   near-certainty; log-gain credits an early 0.05 -> 0.2 shift as much as a late 0.5 -> 0.95, and JS
+   would make the token weights the per-segment terms of CIR itself.
+7. **Cut at sentence/clause boundaries** rather than every 16 tokens (as Thought Anchors does), so a
+   decision is not split across two segments.
+
 ### 2. Probe as the step gate
 
 q(0) -- the probability of the eventual action before any reasoning -- says
