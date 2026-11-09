@@ -34,3 +34,4 @@ __pycache__/
 # Keep: runs/*.jsonl, runs/*.out, runs/*paired*.json, runs/learning_curves.png
 .venv/
 runs/verl/*/ckpt/
+runs/verl/*/final/

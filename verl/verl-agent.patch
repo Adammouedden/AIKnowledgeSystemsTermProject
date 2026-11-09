@@ -1,3 +1,17 @@
+diff --git a/agent_system/environments/env_manager.py b/agent_system/environments/env_manager.py
+index ab09dff..3aa3e86 100644
+--- a/agent_system/environments/env_manager.py
++++ b/agent_system/environments/env_manager.py
+@@ -640,7 +640,8 @@ def make_envs(config):
+             'eval_dataset': config.env.alfworld.eval_dataset, # 'eval_in_distribution' or 'eval_out_of_distribution'
+         }
+         _envs = build_alfworld_envs(alf_config_path, config.env.seed, config.data.train_batch_size, group_n, is_train=True, env_kwargs=env_kwargs, resources_per_worker=resources_per_worker)
+-        _val_envs = build_alfworld_envs(alf_config_path, config.env.seed + 1000, config.data.val_batch_size, 1, is_train=False, env_kwargs=env_kwargs, resources_per_worker=resources_per_worker)
++        _val_envs = build_alfworld_envs(alf_config_path, config.env.get('val_seed', config.env.seed + 1000),  # term project: val games fixed across training seeds
++                                          config.data.val_batch_size, 1, is_train=False, env_kwargs=env_kwargs, resources_per_worker=resources_per_worker)
+         
+         projection_f = partial(alfworld_projection)
+         envs = AlfWorldEnvironmentManager(_envs, projection_f, config)
 diff --git a/agent_system/environments/env_package/alfworld/envs.py b/agent_system/environments/env_package/alfworld/envs.py
 index e72f621..3b36823 100644
 --- a/agent_system/environments/env_package/alfworld/envs.py
@@ -342,7 +356,7 @@ index d0f68ba..2077738 100644
      step_advantage_w: 1.0
      mode: "mean_norm" # "mean_norm" or "mean_std_norm"
 diff --git a/verl/trainer/ppo/ray_trainer.py b/verl/trainer/ppo/ray_trainer.py
-index d85e23a..5e3771e 100644
+index d85e23a..8b8d6be 100644
 --- a/verl/trainer/ppo/ray_trainer.py
 +++ b/verl/trainer/ppo/ray_trainer.py
 @@ -94,6 +94,7 @@ class AdvantageEstimator(str, Enum):
@@ -490,10 +504,91 @@ index d85e23a..5e3771e 100644
  
                      # update critic
                      if self.use_critic:
-@@ -1302,3 +1386,6 @@ class RayPPOTrainer:
+@@ -1298,7 +1382,42 @@ class RayPPOTrainer:
+ 
+                 progress_bar.update(1)
+                 self.global_steps += 1
++                if is_last_step and os.environ.get("GACA_SAVE_FINAL"):
++                    # Term project: final policy weights -> bf16 HF model -> private HF repo
++                    try:
++                        _final_save_and_upload(self, os.environ["GACA_SAVE_FINAL"])
++                    except Exception as _e:
++                        print(f"[final save] FAILED: {_e}")
+                 if is_last_step:
                      pprint(f"Final validation metrics: {last_val_metrics}")
                      progress_bar.close()
                      return
 +
 +
 +RayPPOTrainer._dump_steps = lambda self, batch, ent: _dump_steps_impl(self, batch, ent)
++
++
++def _final_save_and_upload(trainer, path):
++    """Save the final policy as a bf16 HF model, upload it to the HF repo in
++    GACA_HF_REPO under GACA_HF_PATH (a subfolder per run), then delete the
++    local copy if the upload succeeded (the disk cannot hold several)."""
++    import shutil
++    trainer.actor_rollout_wg.save_hf_bf16(path)
++    with open(os.path.join(path, "TRAINING_INFO.json"), "w") as f:
++        import json as _j
++        _j.dump({"global_steps": int(trainer.global_steps) - 1,
++                 "experiment": trainer.config.trainer.experiment_name,
++                 "gaca": dict(trainer.config.algorithm.get("gaca", {})),
++                 "env_seed": int(trainer.config.env.seed)}, f, indent=1, default=str)
++    repo = os.environ.get("GACA_HF_REPO")
++    if not repo:
++        print(f"[final save] saved to {path} (no GACA_HF_REPO, not uploaded)")
++        return
++    from huggingface_hub import HfApi
++    api = HfApi()
++    api.create_repo(repo, private=True, exist_ok=True)
++    sub = os.environ.get("GACA_HF_PATH", trainer.config.trainer.experiment_name)
++    api.upload_folder(folder_path=path, repo_id=repo, path_in_repo=sub,
++                      commit_message=f"{trainer.config.trainer.experiment_name}: final policy (bf16)")
++    print(f"[final save] uploaded {path} -> {repo}/{sub}")
++    shutil.rmtree(path, ignore_errors=True)
+diff --git a/verl/workers/fsdp_workers.py b/verl/workers/fsdp_workers.py
+index 7d9b8b4..e4878d0 100644
+--- a/verl/workers/fsdp_workers.py
++++ b/verl/workers/fsdp_workers.py
+@@ -746,6 +746,40 @@ class ActorRolloutRefWorker(Worker):
+ 
+         return output
+ 
++    @register(dispatch_mode=Dispatch.ONE_TO_ALL)
++    def save_hf_bf16(self, local_path):
++        """Term project: the actor's full weights as a bf16 Hugging Face model
++        (~3 GB at 1.5B), without optimizer state, which verl's checkpoint
++        manager insists on (~18 GB, more than the free disk)."""
++        import torch
++        from accelerate import init_empty_weights
++        from torch.distributed.fsdp import FullStateDictConfig, StateDictType
++        from transformers import AutoModelForCausalLM
++
++        from verl.utils.fsdp_utils import get_fsdp_state_ctx
++
++        assert self._is_actor
++        if self._is_offload_param:
++            load_fsdp_model_to_gpu(self.actor_module_fsdp)
++        cfg = FullStateDictConfig(offload_to_cpu=True, rank0_only=True)
++        with get_fsdp_state_ctx(self.actor_module_fsdp, StateDictType.FULL_STATE_DICT, cfg, None):
++            state_dict = self.actor_module_fsdp.state_dict()
++        if dist.get_rank() == 0:
++            state_dict = {k: v.to(torch.bfloat16) for k, v in state_dict.items()}
++            from transformers import AutoConfig
++            model_config = AutoConfig.from_pretrained(self.config.model.path)
++            with init_empty_weights():
++                m = AutoModelForCausalLM.from_config(model_config, torch_dtype=torch.bfloat16)
++            m.to_empty(device="cpu")
++            os.makedirs(local_path, exist_ok=True)
++            m.save_pretrained(local_path, state_dict=state_dict)
++            self.tokenizer.save_pretrained(local_path)
++            del state_dict, m
++        dist.barrier()
++        if self._is_offload_param:
++            offload_fsdp_model_to_cpu(self.actor_module_fsdp)
++        return True
++
+     @register(dispatch_mode=Dispatch.ONE_TO_ALL)
+     def save_checkpoint(self, local_path, hdfs_path=None, global_step=0, max_ckpt_to_keep=None):
+         # only support save and load ckpt for actor
