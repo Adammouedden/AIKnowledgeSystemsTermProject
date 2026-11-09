@@ -13,7 +13,7 @@ publish() {  # report, commit, push (if credentials ever exist), HF backup
   $PY src/report.py verl > /dev/null 2>&1
   git add docs/RESULTS.md runs/verl/learning_curves.png runs/verl/arms.log runs/verl/queue.txt $1 2>/dev/null
   gitc "$2"
-  GIT_TERMINAL_PROMPT=0 git push -q origin a100 > /dev/null 2>&1
+  git fetch -q . a100:main && GIT_TERMINAL_PROMPT=0 git push -q origin a100 main > /dev/null 2>&1
   verl/hf_backup.sh >> runs/verl/hf_backup.log 2>&1
 }
 while true; do
