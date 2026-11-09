@@ -971,3 +971,11 @@ credit on decision importance 1.64x [1.55, 1.72] at the training configuration (
 [1.57, 1.74]); unclipped 3.09x vs 2.94x; entropy still ~1x. Training did not degrade the probe as a
 measurement, so the frozen-reference scorer (implemented, `gaca_probe_ref`) is not needed for accuracy;
 it stays defined but unqueued. `gaca_probe_pos` was re-queued automatically afterwards.
+
+## 2026-11-09 — gaca_probe_ref queued after positive-only
+
+At the user's direction the frozen-reference scorer arm (`probe_scorer=ref`: the probe is scored by the
+reference model already loaded for the KL term; rollouts and the PPO update stay on-policy) runs after
+`gaca_probe_pos`, seed 0, 34 iterations, final weights uploaded. It tests the feedback-loop hypothesis
+(policy grading its own reasoning drives early commitment, IDEAS 1c/1e.2) rather than probe accuracy,
+which the trained-policy re-validation showed holds.
