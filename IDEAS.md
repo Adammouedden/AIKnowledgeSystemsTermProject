@@ -53,6 +53,13 @@ Why it should help: a good step's advantage reinforces mostly the reasoning
 that produced the decision, a bad step's advantage penalizes mostly that
 reasoning, instead of spreading both over boilerplate.
 
+Watch item (from the running arm, iter 6): KL to the reference is ~0.045,
+~3x the controls at the same point (0.014-0.015). Per-token weights up to 4x
+let some tokens' gradients grow, so the policy drifts faster. If KL keeps
+climbing while held-out success stalls, the upper clip is the suspect;
+[0.5, 2] is the follow-up variant (offline: 1.26x credit on decisive
+segments, vs 1.65x at [0.25, 4]).
+
 ### 2. Probe as the step gate
 
 q(0) -- the probability of the eventual action before any reasoning -- says
