@@ -320,6 +320,26 @@ def verl_main():
         w(f"response changes the action {100 * hh['F0_mean']:.0f}% of the time. The hybrid was designed from the first run and")
         w("did not hold up out of sample. The probe column is unclipped segment mass.")
         w("")
+    ht = _j("src/runs/tokens/trained_s1.analysis.json")
+    hrt = _j("src/runs/tokens/trained_s1.robust.json")
+    if ht and hh:
+        w("### Does the probe still work on a trained policy?")
+        w("")
+        w("The same oracle on the same 48 held-out games, with the final weights of `gaca_probe_s1` (20.3%) in place")
+        w("of the base model.")
+        w("")
+        w("| | base policy | trained (probe seed 1) |")
+        w("|---|---|---|")
+        w(f"| probe credit on decision importance vs uniform (unclipped) | {hh['probe']['credit_on_importance_vs_uniform']:.2f}x | {ht['probe']['credit_on_importance_vs_uniform']:.2f}x |")
+        if hr and hrt:
+            a, b = hr["clip"]["0.25-4"], hrt["clip"]["0.25-4"]
+            w(f"| same, training configuration (clip [0.25, 4]) [95% CI] | {a['ratio']:.2f}x [{a['ci'][0]:.2f}, {a['ci'][1]:.2f}] | {b['ratio']:.2f}x [{b['ci'][0]:.2f}, {b['ci'][1]:.2f}] |")
+        w(f"| probe TV - uniform [95% CI] | {hh['probe']['tv_minus_uniform']:+.3f} | {ht['probe']['tv_minus_uniform']:+.3f} [{ht['probe']['tv_minus_uniform_ci'][0]:+.3f}, {ht['probe']['tv_minus_uniform_ci'][1]:+.3f}] |")
+        w(f"| entropy credit vs uniform | {hh['entropy']['credit_on_importance_vs_uniform']:.2f}x | {ht['entropy']['credit_on_importance_vs_uniform']:.2f}x |")
+        w(f"| decision importance inside `<action>` | {100 * hh['importance_share_inside_action_tags']:.0f}% | {100 * ht['importance_share_inside_action_tags']:.0f}% |")
+        w("")
+        w("Training did not degrade the probe as a measurement (on the successful seed; seed 0 kept no weights).")
+        w("")
     if hr:
         w("### Robustness of probe weights at the training configuration")
         w("")

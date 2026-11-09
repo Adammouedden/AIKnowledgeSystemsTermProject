@@ -127,7 +127,12 @@ Ranked by cost and by how directly they address a measured problem:
    justified the probe ran on the *base* model. `gaca_probe_s1`'s final weights are on HF; rerun
    `src/measure.py tokens` with them to see whether the probe still tracks decision importance after
    training. Decides whether (2) matters.
-2. **Score the probe with the frozen reference model.** Today the policy scores its own reasoning: credit
+   **Done 2026-11-09:** on the trained seed-1 policy the probe tracks decision importance as well as on
+   the base model (training config 1.64x [1.55, 1.72] vs 1.65x; unclipped 3.09x vs 2.94x). The probe
+   does not degrade as a measurement -- on the seed that worked; seed 0 kept no weights.
+2. **Score the probe with the frozen reference model.** (Implemented: `probe_scorer=ref`, arm
+   `gaca_probe_ref`, not queued. Less urgent after 1e.1, since accuracy holds; still relevant to the
+   feedback-loop dynamics.) Today the policy scores its own reasoning: credit
    goes to the committing segment, which pushes commitment earlier, which moves the credit again -- a
    feedback loop that may explain seed 0's q(0) drift (0.20 -> 0.34). The reference model is already
    loaded for the KL term, so this costs nothing. Next arm candidate.

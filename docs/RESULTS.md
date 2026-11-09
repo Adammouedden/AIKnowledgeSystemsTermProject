@@ -148,6 +148,21 @@ Decision importance inside the `<action>` tags: 18%; fully resampling a
 response changes the action 72% of the time. The hybrid was designed from the first run and
 did not hold up out of sample. The probe column is unclipped segment mass.
 
+### Does the probe still work on a trained policy?
+
+The same oracle on the same 48 held-out games, with the final weights of `gaca_probe_s1` (20.3%) in place
+of the base model.
+
+| | base policy | trained (probe seed 1) |
+|---|---|---|
+| probe credit on decision importance vs uniform (unclipped) | 2.94x | 3.09x |
+| same, training configuration (clip [0.25, 4]) [95% CI] | 1.65x [1.57, 1.74] | 1.64x [1.55, 1.72] |
+| probe TV - uniform [95% CI] | -0.065 | -0.060 [-0.085, -0.034] |
+| entropy credit vs uniform | 1.04x | 1.02x |
+| decision importance inside `<action>` | 18% | 21% |
+
+Training did not degrade the probe as a measurement (on the successful seed; seed 0 kept no weights).
+
 ### Robustness of probe weights at the training configuration
 
 Exact training function (`advantages.probe_token_weights`, clip [0.25, 4], mean-preserving) on the held-out run.

@@ -963,3 +963,11 @@ At the user's direction the token oracle is re-run with the trained `gaca_probe_
 containing the text "verl.trainer.main_ppo" made its GPU-free check self-match (as in 2026-11-07); the
 GPU idled ~23 min until the stale shell was killed. Scripts must be launched from files, never heredocs
 that contain the patterns they pgrep for.
+
+## 2026-11-09 — Probe re-validated on a trained policy; positive-only proceeds
+
+The token flip-test oracle with `gaca_probe_s1`'s final weights, on the same 48 held-out games: probe
+credit on decision importance 1.64x [1.55, 1.72] at the training configuration (base model 1.65x
+[1.57, 1.74]); unclipped 3.09x vs 2.94x; entropy still ~1x. Training did not degrade the probe as a
+measurement, so the frozen-reference scorer (implemented, `gaca_probe_ref`) is not needed for accuracy;
+it stays defined but unqueued. `gaca_probe_pos` was re-queued automatically afterwards.
