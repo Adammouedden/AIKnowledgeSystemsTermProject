@@ -204,10 +204,10 @@ index 0000000..dd93f1a
 +    return a, a, {f"gaca/{k}": float(v) for k, v in diag.items()}
 diff --git a/gigpo/core_probe.py b/gigpo/core_probe.py
 new file mode 100644
-index 0000000..ee0e4fe
+index 0000000..8f7a254
 --- /dev/null
 +++ b/gigpo/core_probe.py
-@@ -0,0 +1,181 @@
+@@ -0,0 +1,184 @@
 +"""Probe-weighted token credit (term project, IDEAS.md treatment 1).
 +
 +For each step row with a well-formed response, the commitment probe
@@ -347,7 +347,10 @@ index 0000000..ee0e4fe
 +    KL term -- breaks the feedback loop in which the policy grades its own reasoning
 +    (IDEAS 1e.2); training stays on-policy, only the token weights change source."""
 +    if scorer == "ref":
-+        out = trainer.actor_rollout_wg.compute_ref_log_prob(pb)
++        # same routing as verl's own reference pass (ray_trainer.fit): a separate "ref"
++        # worker group unless the reference lives inside the actor (LoRA)
++        wg = trainer.actor_rollout_wg if getattr(trainer, "ref_in_actor", False) else trainer.ref_policy_wg
++        out = wg.compute_ref_log_prob(pb)
 +        return out.batch["ref_log_prob"]
 +    out = trainer.actor_rollout_wg.compute_log_prob(pb)
 +    return out.batch["old_log_probs"]

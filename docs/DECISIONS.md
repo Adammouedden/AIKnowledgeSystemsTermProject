@@ -979,3 +979,13 @@ reference model already loaded for the KL term; rollouts and the PPO update stay
 `gaca_probe_pos`, seed 0, 34 iterations, final weights uploaded. It tests the feedback-loop hypothesis
 (policy grading its own reasoning drives early commitment, IDEAS 1c/1e.2) rather than probe accuracy,
 which the trained-policy re-validation showed holds.
+
+## 2026-11-09 — gaca_probe_ref crashed at its first probe call; fixed, GPU smoke before re-running
+
+`probe_scorer=ref` called `compute_ref_log_prob` on the actor/rollout worker group, but with full
+fine-tuning verl keeps the reference model in a separate `ref` worker group (`assert self._is_ref`).
+The unit test mocked the dispatch and could not catch it. Fixed to use verl's own routing
+(`ref_policy_wg` unless `ref_in_actor`), with a test reproducing the crash condition; the arm is re-run
+only after a 1-iteration GPU smoke (`src/verl/smoke_ref.sh`). The crashed attempt's logs are kept in
+`src/runs/verl/gaca_probe_ref_crashed/` (no training happened). Lesson: anything that crosses the
+worker boundary gets a GPU smoke before a full arm.
