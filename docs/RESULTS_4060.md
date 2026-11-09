@@ -1,7 +1,6 @@
 # Results (attempts 1-3, RTX 4060): GACA vs GRPO on ALFWorld — index actions, LoRA, two task types
 
 > Superseded setup. Kept as history; the current experiments are in `RESULTS.md`.
-
 ## Setup
 
 - Backbone: `Qwen/Qwen2.5-1.5B-Instruct`, LoRA r=32, lr=1e-05
@@ -145,7 +144,7 @@ between two such margins is well inside that noise.
 
 ## Learning curves
 
-![Held-out success rate over training](runs/learning_curves.png)
+![Held-out success rate over training](../runs/4060/learning_curves.png)
 
 ## Verdict
 
@@ -195,7 +194,7 @@ the paper's invalid-action penalty had to be removed, for the reason given above
 
 ## Raw logs
 
-- `runs/grpo.jsonl`
-- `runs/grpo_mn.jsonl`
-- `runs/gaca.jsonl`
-- `runs/gaca_mn.jsonl`
+- `runs/4060/grpo.jsonl`
+- `runs/4060/grpo_mn.jsonl`
+- `runs/4060/gaca.jsonl`
+- `runs/4060/gaca_mn.jsonl`

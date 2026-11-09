@@ -288,7 +288,7 @@ SYSTEM = (
 # invented, so neither example is a training or evaluation task. A first
 # version showed the examples as one transcript without admissible lists; the
 # model then copied object names out of the examples (68% invalid, see
-# DECISIONS.md).
+# docs/DECISIONS.md).
 SYSTEM_TEXT = (
     "You act in a household to complete a task. You can only interact with the receptacle you are at. "
     "Each turn you see the task, recent steps, the current observation and the admissible actions. "

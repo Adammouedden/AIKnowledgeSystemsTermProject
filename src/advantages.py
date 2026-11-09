@@ -249,7 +249,7 @@ def probe_cuts(L: int, act_start: int, every: int = 16):
 
 
 def probe_token_weights(L: int, cuts, q, clip=(0.25, 4.0)):
-    """Token weights from the commitment probe (IDEAS.md, treatment 1).
+    """Token weights from the commitment probe (docs/IDEAS.md, treatment 1).
 
     `cuts` are increasing positions starting at 0, `q[k]` the probability of
     the original action given the response's first cuts[k] tokens (then a

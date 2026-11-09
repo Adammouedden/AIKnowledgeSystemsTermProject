@@ -51,7 +51,7 @@ def fmt(x, n=1):
 
 def main():
     runs = []
-    for p in sorted(glob.glob(os.path.join(ROOT, "runs", "*.jsonl"))):
+    for p in sorted(glob.glob(os.path.join(ROOT, "runs", "4060", "*.jsonl"))):
         if os.path.basename(p).startswith("smoke"):
             continue
         r = load(p)
@@ -166,7 +166,7 @@ def main():
     w("")
 
     # ---------------- attempt 1: the reward-shaping failure
-    a1 = os.path.join(ROOT, "runs", "attempt1_penalty0.1", "grpo.jsonl")
+    a1 = os.path.join(ROOT, "runs", "4060", "attempt1_penalty0.1", "grpo.jsonl")
     if os.path.exists(a1):
         r1 = load(a1)
         if r1 and r1["train"]:
@@ -200,7 +200,7 @@ def main():
     # ---------------- paired per-task comparison
     det, lab = {}, {}
     for r in runs:
-        q = os.path.join(ROOT, "runs", f"{r['name']}_paired.eval.json")
+        q = os.path.join(ROOT, "runs", "4060", f"{r['name']}_paired.eval.json")
         if os.path.exists(q):
             d = json.load(open(q))
             if d.get("per_task"):
@@ -374,7 +374,7 @@ def main():
     try:
         fig = plot(runs)
         w("## Learning curves\n")
-        w(f"![Held-out success rate over training]({fig})\n")
+        w(f"![Held-out success rate over training](../{fig})\n")
     except Exception as e:  # pragma: no cover
         w(f"(figure not produced: {e})\n")
 
@@ -420,8 +420,10 @@ def main():
         w(f"- `{os.path.relpath(r['path'], ROOT)}`")
     w("")
 
+    out[0] = ("# Results (attempts 1-3, RTX 4060): GACA vs GRPO on ALFWorld — index actions, LoRA, two task types\n\n"
+              "> Superseded setup. Kept as history; the current experiments are in `RESULTS.md`.")
     text = "\n".join(out)
-    open(os.path.join(ROOT, "RESULTS.md"), "w").write(text)
+    open(os.path.join(ROOT, "docs", "RESULTS_4060.md"), "w").write(text)
     print(text)
 
 
@@ -487,7 +489,7 @@ def plot(runs):
     ax.set_ylim(bottom=0)
     ax.legend(frameon=False, loc="upper left", fontsize=9, labelcolor=ink2)
     fig.tight_layout()
-    path = os.path.join(ROOT, "runs", "learning_curves.png")
+    path = os.path.join(ROOT, "runs", "4060", "learning_curves.png")
     fig.savefig(path, facecolor=surface)
     plt.close(fig)
     return os.path.relpath(path, ROOT)
@@ -495,7 +497,7 @@ def plot(runs):
 
 # ===================================================================== verl-agent arms
 # Experiments of attempt 4 (A100, verl-agent, the paper's reasoning format).
-# `python src/report.py verl` rebuilds RESULTS.md from runs/verl/*.
+# `python src/report.py verl` rebuilds docs/RESULTS.md from runs/verl/*.
 
 VERL_ARMS = [  # (dir, label, role, what differs from GACA/GRPO)
     ("grpo", "GRPO", "control", "episode-level advantage only (Eq. 2)"),
@@ -669,7 +671,7 @@ def verl_main():
     w("Final = the last evaluation (the end-of-training checkpoint). Best is reported for comparison with the")
     w("paper's best-checkpoint convention but is optimistic: it picks the maximum over five noisy evaluations.")
     w("")
-    w(f"![Held-out success over training]({verl_plot(arms)})")
+    w(f"![Held-out success over training](../{verl_plot(arms)})")
     w("")
     w("### Learning curves (held-out success %, 128 games)")
     w("")
@@ -799,7 +801,7 @@ def verl_main():
     w("- Offline token studies use the **base** policy (no trained checkpoint existed then).")
     w("")
     text = "\n".join(out)
-    open(os.path.join(ROOT, "RESULTS.md"), "w").write(text)
+    open(os.path.join(ROOT, "docs", "RESULTS.md"), "w").write(text)
     print(text)
 
 

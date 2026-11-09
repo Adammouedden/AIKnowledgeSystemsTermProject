@@ -898,3 +898,14 @@ per iteration; on the controls' 3.75 h budget it would get fewer iterations,
 i.e. less data, and lose for reasons unrelated to credit assignment. Rollout
 budget (iterations x tasks x G) is what the comparison holds fixed, as in
 attempts 1-3. The arm therefore runs past 4 h by the measured probe overhead.
+
+## 2026-11-09 — Fixed 34 iterations per arm; wall-clock cap retired; repo layout
+
+Every arm now runs exactly 34 iterations (`STEPS=34` in `verl/run_arms.sh` / `verl/run_arm.sh`) and the
+wall-clock budget (`GACA_TIME_BUDGET_H`) is unset, at the user's direction. The arms are matched on
+rollout budget, which the cap could violate: it stopped GACA + m_z and GACA-LOO at 33 iterations, one
+short of the controls (accepted as is, noted in RESULTS).
+
+Documents moved to `docs/` (DECISIONS, RESULTS, IDEAS, HANDOFF, RESULTS_4060); the 4060-era launchers to
+`legacy/4060/` and their logs to `runs/4060/`. Paths used by running jobs (`verl/`, `src/`, `runs/verl/`)
+were left unchanged; `src/report.py` writes `docs/RESULTS.md` and `docs/RESULTS_4060.md`.

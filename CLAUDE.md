@@ -6,9 +6,9 @@ paper uses. Ignore everything about *learning value* in
 `references/Credit_Assignment_Proposal (2).pdf`, and ignore the model sizes it
 names.
 
-Read `DECISIONS.md` before changing anything. It records every judgement call
+Read `docs/DECISIONS.md` before changing anything. It records every judgement call
 with the measurement behind it, including two that were expensive to learn.
-`RESULTS.md` has the numbers. `HANDOFF.md` has the state of the last session.
+`docs/RESULTS.md` has the numbers. `docs/HANDOFF.md` has the state of the last session.
 
 ---
 
@@ -64,7 +64,7 @@ be concluded.** Within 4-6 hours, prefer:
 
 - several short runs across seeds over one long run,
 - more evaluation tasks (we used 64 of the paper's 128),
-- paired per-task tests (`finalize.sh`, McNemar) over comparing two rates,
+- paired per-task tests (McNemar, in `docs/RESULTS.md`) over comparing two rates,
 - and **measurement experiments over training experiments** wherever possible.
 
 The proposal's own first experiment is a measurement study - does a cheap
@@ -122,10 +122,10 @@ quantity*, not for estimator reliability. Beat that baseline.
 - Keep the code small and simple: 5 source files in `src/`, no frameworks beyond
   TRL/PEFT/transformers. Test rigorously before long runs.
 - **Append every new judgement call about scale, model, or data to
-  `DECISIONS.md`** (never to this file), with the measurement that motivated it.
+  `docs/DECISIONS.md`** (never to this file), with the measurement that motivated it.
 - During training, report progress about every 10 minutes with an ETA.
 - One training process at a time. Multiple agents/terminals have collided on
-  this GPU before; `run_all.sh.superseded` and `chain.sh.superseded` are retired
-  launchers - do not run them.
+  this GPU before; the launchers in `legacy/4060/` are retired - do not run
+  them.
 - `pixi run test` (CPU, fast) and `pixi run test-train` (GPU) must pass before a
   long run.

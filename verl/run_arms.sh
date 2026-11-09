@@ -7,8 +7,8 @@
 set -u
 ROOT=/workspace/AIKnowledgeSystemsTermProject
 ARMS=${@:-grpo gaca gaca_msize}
-export TRAIN_BS=${TRAIN_BS:-4} VAL_BS=${VAL_BS:-128} STEPS=${STEPS:-150} TEST_FREQ=${TEST_FREQ:-10}
-export GACA_TIME_BUDGET_H=${GACA_TIME_BUDGET_H:-3.75} GACA_VAL_SECS=${GACA_VAL_SECS:-420}
+# Every arm runs exactly 34 iterations (rollout-matched); no wall-clock cap.
+export TRAIN_BS=${TRAIN_BS:-4} VAL_BS=${VAL_BS:-128} STEPS=${STEPS:-34} TEST_FREQ=${TEST_FREQ:-10}
 for arm in $ARMS; do
   # one training process at a time
   while pgrep -f "verl.trainer.main_ppo" > /dev/null; do sleep 30; done

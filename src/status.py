@@ -17,7 +17,7 @@ def main():
     parts = []
     running = None
     for m in ORDER:
-        p = os.path.join(ROOT, "runs", f"{m}.jsonl")
+        p = os.path.join(ROOT, "runs", "4060", f"{m}.jsonl")
         if not os.path.exists(p):
             parts.append(f"{m}:-")
             continue
@@ -48,7 +48,7 @@ def main():
             if fresh:
                 tag += f" ETA {left:.1f}h"
         parts.append(tag)
-    done = all(os.path.exists(os.path.join(ROOT, "runs", f"{m}.jsonl")) for m in ORDER) and running is None
+    done = all(os.path.exists(os.path.join(ROOT, "runs", "4060", f"{m}.jsonl")) for m in ORDER) and running is None
     print(f"[{now}] " + " | ".join(parts) + ("  ALL IDLE/DONE" if done else ""))
 
 

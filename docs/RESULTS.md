@@ -29,7 +29,7 @@ is 0.78 points.
 Final = the last evaluation (the end-of-training checkpoint). Best is reported for comparison with the
 paper's best-checkpoint convention but is optimistic: it picks the maximum over five noisy evaluations.
 
-![Held-out success over training](runs/verl/learning_curves.png)
+![Held-out success over training](../runs/verl/learning_curves.png)
 
 ### Learning curves (held-out success %, 128 games)
 

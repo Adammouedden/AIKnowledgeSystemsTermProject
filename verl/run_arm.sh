@@ -6,6 +6,7 @@
 # follows verl-agent's examples/gigpo_trainer/run_alfworld.sh (the paper's
 # "public GiGPO recipe"); deviations forced by one 40 GB GPU are marked.
 set -euo pipefail
+unset GACA_TIME_BUDGET_H   # iterations are fixed (STEPS); the wall-clock cap is retired
 NAME=$1; METHOD=$2; REL=$3; shift 3
 ROOT=/workspace/AIKnowledgeSystemsTermProject
 VA=/workspace/verl-agent
@@ -19,7 +20,7 @@ cd $VA
 
 TRAIN_BS=${TRAIN_BS:-16}     # tasks per iteration (paper: 16)
 VAL_BS=${VAL_BS:-128}        # held-out episodes (paper: 128)
-STEPS=${STEPS:-150}          # iterations (paper: 150 epochs)
+STEPS=${STEPS:-34}           # iterations, fixed for every arm (paper: 150 epochs)
 TEST_FREQ=${TEST_FREQ:-5}
 
 python3 -m examples.data_preprocess.prepare --mode text --train_data_size $TRAIN_BS --val_data_size $VAL_BS
