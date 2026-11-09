@@ -29,3 +29,6 @@
 [22:32:21] queue -> gaca_probe_ref
 [22:32:21] start gaca_probe_ref (gaca, rel=none)
 [22:44:23] end gaca_probe_ref
+[23:06:49] ref-scorer smoke passed
+[23:09:00] queue -> gaca_probe_ref
+[23:09:00] start gaca_probe_ref (gaca, rel=none)
