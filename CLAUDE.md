@@ -125,7 +125,7 @@ quantity*, not for estimator reliability. Beat that baseline.
   `docs/DECISIONS.md`** (never to this file), with the measurement that motivated it.
 - During training, report progress about every 10 minutes with an ETA.
 - One training process at a time. Multiple agents/terminals have collided on
-  this GPU before; the launchers in `legacy/4060/` are retired - do not run
+  this GPU before; the launchers in `legacy/4060_launchers/` are retired - do not run
   them.
 - `pixi run test` (CPU, fast) and `pixi run test-train` (GPU) must pass before a
   long run.

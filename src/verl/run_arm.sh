@@ -14,7 +14,7 @@ export HF_HOME=$ROOT/models ALFWORLD_DATA=$ROOT/data/alfworld
 export TOKENIZERS_PARALLELISM=false  # recipe forces VLLM_ATTENTION_BACKEND=XFORMERS; its wheel does not load here, vLLM default (FlashAttention) is used
 # The container caps the process tree at 2816 threads: keep per-process pools small.
 export OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 RAY_num_server_call_thread=1 ALF_ENVS_PER_ACTOR=8
-OUT=$ROOT/runs/verl/$NAME; mkdir -p $OUT
+OUT=$ROOT/src/runs/verl/$NAME; mkdir -p $OUT
 cd $VA
 . .venv/bin/activate
 

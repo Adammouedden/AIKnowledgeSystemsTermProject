@@ -31,7 +31,9 @@ __pycache__/
 **/*_last
 **/*_ckpt
 
-# Keep: runs/*.jsonl, runs/*.out, runs/*paired*.json, runs/learning_curves.png
+# Keep: run logs under src/runs/ (jsonl, val/step dumps, figures)
 .venv/
-runs/verl/*/ckpt/
-runs/verl/*/final/
+src/runs/verl/*/ckpt/
+src/runs/verl/*/final/
+src/runs/verl/*.out
+src/runs/verl/hf_backup.log

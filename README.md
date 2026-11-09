@@ -9,29 +9,29 @@ reasoning according to where the decision was actually made.
 evidence), `docs/DECISIONS.md` (every judgement call with its measurement), `docs/HANDOFF.md` (state).
 
 ```
-docs/            RESULTS.md (generated), IDEAS.md, DECISIONS.md, HANDOFF.md, RESULTS_4060.md (history)
-src/advantages.py  GRPO / GiGPO / GACA estimators, reliability gate, probe token weights (unit-tested)
-src/measure.py     offline studies: MC advantage oracle, NLL-vs-entropy check, token flip-test oracle
-src/report.py      builds docs/RESULTS.md and the figures (`python src/report.py verl`)
-src/env.py, src/train.py   the original HF/LoRA pipeline (attempts 1-3, and zero-shot format tests)
-src/test_*.py      test suites
-verl/              experiment launchers for verl-agent + verl-agent.patch (our changes) + backup scripts
-runs/verl/         verl-agent arms: train.log, per-episode validation outcomes, per-step dumps
-runs/tokens/       token decision-relevance oracle data and analyses
-runs/a100/, runs/measure/   zero-shot format tests, MC-oracle pilot
-runs/4060/, legacy/4060/    attempts 1-3 (RTX 4060) logs and retired launchers
-references/        the GACA paper and the project proposal
+docs/                 RESULTS.md (generated), IDEAS.md, DECISIONS.md, HANDOFF.md, RESULTS_4060.md (history)
+src/advantages.py     GRPO / GiGPO / GACA estimators, reliability gate, probe token weights (unit-tested)
+src/env.py            ALFWorld wrapper and prompts (used by the offline token studies)
+src/measure.py        offline studies: NLL-vs-entropy check, token flip-test oracle, probe robustness
+src/report.py         builds docs/RESULTS.md and the learning-curve figure
+src/test_advantages.py  estimator unit tests
+src/verl/             arm launchers, queue runner, HF backup, verl-agent.patch (our changes) + its base commit
+src/runs/verl/        verl-agent arms: train.log, per-episode validation outcomes, per-step dumps, queue.txt
+src/runs/tokens/      token decision-relevance oracle data and analyses
+src/runs/a100/, src/runs/4060/   zero-shot format tests; attempts 1-3 logs
+legacy/               code no longer used (4060 HF/LoRA pipeline, retired launchers); see legacy/README.md
+references/           the GACA paper and the project proposal
 ```
 
 ## Running
 
 Experiments run on [verl-agent](https://github.com/langfengQ/verl-agent) at the commit in
-`verl/VERL_AGENT_COMMIT` with `verl/verl-agent.patch` applied (it adds the `gaca` advantage estimator,
+`src/verl/VERL_AGENT_COMMIT` with `src/verl/verl-agent.patch` applied (it adds the `gaca` advantage estimator,
 which calls `src/advantages.py`, plus probe token credit, episode dumps and a final-weights upload).
 
 ```bash
-verl/run_arms.sh grpo gaca gaca_probe    # arms one after another, 34 iterations each
-python src/report.py verl                # rebuild docs/RESULTS.md
+src/verl/run_arms.sh grpo gaca gaca_probe    # arms one after another, 34 iterations each
+python src/report.py                     # rebuild docs/RESULTS.md
 python src/test_advantages.py            # estimator unit tests (CPU)
 ```
 

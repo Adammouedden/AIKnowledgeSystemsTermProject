@@ -3,7 +3,7 @@
 Working notes for the term project's new direction. Controls are **GRPO** and
 **GACA**; each idea below is a *treatment* compared against both on the same
 128 held-out games (paired McNemar). Measurements behind each idea are in
-`DECISIONS.md` and `runs/tokens/`, `runs/verl/`.
+`DECISIONS.md` and `src/runs/tokens/`, `src/runs/verl/`.
 
 ## What the offline tests established (2026-11-08)
 
@@ -12,7 +12,7 @@ Working notes for the term project's new direction. Controls are **GRPO** and
   exact entropy) is within-state, i.e. it depends on which reasoning path was
   drawn, not on the state. Swapping NLL for exact entropy changes lambda by
   >0.1 on only 0.9% of steps -> not worth an arm.
-  (`runs/verl/entropy_check_iter1-5.json`)
+  (`src/runs/verl/entropy_check_iter1-5.json`)
 - **Most of a decision is made in the reasoning, not in the action tokens.**
   Resampling a response after its first j tokens and checking whether the
   final `<action>` changes (the flip test): 82% of the decision is settled
@@ -28,7 +28,7 @@ Working notes for the term project's new direction. Controls are **GRPO** and
   it puts **2.94x** more credit on decisive segments than uniform and is the
   only scheme that fits measured importance better than uniform (TV -0.065,
   95% CI [-0.093, -0.037]), on games not used to design it.
-  (`runs/tokens/heldout.analysis.json`)
+  (`src/runs/tokens/heldout.analysis.json`)
   Caveats: the probe and the flip-test ground truth measure related things,
   so part of the agreement is by construction; it shows *where* the decision
   is made, not that crediting those tokens trains better; base policy only.

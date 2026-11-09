@@ -1,9 +1,9 @@
 """Offline measurement studies (no training).
 
-    python src/measure.py entropy runs/verl/<arm>/steps.jsonl      # GACA's NLL vs exact token entropy
-    python src/measure.py tokens --out runs/tokens/<name> ...       # token flip-test oracle (GPU, vLLM)
-    python src/measure.py tokens_analyze runs/tokens/<name>.jsonl   # score token-weighting schemes
-    python src/measure.py tokens_robust runs/tokens/<name>.jsonl    # robustness of the probe weights
+    python src/measure.py entropy src/runs/verl/<arm>/steps.jsonl      # GACA's NLL vs exact token entropy
+    python src/measure.py tokens --out src/runs/tokens/<name> ...       # token flip-test oracle (GPU, vLLM)
+    python src/measure.py tokens_analyze src/runs/tokens/<name>.jsonl   # score token-weighting schemes
+    python src/measure.py tokens_robust src/runs/tokens/<name>.jsonl    # robustness of the probe weights
 
 Run with the verl-agent venv (vLLM, transformers, alfworld); see docs/HANDOFF.md.
 """

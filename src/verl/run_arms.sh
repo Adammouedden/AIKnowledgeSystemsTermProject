@@ -25,11 +25,11 @@ for arm in $ARMS; do
     gaca_probe_pos) m=gaca; r=none; extra="algorithm.gaca.token_mode=probe algorithm.gaca.probe_sign=pos" ;;  # probe weights on positive advantages only     # treatment: anchor-pooled score (App. B.4, never trained in the paper)
     *) echo "unknown arm $arm"; continue ;;
   esac
-  if grep -q "Training Progress: 100%" $ROOT/runs/verl/$arm/train.log 2>/dev/null; then
+  if grep -q "Training Progress: 100%" $ROOT/src/runs/verl/$arm/train.log 2>/dev/null; then
     echo "$arm already finished, skipping"; continue
   fi
-  echo "[$(date +%T)] start $arm ($m, rel=$r)" | tee -a $ROOT/runs/verl/arms.log
-  $ROOT/verl/run_arm.sh $arm $m $r $extra > /dev/null 2>&1
+  echo "[$(date +%T)] start $arm ($m, rel=$r)" | tee -a $ROOT/src/runs/verl/arms.log
+  $ROOT/src/verl/run_arm.sh $arm $m $r $extra > /dev/null 2>&1
   /workspace/verl-agent/.venv/bin/ray stop --force > /dev/null 2>&1
-  echo "[$(date +%T)] end $arm" | tee -a $ROOT/runs/verl/arms.log
+  echo "[$(date +%T)] end $arm" | tee -a $ROOT/src/runs/verl/arms.log
 done
