@@ -1,3 +1,2 @@
-gaca_probe_s1
 gaca_probe_c05
 gaca_probe_pos

@@ -75,6 +75,29 @@ entropy 1.07 vs 0.96, responses 89 vs 82 tokens. Two hypotheses, one arm each:
 
 Plus a second seed of the original (`gaca_probe_s1`) to separate noise from effect.
 
+### 1c. Relation to CIR, and a new failure hypothesis (2026-11-09)
+
+Yu, Tartaglini, Hase, Guestrin & Potts, *Outcome Rewards Do Not Guarantee Verifiable or Causally
+Important Reasoning* (arXiv 2604.22074, ICML 2026) define **Causal Importance of Reasoning**:
+truncate the reasoning after k tokens, force the answer, p_k = P(answer | q, t_{1:k});
+CIR = mean_k JS(Bern(p_k) || Bern(p_T)). That is the same measurement as our commitment probe. They
+use it as a **scalar reward bonus** (r_out + beta CIR), and find that outcome-only RL lowers CIR on
+19/40 ReasoningGym tasks (reasoning becomes decorative); the bonus or a little SFT restores it. They do
+not redistribute the advantage across tokens -- every token of a response still gets the same
+advantage. **Our contribution is that redistribution** (the per-segment *rise* of p_k sets each token's
+share of the step advantage, in multi-turn agent RL), not the probe itself, which must be credited to
+them (and to earlier truncation-based "early answering" faithfulness tests).
+
+Their warning appears in our own logs: in `gaca_probe` (seed 0) the mean q(0) -- the probability of the
+eventual action *before* any reasoning -- rose from 0.20 to 0.34 over training, i.e. the policy decided
+earlier and its reasoning mattered less. Hypothesis 3 for seed 0's 7.8%: concentrating credit on
+whichever segment commits to the action rewards early commitment, so the decision drifts forward and
+the rest of the reasoning becomes decorative. CIR and q(0) are now logged per iteration (report
+diagnostics) to test this on the remaining arms.
+
+Candidate arm: **GACA + probe + CIR bonus** -- token redistribution plus the paper's reward term
+(computable from the probe passes already run), so concentration cannot make the reasoning decorative.
+
 ### 2. Probe as the step gate
 
 q(0) -- the probability of the eventual action before any reasoning -- says
@@ -106,10 +129,11 @@ within-state noise. The paper flags it as unsettled and never trains it.
 
 ## Prior art to check before claiming novelty
 
+- Truncate-and-force-answer measurement of reasoning importance: CIR (Yu et al., 2026, arXiv
+  2604.22074) -- the commitment probe is this measurement; see 1c.
 - Resampling-based importance of reasoning steps ("Thought Anchors", Bogdan
   et al., 2025) -- the flip test is close to this.
 - Monte-Carlo credit from token prefixes (VinePPO).
 - High-entropy minority tokens in single-turn reasoning RL (Wang et al.).
-The cheap teacher-forced probe used to distribute a step's advantage in
-multi-turn agent RL appears new, but has not been checked against the
-literature.
+Using that measurement's per-segment rise to distribute a step's advantage
+over tokens in multi-turn agent RL appears new; the measurement itself is not.

@@ -150,6 +150,16 @@ def verl_plot(arms):
     return os.path.relpath(path, ROOT)
 
 
+def _q0_drift(R):
+    q = [r["probe/q0_mean"] for r in R if "probe/q0_mean" in r]
+    return f"{np.mean(q[:5]):.2f} -> {np.mean(q[-5:]):.2f}" if len(q) >= 10 else "--"
+
+
+def _cir(R):
+    c = [r["probe/cir_mean"] for r in R if "probe/cir_mean" in r]
+    return f"{np.mean(c[:5]):.2f} -> {np.mean(c[-5:]):.2f}" if len(c) >= 10 else "--"
+
+
 def _j(path):
     p = os.path.join(ROOT, path)
     return json.load(open(p)) if os.path.exists(p) else None
@@ -243,8 +253,8 @@ def verl_main():
         w("")
     w("## Training diagnostics (mean over iterations)")
     w("")
-    w("| arm | s / iter | probe s / iter | valid actions | response tokens | KL (last 5) | c_t std | lambda std | step coverage |")
-    w("|---|---|---|---|---|---|---|---|---|")
+    w("| arm | s / iter | probe s / iter | valid actions | response tokens | KL (last 5) | c_t std | lambda std | step coverage | q(0) first 5 -> last 5 | CIR |")
+    w("|---|---|---|---|---|---|---|---|---|---|---|")
     for a in arms:
         R = a["rows"]
         if not R:
@@ -255,9 +265,13 @@ def verl_main():
         pr = f"{pr:.0f}" if np.isfinite(pr) else "--"
         gs = (lambda k, f: "--" if a["key"] == "grpo" else format(mean(k), f))
         w(f"| {a['label']} | {mean('timing_s/step'):.0f} | {pr} | {100 * mean('episode/valid_action_ratio'):.1f}% "
-          f"| {mean('response_length/mean'):.0f} | {kl5:.3f} | {gs('gaca/c_std', '.2f')} | {gs('gaca/lam_std', '.3f')} | {gs('gaca/step_coverage', '.2f')} |")
+          f"| {mean('response_length/mean'):.0f} | {kl5:.3f} | {gs('gaca/c_std', '.2f')} | {gs('gaca/lam_std', '.3f')} | {gs('gaca/step_coverage', '.2f')} "
+          f"| {_q0_drift(R)} | {_cir(R)} |")
     w("")
     w("Paper Table 7 (ALFWorld): c_t std 0.31, lambda std 0.08, clamped < 0.01, step coverage 0.86.")
+    w("q(0): probability of the eventual action before any reasoning (probe arms). CIR: Causal Importance of")
+    w("Reasoning (Yu et al., 2026), mean JS divergence between the probe at each cut and at the full reasoning;")
+    w("logged from `gaca_probe_c05` on. A rising q(0) / falling CIR means the reasoning matters less over training.")
     w("")
     w("## Offline studies (no training)")
     w("")

@@ -15,3 +15,5 @@
 [05:54:43] end gaca_probe
 [05:54:44] end gaca_probe
 [06:14:36] save smoke passed (uploaded + verified + removed)
+[06:16:36] queue -> gaca_probe_s1
+[06:16:36] start gaca_probe_s1 (gaca, rel=none)

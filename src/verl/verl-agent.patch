@@ -204,10 +204,10 @@ index 0000000..dd93f1a
 +    return a, a, {f"gaca/{k}": float(v) for k, v in diag.items()}
 diff --git a/gigpo/core_probe.py b/gigpo/core_probe.py
 new file mode 100644
-index 0000000..d3f08bd
+index 0000000..64e4481
 --- /dev/null
 +++ b/gigpo/core_probe.py
-@@ -0,0 +1,136 @@
+@@ -0,0 +1,170 @@
 +"""Probe-weighted token credit (term project, IDEAS.md treatment 1).
 +
 +For each step row with a well-formed response, the commitment probe
@@ -283,6 +283,31 @@ index 0000000..d3f08bd
 +    return w
 +
 +
++def _js_bern(p, q, eps=1e-9):
++    """Jensen-Shannon divergence (nats) between Bernoulli(p) and Bernoulli(q)."""
++    p, q = min(max(p, eps), 1 - eps), min(max(q, eps), 1 - eps)
++    m = 0.5 * (p + q)
++    kl = lambda a, b: a * np.log(a / b) + (1 - a) * np.log((1 - a) / (1 - b))
++    return 0.5 * kl(p, m) + 0.5 * kl(q, m)
++
++
++def cir_per_row(reqs, rows, scores):
++    """Causal Importance of Reasoning (Yu et al., 2026, arXiv 2604.22074), from the
++    probe passes: mean over cuts of JS(Bern(q_k) || Bern(q_T)), with q_T the probe at
++    the last cut (the <action> tag, i.e. the full reasoning). 0 = the action does
++    not depend on the reasoning. Logging only."""
++    q = {}
++    for (i, c, _, _), s in zip(reqs, scores):
++        q.setdefault(i, {})[c] = float(np.exp(s))
++    out = {}
++    for i, (L, cuts) in rows.items():
++        if i not in q or len(cuts) < 2:
++            continue
++        qT = q[i][cuts[-1]]
++        out[i] = float(np.mean([_js_bern(q[i][c], qT) for c in cuts[:-1]]))
++    return out
++
++
 +def make_probe_batch(reqs, pad_id):
 +    """Left-padded contexts + right-padded targets in verl's (prompt | response) layout."""
 +    from verl import DataProto
@@ -341,9 +366,18 @@ index 0000000..d3f08bd
 +    batch.batch["advantages"] = batch.batch["advantages"] * w
 +    batch.batch["returns"] = batch.batch["advantages"]
 +    wm = w[resp_mask.bool()]
++    try:
++        cir = cir_per_row(reqs, rows, scores)
++        qT = [float(np.exp(s)) for (i, c, _, _), s in zip(reqs, scores) if i in rows and c == rows[i][1][-1]]
++        extra = {"probe/cir_mean": float(np.mean(list(cir.values()))) if cir else 0.0,
++                 "probe/qT_mean": float(np.mean(qT)) if qT else 0.0}
++    except Exception as e:  # logging must never stop training
++        print(f"[probe] CIR logging skipped: {e}")
++        extra = {}
 +    return {"probe/rows": float(len(rows)) / responses.shape[0], "probe/requests": float(len(reqs)),
 +            "probe/w_max_mean": float(torch.stack([w[i][resp_mask[i].bool()].max() for i in rows]).mean()) if rows else 1.0,
-+            "probe/w_std": float(wm.std()), "probe/q0_mean": float(np.mean([np.exp(s) for (i, c, _, _), s in zip(reqs, scores) if c == 0]))}
++            "probe/w_std": float(wm.std()), "probe/q0_mean": float(np.mean([np.exp(s) for (i, c, _, _), s in zip(reqs, scores) if c == 0])),
++            **extra}
 diff --git a/verl/trainer/config/ppo_trainer.yaml b/verl/trainer/config/ppo_trainer.yaml
 index d0f68ba..da6c30b 100644
 --- a/verl/trainer/config/ppo_trainer.yaml

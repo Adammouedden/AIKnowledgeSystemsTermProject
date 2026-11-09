@@ -25,6 +25,7 @@ is 0.78 points.
 | GACA + m_z | treatment | GACA, lambda odds scaled by 1 - 1/m_z (anchor-group size; Prop. 3) | done | 33 | 3.61 | **12.5%** (16/128) | 12.5% (33) |
 | GACA-LOO | treatment | GACA, criticality = leave-one-out mean NLL of the other visits (App. B.4) | done | 33 | 3.60 | **11.7%** (15/128) | 11.7% (33) |
 | GACA + probe (seed 0) | treatment | GACA, step advantage spread over tokens by the commitment probe | done | 34 | 5.16 | **7.8%** (10/128) | 8.6% (10) |
+| GACA + probe (seed 1) | treatment | as above, training seed 1, same 128 validation games | running | 16 | 2.28 | **8.6%** (11/128) | 8.6% (10) |
 
 Final = the last evaluation (the end-of-training checkpoint). Best is reported for comparison with the
 paper's best-checkpoint convention but is optimistic: it picks the maximum over five noisy evaluations.
@@ -40,6 +41,7 @@ paper's best-checkpoint convention but is optimistic: it picks the maximum over 
 | GACA + m_z | 4.7 | 5.5 | 5.5 | 10.9 | 12.5 (33) |
 | GACA-LOO | 4.7 | 7.8 | 10.9 | 10.9 | 11.7 (33) |
 | GACA + probe (seed 0) | 4.7 | 8.6 | 6.2 | 8.6 | 7.8 (34) |
+| GACA + probe (seed 1) | 4.7 | 8.6 |  |  |  |
 
 ## Paired comparison of final checkpoints
 
@@ -77,15 +79,19 @@ the other does not. The base model is each arm's own iteration-0 evaluation.
 
 ## Training diagnostics (mean over iterations)
 
-| arm | s / iter | probe s / iter | valid actions | response tokens | KL (last 5) | c_t std | lambda std | step coverage |
-|---|---|---|---|---|---|---|---|---|
-| GRPO | 390 | -- | 99.2% | 80 | 0.033 | -- | -- | -- |
-| GACA | 389 | -- | 99.2% | 84 | 0.027 | 0.35 | 0.087 | 0.96 |
-| GACA + m_z | 393 | -- | 99.1% | 84 | 0.029 | 0.36 | 0.134 | 0.96 |
-| GACA-LOO | 393 | -- | 99.1% | 82 | 0.039 | 0.16 | 0.039 | 0.96 |
-| GACA + probe (seed 0) | 547 | 151 | 99.1% | 89 | 0.028 | 0.34 | 0.086 | 0.96 |
+| arm | s / iter | probe s / iter | valid actions | response tokens | KL (last 5) | c_t std | lambda std | step coverage | q(0) first 5 -> last 5 | CIR |
+|---|---|---|---|---|---|---|---|---|---|---|
+| GRPO | 390 | -- | 99.2% | 80 | 0.033 | -- | -- | -- | -- | -- |
+| GACA | 389 | -- | 99.2% | 84 | 0.027 | 0.35 | 0.087 | 0.96 | -- | -- |
+| GACA + m_z | 393 | -- | 99.1% | 84 | 0.029 | 0.36 | 0.134 | 0.96 | -- | -- |
+| GACA-LOO | 393 | -- | 99.1% | 82 | 0.039 | 0.16 | 0.039 | 0.96 | -- | -- |
+| GACA + probe (seed 0) | 547 | 151 | 99.1% | 89 | 0.028 | 0.34 | 0.086 | 0.96 | 0.20 -> 0.34 | -- |
+| GACA + probe (seed 1) | 514 | 140 | 98.6% | 86 | 0.035 | 0.36 | 0.091 | 0.96 | 0.19 -> 0.20 | -- |
 
 Paper Table 7 (ALFWorld): c_t std 0.31, lambda std 0.08, clamped < 0.01, step coverage 0.86.
+q(0): probability of the eventual action before any reasoning (probe arms). CIR: Causal Importance of
+Reasoning (Yu et al., 2026), mean JS divergence between the probe at each cut and at the full reasoning;
+logged from `gaca_probe_c05` on. A rising q(0) / falling CIR means the reasoning matters less over training.
 
 ## Offline studies (no training)
 

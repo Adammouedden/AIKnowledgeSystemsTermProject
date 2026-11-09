@@ -930,3 +930,12 @@ At the user's direction `verl/` and `runs/` now live in `src/` (`src/verl/`, `sr
 holds all live code and its outputs; code that is no longer run is in `legacy/` (see its README), and
 pixi was removed. The move was made between arms (no job running) and every launcher, the report and
 the docs were updated; the verl-agent symlink to `src/advantages.py` is unaffected.
+
+## 2026-11-09 — CIR (Yu et al., 2026) logged from the probe passes
+
+The commitment probe is the measurement behind Causal Importance of Reasoning (arXiv 2604.22074); that
+paper uses it as a reward bonus, not for token-level advantage redistribution. CIR (mean JS divergence
+between the probe at each cut and at the full reasoning) and q_T are now logged per iteration by
+`core_probe.apply_probe_weights` at no extra cost, from `gaca_probe_c05` on (the running `gaca_probe_s1`
+loaded its code before the change). Motivation: q(0) rose 0.20 -> 0.34 over probe seed 0, consistent with
+the paper's finding that outcome-driven RL makes reasoning less causally important.
