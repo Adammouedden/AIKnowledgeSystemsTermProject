@@ -23,3 +23,6 @@
 [16:43:51] end gaca_probe_c05
 [17:07:30] start probe re-validation (trained gaca_probe_s1)
 [17:21:25] end probe re-validation
+[17:23:31] queue -> gaca_probe_pos
+[17:23:31] start gaca_probe_pos (gaca, rel=none)
+[22:30:11] end gaca_probe_pos
