@@ -98,6 +98,24 @@ diagnostics) to test this on the remaining arms.
 Candidate arm: **GACA + probe + CIR bonus** -- token redistribution plus the paper's reward term
 (computable from the probe passes already run), so concentration cannot make the reasoning decorative.
 
+### 1d. Concentrate only credit we trust (generalizes positive-only)
+
+The positive-only arm is a special case of a more principled rule: **scale the concentration of token
+credit by how much the step advantage can be trusted.** Interpolate per row between uniform and probe
+weights, w = 1 + kappa_t (w_probe - 1), with kappa_t in [0, 1] from signals already in the batch:
+
+- the number of successful rollouts in the step's group (one win out of 8 makes every advantage in the
+  group rest on a single trajectory -> low kappa; 3+ wins -> high kappa);
+- the step's anchor-group size m_z and whether its bucket shows return spread (A^S built from a real
+  within-state contrast vs the prompt-group fallback);
+- the sign of A_t (positive-only is kappa = 1[A_t > 0]).
+
+Rationale: the probe moves *where* credit lands, so its benefit is bounded by whether the credit is
+right; at 5-15% success most step advantages rest on one or two wins. This keeps the probe's precision
+where the signal is reliable and falls back to GACA where it is not. Testable offline first: on the
+step dumps, check whether |A_t|-sign agreement with the MC oracle (or with a second seed's advantage at
+the same anchor) rises with group win count, before spending an arm.
+
 ### 2. Probe as the step gate
 
 q(0) -- the probability of the eventual action before any reasoning -- says
