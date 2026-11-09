@@ -22,7 +22,8 @@ for arm in $ARMS; do
     gaca_probe) m=gaca; r=none; extra="algorithm.gaca.token_mode=probe" ;;  # treatment: probe-weighted token credit (IDEAS.md 1)
     gaca_probe_s1) m=gaca; r=none; extra="algorithm.gaca.token_mode=probe env.seed=1 +env.val_seed=1000" ;;  # treatment, 2nd seed; same val games
     gaca_probe_c05) m=gaca; r=none; extra="algorithm.gaca.token_mode=probe algorithm.gaca.probe_clip_lo=0.5 algorithm.gaca.probe_clip_hi=2.0" ;;  # probe, clip [0.5, 2]
-    gaca_probe_pos) m=gaca; r=none; extra="algorithm.gaca.token_mode=probe algorithm.gaca.probe_sign=pos" ;;  # probe weights on positive advantages only     # treatment: anchor-pooled score (App. B.4, never trained in the paper)
+    gaca_probe_pos) m=gaca; r=none; extra="algorithm.gaca.token_mode=probe algorithm.gaca.probe_sign=pos" ;;  # probe weights on positive advantages only
+    gaca_probe_ref) m=gaca; r=none; extra="algorithm.gaca.token_mode=probe algorithm.gaca.probe_scorer=ref" ;;  # probe scored by the frozen reference model (IDEAS 1e.2)     # treatment: anchor-pooled score (App. B.4, never trained in the paper)
     *) echo "unknown arm $arm"; continue ;;
   esac
   if grep -q "Training Progress: 100%" $ROOT/src/runs/verl/$arm/train.log 2>/dev/null; then

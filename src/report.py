@@ -37,12 +37,14 @@ VERL_ARMS = [  # (dir, label, role, what differs from GACA/GRPO)
     ("gaca_probe_s1", "GACA + probe (seed 1)", "treatment", "as above, training seed 1, same 128 validation games"),
     ("gaca_probe_c05", "GACA + probe, clip [0.5, 2]", "treatment", "probe with token weights clipped to [0.5, 2] instead of [0.25, 4]"),
     ("gaca_probe_pos", "GACA + probe, positive A only", "treatment", "probe weights only on steps with a positive advantage; others uniform"),
+    ("gaca_probe_ref", "GACA + probe, frozen-ref scorer", "treatment", "probe scored by the frozen reference model instead of the policy"),
 ]
 VERL_COLORS = {"grpo": "#2a78d6", "gaca": "#eb6834", "gaca_msize": "#1baf7a", "gaca_loo": "#eda100",
-               "gaca_probe": "#e87ba4", "gaca_probe_s1": "#e87ba4", "gaca_probe_c05": "#e87ba4", "gaca_probe_pos": "#e87ba4"}
+               "gaca_probe": "#e87ba4", "gaca_probe_s1": "#e87ba4", "gaca_probe_c05": "#e87ba4", "gaca_probe_pos": "#e87ba4",
+               "gaca_probe_ref": "#e87ba4"}
 # validated categorical slots 1-5, fixed order; probe variants keep the probe's hue (colour follows the
 # method) and are told apart by line style + legend + direct labels
-VERL_STYLE = {"gaca_probe_s1": ":", "gaca_probe_c05": "--", "gaca_probe_pos": "-."}
+VERL_STYLE = {"gaca_probe_s1": ":", "gaca_probe_c05": "--", "gaca_probe_pos": "-.", "gaca_probe_ref": (0, (1, 1, 4, 1))}
 
 
 def _verl_metrics(path):

@@ -204,10 +204,10 @@ index 0000000..dd93f1a
 +    return a, a, {f"gaca/{k}": float(v) for k, v in diag.items()}
 diff --git a/gigpo/core_probe.py b/gigpo/core_probe.py
 new file mode 100644
-index 0000000..64e4481
+index 0000000..ee0e4fe
 --- /dev/null
 +++ b/gigpo/core_probe.py
-@@ -0,0 +1,170 @@
+@@ -0,0 +1,181 @@
 +"""Probe-weighted token credit (term project, IDEAS.md treatment 1).
 +
 +For each step row with a well-formed response, the commitment probe
@@ -341,9 +341,21 @@ index 0000000..64e4481
 +    return keep * w + (1 - keep) * m
 +
 +
-+def apply_probe_weights(trainer, batch, every=16, clip=(0.25, 4.0), sign="both"):
++def _score(trainer, pb, scorer="policy"):
++    """Per-token log-probs of the probe targets. scorer='policy': the policy being
++    trained (default). scorer='ref': the frozen reference model already loaded for the
++    KL term -- breaks the feedback loop in which the policy grades its own reasoning
++    (IDEAS 1e.2); training stays on-policy, only the token weights change source."""
++    if scorer == "ref":
++        out = trainer.actor_rollout_wg.compute_ref_log_prob(pb)
++        return out.batch["ref_log_prob"]
++    out = trainer.actor_rollout_wg.compute_log_prob(pb)
++    return out.batch["old_log_probs"]
++
++
++def apply_probe_weights(trainer, batch, every=16, clip=(0.25, 4.0), sign="both", scorer="policy"):
 +    """Multiply batch.batch['advantages'] by probe token weights. Returns diagnostics."""
-+    from verl.protocol import pad_dataproto_to_divisor, unpad_dataproto
++    from verl.protocol import pad_dataproto_to_divisor
 +
 +    tok = trainer.tokenizer
 +    prompts = batch.batch["prompts"]
@@ -356,9 +368,8 @@ index 0000000..64e4481
 +        return {"probe/rows": 0.0}
 +    pb, tmask = make_probe_batch(reqs, tok.pad_token_id)
 +    pb, pad = pad_dataproto_to_divisor(pb, trainer.actor_rollout_wg.world_size)
-+    out = trainer.actor_rollout_wg.compute_log_prob(pb)
-+    out = unpad_dataproto(out, pad_size=pad)
-+    lp = out.batch["old_log_probs"].float().cpu()
++    lp = _score(trainer, pb, scorer)
++    lp = lp[: lp.shape[0] - pad].float().cpu() if pad else lp.float().cpu()
 +    scores = (lp * tmask).sum(-1).tolist()
 +    w = weights_from_scores(reqs, rows, scores, responses.shape[0], responses.shape[1], clip)
 +    w = w.to(batch.batch["advantages"].device) * resp_mask.float()
@@ -379,10 +390,10 @@ index 0000000..64e4481
 +            "probe/w_std": float(wm.std()), "probe/q0_mean": float(np.mean([np.exp(s) for (i, c, _, _), s in zip(reqs, scores) if c == 0])),
 +            **extra}
 diff --git a/verl/trainer/config/ppo_trainer.yaml b/verl/trainer/config/ppo_trainer.yaml
-index d0f68ba..da6c30b 100644
+index d0f68ba..251ea68 100644
 --- a/verl/trainer/config/ppo_trainer.yaml
 +++ b/verl/trainer/config/ppo_trainer.yaml
-@@ -247,6 +247,21 @@ algorithm:
+@@ -247,6 +247,22 @@ algorithm:
    pf_ppo:
      reweight_method: pow  # ["pow", "max_min", "max_random"]
      weight_pow: 2.0
@@ -401,11 +412,12 @@ index d0f68ba..da6c30b 100644
 +    probe_clip_lo: 0.25
 +    probe_clip_hi: 4.0
 +    probe_sign: both    # both | pos (probe weights only where the step advantage is positive)
++    probe_scorer: policy  # policy | ref (frozen reference model scores the probe; IDEAS 1e.2)
    gigpo:
      step_advantage_w: 1.0
      mode: "mean_norm" # "mean_norm" or "mean_std_norm"
 diff --git a/verl/trainer/ppo/ray_trainer.py b/verl/trainer/ppo/ray_trainer.py
-index d85e23a..47b672a 100644
+index d85e23a..c1f6c6a 100644
 --- a/verl/trainer/ppo/ray_trainer.py
 +++ b/verl/trainer/ppo/ray_trainer.py
 @@ -94,6 +94,7 @@ class AdvantageEstimator(str, Enum):
@@ -526,7 +538,7 @@ index d85e23a..47b672a 100644
                          response_masks = batch.batch["response_mask"]
                          loss_agg_mode = self.config.actor_rollout_ref.actor.loss_agg_mode
                          entropy_loss = agg_loss(loss_mat=entropys, loss_mask=response_masks, loss_agg_mode=loss_agg_mode)
-@@ -1233,7 +1298,27 @@ class RayPPOTrainer:
+@@ -1233,7 +1298,28 @@ class RayPPOTrainer:
                              gigpo_mode=self.config.algorithm.gigpo.mode,
                              gigpo_enable_similarity= self.config.algorithm.gigpo.enable_similarity,
                              gigpo_similarity_thresh=self.config.algorithm.gigpo.similarity_thresh,
@@ -543,7 +555,8 @@ index d85e23a..47b672a 100644
 +                            metrics.update(core_probe.apply_probe_weights(
 +                                self, batch, every=int(_g.get("probe_every", 16)),
 +                                clip=(float(_g.get("probe_clip_lo", 0.25)), float(_g.get("probe_clip_hi", 4.0))),
-+                                sign=str(_g.get("probe_sign", "both"))))
++                                sign=str(_g.get("probe_sign", "both")),
++                                scorer=str(_g.get("probe_scorer", "policy"))))
 +                            metrics["timing_s/probe"] = _tp.time() - _t0
 +                        # Term project: per-step dump (logging only, never affects training).
 +                        if os.environ.get("GACA_STEP_DUMP"):
@@ -554,7 +567,7 @@ index d85e23a..47b672a 100644
  
                      # update critic
                      if self.use_critic:
-@@ -1298,7 +1383,42 @@ class RayPPOTrainer:
+@@ -1298,7 +1384,42 @@ class RayPPOTrainer:
  
                  progress_bar.update(1)
                  self.global_steps += 1
