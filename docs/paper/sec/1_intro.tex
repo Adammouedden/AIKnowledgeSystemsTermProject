@@ -14,8 +14,8 @@ regroups the visits that different rollouts make to the same environment state (
 state}) and contrasts their discounted returns, which yields a step-level advantage without a critic.
 GACA~\cite{liang2026gaca} observes that the right granularity depends on the state and mixes the
 episode- and step-level advantages with a per-step weight $\lambda_t$ set by the policy's uncertainty,
-the mean token negative log-likelihood (NLL) of the sampled action; it reports 96.9\% success on
-ALFWorld at 1.5B parameters, against 86.7\% for GiGPO and 72.8\% for GRPO.
+the mean token negative log-likelihood (NLL) of the sampled action, and reports large gains over
+both on ALFWorld and WebShop.
 
 Both methods stop at the step. Yet a modern agent's ``action'' is not a short command: in the
 reasoning format these methods are trained with, the model writes roughly a hundred tokens of

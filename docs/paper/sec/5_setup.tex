@@ -12,40 +12,13 @@ vLLM~\cite{kwon2023vllm} rollouts. Each method is a different advantage estimato
 same trainer; GRPO, GACA and all treatments call one shared, unit-tested implementation.
 
 \paragraph{Recipe and budget.}
-We keep GACA's shared configuration (\cref{tab:setup}): group size 8, learning rate $10^{-6}$,
-$\gamma = 0.95$, KL coefficient 0.01 with the low-variance estimator, invalid-format penalty 0.1,
-mean-and-std normalization, $\lambda_0 = 0.5$, $\alpha = \beta = 0.5$. The budget is the binding
-difference. GACA reports 371\,s per iteration on hardware with 62\,GB of memory per GPU and trains 150
-iterations of 16 tasks $\times$ 8 rollouts. On one A100 40\,GB our rollout speed matches theirs (228 to
-334\,s), but the training passes are an order of magnitude slower, so a 16-task iteration costs
-1,076\,s. Within a budget of about four hours of training per method we use 4 tasks $\times$ 8 rollouts
-and a fixed 34 iterations: 1,088 trajectories per method, about 6\% of the paper's 19,200. All curves
-are still rising at the end; absolute success rates are therefore far below the paper's, and the
-comparison is of early learning at matched rollout budget.
-
-\begin{table}[t]
-\centering\footnotesize
-\setlength{\tabcolsep}{4pt}
-\begin{tabular}{@{}lcc@{}}
-\toprule
- & GACA~\cite{liang2026gaca} & Ours \\
-\midrule
-Backbone & Qwen2.5-1.5B-Instr. & same, full FT \\
-Response format & think + action, 512 tok. & same \\
-Max env.\ steps / group size & 50 / 8 & 50 / 8 \\
-lr / KL / $\gamma$ / penalty & $10^{-6}$ / 0.01 / 0.95 / 0.1 & same \\
-Tasks per iteration & 16 & 4 \\
-Iterations & 150 & 34 \\
-Trajectories per method & 19,200 & 1,088 \\
-Seeds per method & 3 & 1 \\
-Held-out episodes & 128 & 128 (shared) \\
-Reported checkpoint & best & final \\
-\bottomrule
-\end{tabular}
-\caption{\textbf{Training configuration.} Everything except the budget follows GACA's shared
-configuration; every method in our study differs only in the advantage estimator.}
-\label{tab:setup}
-\end{table}
+We keep GACA's shared configuration: group size 8, learning rate $10^{-6}$, $\gamma = 0.95$, KL
+coefficient 0.01 with the low-variance estimator, invalid-format penalty 0.1, mean-and-std
+normalization, $\lambda_0 = 0.5$, $\alpha = \beta = 0.5$. The budget is the one deliberate difference
+(\cref{sec:budget}): on a single A100 40\,GB we train 4 tasks $\times$ 8 rollouts for a fixed 34
+iterations, 1,088 trajectories per method, about 6\% of the published 19,200. All curves are still
+rising at the end, so the comparison is of early learning at a matched rollout budget, and our absolute
+success rates are not comparable to published ones.
 
 \paragraph{Evaluation.}
 Every method is evaluated every 10 iterations and at the end on the \emph{same} 128 held-out games
@@ -61,5 +34,5 @@ The controls are GRPO and GACA. The treatments are GACA with the $m_z$ reliabili
 leave-one-out score (GACA-LOO), GACA with probe-weighted token credit, and the probe's three variants
 (\cref{sec:method}). One seed per method; the probe arm used a different training-environment seed
 (the order in which training games are drawn) than the other arms, with the evaluation games pinned to
-be identical. Earlier in this project, two seeds of the same method differed by 3.1 points at a matched
+be identical. In an earlier pilot of this project, two seeds of the same method differed by 3.1 points at a matched
 checkpoint, so differences of a few points between single runs are within seed noise.

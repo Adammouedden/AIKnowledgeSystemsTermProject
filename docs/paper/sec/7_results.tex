@@ -26,11 +26,10 @@ follows the method; variants of the probe keep its colour and change line style.
 
 \paragraph{Controls.}
 Both controls learn: GRPO reaches 14.1\% and GACA 18.8\% from the base model's 4.7\% (both $p < 0.05$
-against the base model, game-paired). GACA leads GRPO, as the paper reports, but by 13 games to 7
-($p = 0.26$): at 6\% of the paper's budget the ordering is the expected one and not resolved. Under the
-paper's response format our GACA diagnostics match its Table~7 closely: criticality standard deviation
-0.35 (paper 0.31), $\lambda_t$ standard deviation 0.087 (0.08), anchor coverage 0.96 (0.86). This
-indicates the estimator is reproduced faithfully even though the training budget is not.
+against the base model, game-paired). GACA leads GRPO by 13 games to 7
+($p = 0.26$): at this budget the ordering is not resolved. GACA's gate is active in our runs: the
+criticality score has standard deviation 0.35 and $\lambda_t$ has standard deviation 0.087, so steps do
+receive different mixtures.
 
 \paragraph{Probe-weighted token credit.}
 GACA + probe reaches 20.3\%, the highest final success of any method, after rising at every evaluation

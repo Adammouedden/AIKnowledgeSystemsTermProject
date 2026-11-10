@@ -20,8 +20,47 @@ where step advantages are reliable: at higher success rates, with more rollouts 
 with an estimator that scales concentration by its own confidence, for instance the number of successful
 rollouts in the group or whether the anchor group carries a real return contrast.
 
+\paragraph{Budget constraints.}
+\label{sec:budget}
+This study was carried out by one student on a single rented GPU, paid for out of pocket, and
+multi-turn agent RL with a 1.5B-parameter policy is expensive: every iteration generates hundreds of
+50-step episodes with 512-token responses, then runs reference, old-policy and update passes over every
+step. \Cref{tab:budget} sets our configuration beside GACA's. The recipe is the same; the budget is not.
+On our hardware a 16-task iteration takes 1,076\,s, so one run at the published scale (150 iterations)
+would take about 45 GPU-hours, and three seeds of the eight methods we compare about 1,100 GPU-hours.
+We instead gave each method about four GPU-hours of training (3.7--3.8\,h for the controls and
+5.1--5.3\,h for probe arms, whose extra passes add about 40\%), roughly 40 GPU-hours for the whole
+study. The cost is statistical power: one seed per method and 6\% of the published trajectories.
+
+\begin{table}[t]
+\centering\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+ & GACA~\cite{liang2026gaca} & This study \\
+\midrule
+Backbone & \multicolumn{2}{c}{Qwen2.5-1.5B-Instruct, full FT} \\
+Response format & \multicolumn{2}{c}{think + action, 512 tokens} \\
+Max env.\ steps / group size & \multicolumn{2}{c}{50 / 8} \\
+lr / KL / $\gamma$ / penalty & \multicolumn{2}{c}{$10^{-6}$ / 0.01 / 0.95 / 0.1} \\
+\midrule
+Hardware & multi-GPU, 62\,GB/GPU & 1$\times$ A100 40\,GB \\
+Tasks per iteration & 16 & 4 \\
+Iterations & 150 & 34 \\
+Trajectories per method & 19,200 & 1,088 (5.7\%) \\
+Seeds per method & 3 & 1 \\
+Held-out episodes & 128 & 128 (shared) \\
+Reported checkpoint & best & final \\
+\bottomrule
+\end{tabular}
+\caption{\textbf{Budget comparison.} The training recipe (top) is identical; the budget (bottom) is
+not. All results in this paper come from our own runs; the GACA column lists only its published
+configuration.}
+\label{tab:budget}
+\end{table}
+
 \paragraph{Limitations.}
-\emph{Budget and seeds}: about 6\% of GACA's trajectories and one seed per method, so method
+\emph{Budget and seeds} (\cref{sec:budget}): one seed per method, so method
 differences of a few points are not interpretable on their own; the paired tests are the right lens,
 and they are mostly inconclusive. \emph{Training seed}: the probe arm drew its training games in a
 different order than the controls, with identical evaluation games. \emph{Benchmark}: ALFWorld only;
