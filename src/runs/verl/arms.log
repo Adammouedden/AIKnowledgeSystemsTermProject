@@ -30,3 +30,7 @@
 [23:09:00] queue -> gaca_probe_ref
 [23:09:00] start gaca_probe_ref (gaca, rel=none)
 [04:39:38] killed gaca_probe_ref at iteration 33/34 (user: project deadline); to be restarted from scratch later
+[08:08:57] restart commit_ref from scratch (killed run kept in commit_ref_killed)
+[08:10:57] queue -> commit_ref
+[08:10:57] start commit_ref (gaca, rel=none)
+[08:16:52] killed commit_ref (restart) early: user replaced it with the lr / action-weight / dynamic-sampling queue

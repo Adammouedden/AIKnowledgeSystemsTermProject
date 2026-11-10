@@ -12,7 +12,7 @@ export TRAIN_BS=${TRAIN_BS:-4} VAL_BS=${VAL_BS:-128} STEPS=${STEPS:-34} TEST_FRE
 for arm in $ARMS; do
   # one training process at a time
   while pgrep -f "verl.trainer.main_ppo" > /dev/null; do sleep 30; done
-  extra=""
+  extra=""; lr=1e-6
   case $arm in
     grpo)       m=grpo; r=none ;;
     gaca)       m=gaca; r=none ;;
@@ -23,13 +23,19 @@ for arm in $ARMS; do
     commit_c05) m=gaca; r=none; extra="algorithm.gaca.token_mode=probe algorithm.gaca.probe_clip_lo=0.5 algorithm.gaca.probe_clip_hi=2.0" ;;  # probe, clip [0.5, 2]
     commit_pos) m=gaca; r=none; extra="algorithm.gaca.token_mode=probe algorithm.gaca.probe_sign=pos" ;;  # probe weights on positive advantages only
     commit_ref) m=gaca; r=none; extra="algorithm.gaca.token_mode=probe algorithm.gaca.probe_scorer=ref" ;;  # probe scored by the frozen reference model (IDEAS 1e.2)     # treatment: anchor-pooled score (App. B.4, never trained in the paper)
+    # hill-climbing queue (2026-11-10): performance, not ablation rigor
+    commit_lr3) m=gaca; r=none; lr=3e-6; extra="algorithm.gaca.token_mode=probe env.seed=1 +env.val_seed=1000" ;;  # COMMIT (as commit_s1) at lr 3e-6
+    gaca_lr3)   m=gaca; r=none; lr=3e-6 ;;                                                                         # GACA at lr 3e-6
+    gaca_actw)  m=gaca; r=none; extra="algorithm.gaca.token_mode=action algorithm.gaca.action_weight=2.0" ;;      # probe-free: <action> span 2x, reasoning 1x
+    commit_ds)  m=gaca; r=none; extra="algorithm.gaca.token_mode=probe env.seed=1 +env.val_seed=1000 algorithm.filter_groups.enable=True algorithm.filter_groups.max_num_gen_batches=3" ;;  # COMMIT + DAPO dynamic sampling (drop all-same-reward groups, up to 3 rollout passes)
     *) echo "unknown arm $arm"; continue ;;
   esac
   if grep -q "Training Progress: 100%" $ROOT/src/runs/verl/$arm/train.log 2>/dev/null; then
     echo "$arm already finished, skipping"; continue
   fi
   echo "[$(date +%T)] start $arm ($m, rel=$r)" | tee -a $ROOT/src/runs/verl/arms.log
-  $ROOT/src/verl/run_arm.sh $arm $m $r $extra > /dev/null 2>&1
+  echo "[$(date +%T)]   lr=$lr extra: $extra" >> $ROOT/src/runs/verl/arms.log
+  LR=$lr $ROOT/src/verl/run_arm.sh $arm $m $r $extra > /dev/null 2>&1
   /workspace/verl-agent/.venv/bin/ray stop --force > /dev/null 2>&1
   echo "[$(date +%T)] end $arm" | tee -a $ROOT/src/runs/verl/arms.log
 done

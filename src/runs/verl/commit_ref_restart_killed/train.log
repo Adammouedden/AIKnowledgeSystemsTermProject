@@ -1,0 +1,577 @@
+ray init kwargs: {'num_cpus': None, 'runtime_env': {'env_vars': {'NCCL_DEBUG': 'WARN', 'VLLM_LOGGING_LEVEL': 'WARN', 'VLLM_ALLOW_RUNTIME_LORA_UPDATING': 'true', 'VLLM_ALLREDUCE_USE_SYMM_MEM': '0', 'CUDA_DEVICE_MAX_CONNECTIONS': '1', 'NCCL_CUMEM_ENABLE': '0'}, 'working_dir': None}}
+2026-11-10 08:11:09,681	WARNING utils.py:458 -- Detecting docker specified CPUs. In previous versions of Ray, CPU detection in containers was incorrect. Please ensure that Ray has enough CPUs allocated. As a temporary workaround to revert to the prior behavior, set `RAY_USE_MULTIPROCESSING_CPU_COUNT=1` as an env var before starting Ray. Set the env var: `RAY_DISABLE_DOCKER_CPU_WARNING=1` to mute this warning.
+2026-11-10 08:11:09,682	WARNING utils.py:470 -- Ray currently does not support initializing Ray with fractional cpus. Your num_cpus will be truncated from 11.52 to 11.
+2026-11-10 08:11:09,904	INFO worker.py:2004 -- Started a local Ray instance. View the dashboard at [1m[32mhttp://127.0.0.1:8265 [39m[22m
+/workspace/verl-agent/.venv/lib/python3.12/site-packages/ray/_private/worker.py:2052: FutureWarning: Tip: In future versions of Ray, Ray will no longer override accelerator visible devices env var if num_gpus=0 or num_gpus=None (default). To enable this behavior and turn off this error message, set RAY_ACCEL_ENV_VAR_OVERRIDE_ON_ZERO=0
+  warnings.warn(
+[36m(TaskRunner pid=281526)[0m {'actor_rollout_ref': {'actor': {'checkpoint': {'contents': ['model',
+[36m(TaskRunner pid=281526)[0m                                                              'optimizer',
+[36m(TaskRunner pid=281526)[0m                                                              'extra']},
+[36m(TaskRunner pid=281526)[0m                                  'clip_ratio': 0.2,
+[36m(TaskRunner pid=281526)[0m                                  'clip_ratio_c': 3.0,
+[36m(TaskRunner pid=281526)[0m                                  'clip_ratio_high': 0.2,
+[36m(TaskRunner pid=281526)[0m                                  'clip_ratio_low': 0.2,
+[36m(TaskRunner pid=281526)[0m                                  'entropy_coeff': 0.001,
+[36m(TaskRunner pid=281526)[0m                                  'fsdp_config': {'fsdp_size': -1,
+[36m(TaskRunner pid=281526)[0m                                                  'offload_policy': False,
+[36m(TaskRunner pid=281526)[0m                                                  'optimizer_offload': True,
+[36m(TaskRunner pid=281526)[0m                                                  'param_offload': False,
+[36m(TaskRunner pid=281526)[0m                                                  'reshard_after_forward': True,
+[36m(TaskRunner pid=281526)[0m                                                  'wrap_policy': {'min_num_params': 0}},
+[36m(TaskRunner pid=281526)[0m                                  'grad_clip': 1.0,
+[36m(TaskRunner pid=281526)[0m                                  'invalid_action_penalty_coef': 0.1,
+[36m(TaskRunner pid=281526)[0m                                  'kl_loss_coef': 0.01,
+[36m(TaskRunner pid=281526)[0m                                  'kl_loss_type': 'low_var_kl',
+[36m(TaskRunner pid=281526)[0m                                  'loss_agg_mode': 'token-mean',
+[36m(TaskRunner pid=281526)[0m                                  'optim': {'lr': 1e-06,
+[36m(TaskRunner pid=281526)[0m                                            'lr_warmup_steps': -1,
+[36m(TaskRunner pid=281526)[0m                                            'lr_warmup_steps_ratio': 0.0,
+[36m(TaskRunner pid=281526)[0m                                            'min_lr_ratio': 0.0,
+[36m(TaskRunner pid=281526)[0m                                            'num_cycles': 0.5,
+[36m(TaskRunner pid=281526)[0m                                            'total_training_steps': -1,
+[36m(TaskRunner pid=281526)[0m                                            'warmup_style': 'constant',
+[36m(TaskRunner pid=281526)[0m                                            'weight_decay': 0.01},
+[36m(TaskRunner pid=281526)[0m                                  'policy_loss': {'loss_mode': 'vanilla'},
+[36m(TaskRunner pid=281526)[0m                                  'ppo_epochs': 1,
+[36m(TaskRunner pid=281526)[0m                                  'ppo_max_token_len_per_gpu': 16384,
+[36m(TaskRunner pid=281526)[0m                                  'ppo_micro_batch_size': None,
+[36m(TaskRunner pid=281526)[0m                                  'ppo_micro_batch_size_per_gpu': 4,
+[36m(TaskRunner pid=281526)[0m                                  'ppo_mini_batch_size': 256,
+[36m(TaskRunner pid=281526)[0m                                  'shuffle': False,
+[36m(TaskRunner pid=281526)[0m                                  'strategy': 'fsdp',
+[36m(TaskRunner pid=281526)[0m                                  'ulysses_sequence_parallel_size': 1,
+[36m(TaskRunner pid=281526)[0m                                  'use_dynamic_bsz': False,
+[36m(TaskRunner pid=281526)[0m                                  'use_invalid_action_penalty': True,
+[36m(TaskRunner pid=281526)[0m                                  'use_kl_loss': True,
+[36m(TaskRunner pid=281526)[0m                                  'use_torch_compile': True},
+[36m(TaskRunner pid=281526)[0m                        'hybrid_engine': True,
+[36m(TaskRunner pid=281526)[0m                        'model': {'enable_activation_offload': False,
+[36m(TaskRunner pid=281526)[0m                                  'enable_gradient_checkpointing': True,
+[36m(TaskRunner pid=281526)[0m                                  'external_lib': None,
+[36m(TaskRunner pid=281526)[0m                                  'lora_alpha': 16,
+[36m(TaskRunner pid=281526)[0m                                  'lora_rank': 0,
+[36m(TaskRunner pid=281526)[0m                                  'override_config': {},
+[36m(TaskRunner pid=281526)[0m                                  'path': 'Qwen/Qwen2.5-1.5B-Instruct',
+[36m(TaskRunner pid=281526)[0m                                  'target_modules': 'all-linear',
+[36m(TaskRunner pid=281526)[0m                                  'trust_remote_code': False,
+[36m(TaskRunner pid=281526)[0m                                  'use_fused_kernels': False,
+[36m(TaskRunner pid=281526)[0m                                  'use_liger': False,
+[36m(TaskRunner pid=281526)[0m                                  'use_remove_padding': True,
+[36m(TaskRunner pid=281526)[0m                                  'use_shm': False},
+[36m(TaskRunner pid=281526)[0m                        'ref': {'fsdp_config': {'param_offload': True,
+[36m(TaskRunner pid=281526)[0m                                                'reshard_after_forward': True,
+[36m(TaskRunner pid=281526)[0m                                                'wrap_policy': {'min_num_params': 0}},
+[36m(TaskRunner pid=281526)[0m                                'log_prob_max_token_len_per_gpu': 16384,
+[36m(TaskRunner pid=281526)[0m                                'log_prob_micro_batch_size': None,
+[36m(TaskRunner pid=281526)[0m                                'log_prob_micro_batch_size_per_gpu': 8,
+[36m(TaskRunner pid=281526)[0m                                'log_prob_use_dynamic_bsz': False,
+[36m(TaskRunner pid=281526)[0m                                'strategy': 'fsdp',
+[36m(TaskRunner pid=281526)[0m                                'ulysses_sequence_parallel_size': 1,
+[36m(TaskRunner pid=281526)[0m                                'use_torch_compile': True},
+[36m(TaskRunner pid=281526)[0m                        'rollout': {'chat_scheduler': None,
+[36m(TaskRunner pid=281526)[0m                                    'disable_log_stats': True,
+[36m(TaskRunner pid=281526)[0m                                    'do_sample': True,
+[36m(TaskRunner pid=281526)[0m                                    'dtype': 'bfloat16',
+[36m(TaskRunner pid=281526)[0m                                    'enable_chunked_prefill': False,
+[36m(TaskRunner pid=281526)[0m                                    'enforce_eager': False,
+[36m(TaskRunner pid=281526)[0m                                    'engine_kwargs': {'sglang': {'attention_backend': None},
+[36m(TaskRunner pid=281526)[0m                                                      'vllm': {'swap_space': None}},
+[36m(TaskRunner pid=281526)[0m                                    'free_cache_engine': False,
+[36m(TaskRunner pid=281526)[0m                                    'gpu_memory_utilization': 0.35,
+[36m(TaskRunner pid=281526)[0m                                    'ignore_eos': False,
+[36m(TaskRunner pid=281526)[0m                                    'layered_summon': False,
+[36m(TaskRunner pid=281526)[0m                                    'load_format': 'dummy_dtensor',
+[36m(TaskRunner pid=281526)[0m                                    'log_prob_max_token_len_per_gpu': 16384,
+[36m(TaskRunner pid=281526)[0m                                    'log_prob_micro_batch_size': None,
+[36m(TaskRunner pid=281526)[0m                                    'log_prob_micro_batch_size_per_gpu': 8,
+[36m(TaskRunner pid=281526)[0m                                    'log_prob_use_dynamic_bsz': False,
+[36m(TaskRunner pid=281526)[0m                                    'max_model_len': None,
+[36m(TaskRunner pid=281526)[0m                                    'max_num_batched_tokens': 8192,
+[36m(TaskRunner pid=281526)[0m                                    'max_num_seqs': 1024,
+[36m(TaskRunner pid=281526)[0m                                    'mode': 'sync',
+[36m(TaskRunner pid=281526)[0m                                    'multi_turn': {'enable': False,
+[36m(TaskRunner pid=281526)[0m                                                   'format': 'chatml',
+[36m(TaskRunner pid=281526)[0m                                                   'max_turns': None,
+[36m(TaskRunner pid=281526)[0m                                                   'tool_config_path': None},
+[36m(TaskRunner pid=281526)[0m                                    'n': 1,
+[36m(TaskRunner pid=281526)[0m                                    'name': 'vllm',
+[36m(TaskRunner pid=281526)[0m                                    'prompt_length': 2048,
+[36m(TaskRunner pid=281526)[0m                                    'response_length': 512,
+[36m(TaskRunner pid=281526)[0m                                    'temperature': 1.0,
+[36m(TaskRunner pid=281526)[0m                                    'tensor_model_parallel_size': 1,
+[36m(TaskRunner pid=281526)[0m                                    'top_k': -1,
+[36m(TaskRunner pid=281526)[0m                                    'top_p': 1,
+[36m(TaskRunner pid=281526)[0m                                    'use_fire_sampling': False,
+[36m(TaskRunner pid=281526)[0m                                    'val_kwargs': {'do_sample': True,
+[36m(TaskRunner pid=281526)[0m                                                   'n': 1,
+[36m(TaskRunner pid=281526)[0m                                                   'temperature': 0.4,
+[36m(TaskRunner pid=281526)[0m                                                   'top_k': -1,
+[36m(TaskRunner pid=281526)[0m                                                   'top_p': 1.0}}},
+[36m(TaskRunner pid=281526)[0m  'algorithm': {'adv_estimator': 'gaca',
+[36m(TaskRunner pid=281526)[0m                'filter_groups': {'enable': False, 'max_num_gen_batches': 10},
+[36m(TaskRunner pid=281526)[0m                'gaca': {'alpha_c': 1.0,
+[36m(TaskRunner pid=281526)[0m                         'alpha_lam': 0.5,
+[36m(TaskRunner pid=281526)[0m                         'beta_lam': 0.5,
+[36m(TaskRunner pid=281526)[0m                         'lam0': 0.5,
+[36m(TaskRunner pid=281526)[0m                         'method': 'gaca',
+[36m(TaskRunner pid=281526)[0m                         'norm': 'mean_std',
+[36m(TaskRunner pid=281526)[0m                         'probe_clip_hi': 4.0,
+[36m(TaskRunner pid=281526)[0m                         'probe_clip_lo': 0.25,
+[36m(TaskRunner pid=281526)[0m                         'probe_every': 16,
+[36m(TaskRunner pid=281526)[0m                         'probe_scorer': 'ref',
+[36m(TaskRunner pid=281526)[0m                         'probe_sign': 'both',
+[36m(TaskRunner pid=281526)[0m                         'rel': 'none',
+[36m(TaskRunner pid=281526)[0m                         'score_mode': 'entropy',
+[36m(TaskRunner pid=281526)[0m                         'token_mode': 'probe',
+[36m(TaskRunner pid=281526)[0m                         'w': 1.0},
+[36m(TaskRunner pid=281526)[0m                'gamma': 0.95,
+[36m(TaskRunner pid=281526)[0m                'gigpo': {'enable_similarity': False,
+[36m(TaskRunner pid=281526)[0m                          'mode': 'mean_norm',
+[36m(TaskRunner pid=281526)[0m                          'similarity_thresh': 0.95,
+[36m(TaskRunner pid=281526)[0m                          'step_advantage_w': 1.0},
+[36m(TaskRunner pid=281526)[0m                'kl_ctrl': {'horizon': 10000,
+[36m(TaskRunner pid=281526)[0m                            'kl_coef': 0.001,
+[36m(TaskRunner pid=281526)[0m                            'target_kl': 0.1,
+[36m(TaskRunner pid=281526)[0m                            'type': 'fixed'},
+[36m(TaskRunner pid=281526)[0m                'kl_penalty': 'kl',
+[36m(TaskRunner pid=281526)[0m                'lam': 1.0,
+[36m(TaskRunner pid=281526)[0m                'norm_adv_by_std_in_grpo': True,
+[36m(TaskRunner pid=281526)[0m                'pf_ppo': {'reweight_method': 'pow', 'weight_pow': 2.0},
+[36m(TaskRunner pid=281526)[0m                'use_kl_in_reward': False,
+[36m(TaskRunner pid=281526)[0m                'use_pf_ppo': False},
+[36m(TaskRunner pid=281526)[0m  'critic': {'checkpoint': {'contents': ['model', 'optimizer', 'extra']},
+[36m(TaskRunner pid=281526)[0m             'cliprange_value': 0.5,
+[36m(TaskRunner pid=281526)[0m             'forward_max_token_len_per_gpu': 32768,
+[36m(TaskRunner pid=281526)[0m             'forward_micro_batch_size': None,
+[36m(TaskRunner pid=281526)[0m             'forward_micro_batch_size_per_gpu': None,
+[36m(TaskRunner pid=281526)[0m             'grad_clip': 1.0,
+[36m(TaskRunner pid=281526)[0m             'loss_agg_mode': 'token-mean',
+[36m(TaskRunner pid=281526)[0m             'model': {'enable_activation_offload': False,
+[36m(TaskRunner pid=281526)[0m                       'enable_gradient_checkpointing': True,
+[36m(TaskRunner pid=281526)[0m                       'external_lib': None,
+[36m(TaskRunner pid=281526)[0m                       'fsdp_config': {'fsdp_size': -1,
+[36m(TaskRunner pid=281526)[0m                                       'offload_policy': False,
+[36m(TaskRunner pid=281526)[0m                                       'optimizer_offload': False,
+[36m(TaskRunner pid=281526)[0m                                       'param_offload': False,
+[36m(TaskRunner pid=281526)[0m                                       'reshard_after_forward': True,
+[36m(TaskRunner pid=281526)[0m                                       'wrap_policy': {'min_num_params': 0}},
+[36m(TaskRunner pid=281526)[0m                       'lora_alpha': 16,
+[36m(TaskRunner pid=281526)[0m                       'lora_rank': 0,
+[36m(TaskRunner pid=281526)[0m                       'override_config': {},
+[36m(TaskRunner pid=281526)[0m                       'path': '~/models/deepseek-llm-7b-chat',
+[36m(TaskRunner pid=281526)[0m                       'target_modules': 'all-linear',
+[36m(TaskRunner pid=281526)[0m                       'tokenizer_path': 'Qwen/Qwen2.5-1.5B-Instruct',
+[36m(TaskRunner pid=281526)[0m                       'trust_remote_code': False,
+[36m(TaskRunner pid=281526)[0m                       'use_remove_padding': False,
+[36m(TaskRunner pid=281526)[0m                       'use_shm': False},
+[36m(TaskRunner pid=281526)[0m             'optim': {'lr': 1e-05,
+[36m(TaskRunner pid=281526)[0m                       'lr_warmup_steps_ratio': 0.0,
+[36m(TaskRunner pid=281526)[0m                       'min_lr_ratio': None,
+[36m(TaskRunner pid=281526)[0m                       'total_training_steps': -1,
+[36m(TaskRunner pid=281526)[0m                       'warmup_style': 'constant',
+[36m(TaskRunner pid=281526)[0m                       'weight_decay': 0.01},
+[36m(TaskRunner pid=281526)[0m             'ppo_epochs': 1,
+[36m(TaskRunner pid=281526)[0m             'ppo_max_token_len_per_gpu': 32768,
+[36m(TaskRunner pid=281526)[0m             'ppo_micro_batch_size': None,
+[36m(TaskRunner pid=281526)[0m             'ppo_micro_batch_size_per_gpu': None,
+[36m(TaskRunner pid=281526)[0m             'ppo_mini_batch_size': 256,
+[36m(TaskRunner pid=281526)[0m             'rollout_n': 1,
+[36m(TaskRunner pid=281526)[0m             'shuffle': False,
+[36m(TaskRunner pid=281526)[0m             'strategy': 'fsdp',
+[36m(TaskRunner pid=281526)[0m             'ulysses_sequence_parallel_size': 1,
+[36m(TaskRunner pid=281526)[0m             'use_dynamic_bsz': False},
+[36m(TaskRunner pid=281526)[0m  'custom_reward_function': {'name': 'compute_score', 'path': None},
+[36m(TaskRunner pid=281526)[0m  'data': {'apply_chat_template_kwargs': {},
+[36m(TaskRunner pid=281526)[0m           'custom_cls': {'name': None, 'path': None},
+[36m(TaskRunner pid=281526)[0m           'filter_overlong_prompts': True,
+[36m(TaskRunner pid=281526)[0m           'filter_overlong_prompts_workers': 1,
+[36m(TaskRunner pid=281526)[0m           'image_key': 'images',
+[36m(TaskRunner pid=281526)[0m           'max_prompt_length': 2048,
+[36m(TaskRunner pid=281526)[0m           'max_response_length': 512,
+[36m(TaskRunner pid=281526)[0m           'prompt_key': 'prompt',
+[36m(TaskRunner pid=281526)[0m           'return_full_prompt': False,
+[36m(TaskRunner pid=281526)[0m           'return_raw_chat': True,
+[36m(TaskRunner pid=281526)[0m           'return_raw_input_ids': False,
+[36m(TaskRunner pid=281526)[0m           'reward_fn_key': 'data_source',
+[36m(TaskRunner pid=281526)[0m           'shuffle': True,
+[36m(TaskRunner pid=281526)[0m           'tokenizer': None,
+[36m(TaskRunner pid=281526)[0m           'train_batch_size': 4,
+[36m(TaskRunner pid=281526)[0m           'train_files': '/root/data/verl-agent/text/train.parquet',
+[36m(TaskRunner pid=281526)[0m           'truncation': 'error',
+[36m(TaskRunner pid=281526)[0m           'trust_remote_code': False,
+[36m(TaskRunner pid=281526)[0m           'use_shm': False,
+[36m(TaskRunner pid=281526)[0m           'val_batch_size': 128,
+[36m(TaskRunner pid=281526)[0m           'val_files': '/root/data/verl-agent/text/test.parquet',
+[36m(TaskRunner pid=281526)[0m           'video_key': 'videos'},
+[36m(TaskRunner pid=281526)[0m  'env': {'alfworld': {'eval_dataset': 'eval_in_distribution'},
+[36m(TaskRunner pid=281526)[0m          'env_name': 'alfworld/AlfredTWEnv',
+[36m(TaskRunner pid=281526)[0m          'history_length': 2,
+[36m(TaskRunner pid=281526)[0m          'max_steps': 50,
+[36m(TaskRunner pid=281526)[0m          'resources_per_worker': {'num_cpus': 0.1, 'num_gpus': 0},
+[36m(TaskRunner pid=281526)[0m          'rollout': {'n': 8},
+[36m(TaskRunner pid=281526)[0m          'search': {'log_requests': False,
+[36m(TaskRunner pid=281526)[0m                     'search_url': 'http://127.0.0.1:8000/retrieve',
+[36m(TaskRunner pid=281526)[0m                     'timeout': 60,
+[36m(TaskRunner pid=281526)[0m                     'topk': 3},
+[36m(TaskRunner pid=281526)[0m          'seed': 0,
+[36m(TaskRunner pid=281526)[0m          'sokoban': {'dim_room': [6, 6],
+[36m(TaskRunner pid=281526)[0m                      'mode': 'tiny_rgb_array',
+[36m(TaskRunner pid=281526)[0m                      'num_boxes': 1,
+[36m(TaskRunner pid=281526)[0m                      'search_depth': 30},
+[36m(TaskRunner pid=281526)[0m          'webshop': {'human_goals': False, 'use_small': True}},
+[36m(TaskRunner pid=281526)[0m  'ray_init': {'num_cpus': None},
+[36m(TaskRunner pid=281526)[0m  'reward_model': {'enable': False,
+[36m(TaskRunner pid=281526)[0m                   'forward_max_token_len_per_gpu': 32768,
+[36m(TaskRunner pid=281526)[0m                   'launch_reward_fn_async': False,
+[36m(TaskRunner pid=281526)[0m                   'max_length': None,
+[36m(TaskRunner pid=281526)[0m                   'micro_batch_size': None,
+[36m(TaskRunner pid=281526)[0m                   'micro_batch_size_per_gpu': None,
+[36m(TaskRunner pid=281526)[0m                   'model': {'external_lib': None,
+[36m(TaskRunner pid=281526)[0m                             'fsdp_config': {'fsdp_size': -1,
+[36m(TaskRunner pid=281526)[0m                                             'param_offload': False,
+[36m(TaskRunner pid=281526)[0m                                             'reshard_after_forward': True,
+[36m(TaskRunner pid=281526)[0m                                             'wrap_policy': {'min_num_params': 0}},
+[36m(TaskRunner pid=281526)[0m                             'input_tokenizer': 'Qwen/Qwen2.5-1.5B-Instruct',
+[36m(TaskRunner pid=281526)[0m                             'path': '~/models/FsfairX-LLaMA3-RM-v0.1',
+[36m(TaskRunner pid=281526)[0m                             'trust_remote_code': False,
+[36m(TaskRunner pid=281526)[0m                             'use_fused_kernels': False,
+[36m(TaskRunner pid=281526)[0m                             'use_remove_padding': False,
+[36m(TaskRunner pid=281526)[0m                             'use_shm': False},
+[36m(TaskRunner pid=281526)[0m                   'reward_manager': 'episode',
+[36m(TaskRunner pid=281526)[0m                   'sandbox_fusion': {'max_concurrent': 64, 'url': None},
+[36m(TaskRunner pid=281526)[0m                   'strategy': 'fsdp',
+[36m(TaskRunner pid=281526)[0m                   'ulysses_sequence_parallel_size': 1,
+[36m(TaskRunner pid=281526)[0m                   'use_dynamic_bsz': False},
+[36m(TaskRunner pid=281526)[0m  'trainer': {'balance_batch': True,
+[36m(TaskRunner pid=281526)[0m              'critic_warmup': 0,
+[36m(TaskRunner pid=281526)[0m              'default_hdfs_dir': None,
+[36m(TaskRunner pid=281526)[0m              'default_local_dir': '/workspace/AIKnowledgeSystemsTermProject/src/runs/verl/commit_ref/ckpt',
+[36m(TaskRunner pid=281526)[0m              'del_local_ckpt_after_load': False,
+[36m(TaskRunner pid=281526)[0m              'device': 'cuda',
+[36m(TaskRunner pid=281526)[0m              'experiment_name': 'commit_ref',
+[36m(TaskRunner pid=281526)[0m              'log_val_generations': 0,
+[36m(TaskRunner pid=281526)[0m              'logger': ['console'],
+[36m(TaskRunner pid=281526)[0m              'max_actor_ckpt_to_keep': None,
+[36m(TaskRunner pid=281526)[0m              'max_critic_ckpt_to_keep': None,
+[36m(TaskRunner pid=281526)[0m              'n_gpus_per_node': 1,
+[36m(TaskRunner pid=281526)[0m              'nnodes': 1,
+[36m(TaskRunner pid=281526)[0m              'project_name': 'gaca_term',
+[36m(TaskRunner pid=281526)[0m              'ray_wait_register_center_timeout': 300,
+[36m(TaskRunner pid=281526)[0m              'resume_from_path': None,
+[36m(TaskRunner pid=281526)[0m              'resume_mode': 'auto',
+[36m(TaskRunner pid=281526)[0m              'rollout_data_dir': None,
+[36m(TaskRunner pid=281526)[0m              'save_freq': -1,
+[36m(TaskRunner pid=281526)[0m              'test_freq': 10,
+[36m(TaskRunner pid=281526)[0m              'total_epochs': 34,
+[36m(TaskRunner pid=281526)[0m              'total_training_steps': 34,
+[36m(TaskRunner pid=281526)[0m              'val_before_train': True,
+[36m(TaskRunner pid=281526)[0m              'val_only': False,
+[36m(TaskRunner pid=281526)[0m              'validation_data_dir': None}}
+[36m(TaskRunner pid=281526)[0m Initializing AlfredTWEnv...
+[36m(TaskRunner pid=281526)[0m   0%|          | 0/8810 [00:00<?, ?it/s]
+[36m(TaskRunner pid=281526)[0m   4%|▍         | 344/8810 [00:00<00:02, 3423.00it/s]
+[36m(TaskRunner pid=281526)[0m   8%|▊         | 687/8810 [00:00<00:03, 2701.73it/s]
+[36m(TaskRunner pid=281526)[0m  11%|█         | 967/8810 [00:00<00:02, 2636.44it/s]
+[36m(TaskRunner pid=281526)[0m  14%|█▍        | 1236/8810 [00:00<00:03, 2501.02it/s]
+[36m(TaskRunner pid=281526)[0m  17%|█▋        | 1489/8810 [00:00<00:02, 2468.02it/s]
+[36m(TaskRunner pid=281526)[0m  20%|█▉        | 1738/8810 [00:00<00:04, 1500.25it/s]
+[36m(TaskRunner pid=281526)[0m  23%|██▎       | 1990/8810 [00:00<00:03, 1716.85it/s]
+[36m(TaskRunner pid=281526)[0m  25%|██▌       | 2203/8810 [00:01<00:03, 1809.91it/s]
+[36m(TaskRunner pid=281526)[0m  28%|██▊       | 2440/8810 [00:01<00:03, 1948.86it/s]
+[36m(TaskRunner pid=281526)[0m  31%|███       | 2709/8810 [00:01<00:02, 2137.63it/s]
+[36m(TaskRunner pid=281526)[0m  33%|███▎      | 2946/8810 [00:01<00:02, 2199.25it/s]
+[36m(TaskRunner pid=281526)[0m  36%|███▋      | 3194/8810 [00:01<00:02, 2277.49it/s]
+[36m(TaskRunner pid=281526)[0m  39%|███▉      | 3433/8810 [00:01<00:03, 1520.53it/s]
+[36m(TaskRunner pid=281526)[0m  42%|████▏     | 3678/8810 [00:01<00:02, 1715.32it/s]
+[36m(TaskRunner pid=281526)[0m  45%|████▍     | 3924/8810 [00:01<00:02, 1887.40it/s]
+[36m(TaskRunner pid=281526)[0m  47%|████▋     | 4172/8810 [00:02<00:02, 2034.80it/s]
+[36m(TaskRunner pid=281526)[0m  50%|█████     | 4432/8810 [00:02<00:02, 2180.32it/s]
+[36m(TaskRunner pid=281526)[0m  53%|█████▎    | 4704/8810 [00:02<00:01, 2326.65it/s]
+[36m(TaskRunner pid=281526)[0m  56%|█████▋    | 4963/8810 [00:02<00:01, 2396.07it/s]
+[36m(TaskRunner pid=281526)[0m  59%|█████▉    | 5224/8810 [00:02<00:01, 2455.78it/s]
+[36m(TaskRunner pid=281526)[0m  62%|██████▏   | 5478/8810 [00:02<00:01, 2430.66it/s]
+[36m(TaskRunner pid=281526)[0m  65%|██████▌   | 5727/8810 [00:02<00:01, 1623.99it/s]
+[36m(TaskRunner pid=281526)[0m  68%|██████▊   | 5968/8810 [00:02<00:01, 1789.89it/s]
+[36m(TaskRunner pid=281526)[0m  71%|███████   | 6218/8810 [00:03<00:01, 1955.75it/s]
+[36m(TaskRunner pid=281526)[0m  74%|███████▍  | 6540/8810 [00:03<00:00, 2270.43it/s]
+[36m(TaskRunner pid=281526)[0m  77%|███████▋  | 6793/8810 [00:03<00:00, 2285.39it/s]
+[36m(TaskRunner pid=281526)[0m  80%|████████  | 7074/8810 [00:03<00:00, 2423.25it/s]
+[36m(TaskRunner pid=281526)[0m  83%|████████▎ | 7331/8810 [00:03<00:00, 2446.11it/s]
+[36m(TaskRunner pid=281526)[0m  86%|████████▌ | 7586/8810 [00:03<00:00, 2394.37it/s]
+[36m(TaskRunner pid=281526)[0m  89%|████████▉ | 7833/8810 [00:03<00:00, 1560.50it/s]
+[36m(TaskRunner pid=281526)[0m  92%|█████████▏| 8065/8810 [00:03<00:00, 1714.96it/s]
+[36m(TaskRunner pid=281526)[0m  95%|█████████▍| 8328/8810 [00:04<00:00, 1921.22it/s]
+[36m(TaskRunner pid=281526)[0m  97%|█████████▋| 8570/8810 [00:04<00:00, 2042.16it/s]
+[36m(TaskRunner pid=281526)[0m Overall we have 3553 games in split=train
+[36m(TaskRunner pid=281526)[0m Training with 3553 games
+[36m(TaskRunner pid=281526)[0m use_expert = False
+[36m(TaskRunner pid=281526)[0m 100%|██████████| 8810/8810 [00:04<00:00, 2061.41it/s]
+[36m(TaskRunner pid=281526)[0m Initializing AlfredTWEnv...
+[36m(TaskRunner pid=281526)[0m   0%|          | 0/494 [00:00<?, ?it/s]
+[36m(TaskRunner pid=281526)[0m Overall we have 140 games in split=eval_in_distribution
+[36m(TaskRunner pid=281526)[0m Evaluating with 140 games
+[36m(TaskRunner pid=281526)[0m use_expert = False
+[36m(TaskRunner pid=281526)[0m  70%|███████   | 348/494 [00:00<00:00, 3464.94it/s]100%|██████████| 494/494 [00:00<00:00, 3542.91it/s]
+[36m(TaskRunner pid=281526)[0m Using dataset class: RLHFDataset
+[36m(TaskRunner pid=281526)[0m dataset len: 4
+[36m(TaskRunner pid=281526)[0m Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 4 examples [00:00, 1481.82 examples/s]
+[36m(TaskRunner pid=281526)[0m Filtering prompts longer than 2048 tokens (num_proc=1):   0%|          | 0/4 [00:00<?, ? examples/s]
+[36m(TaskRunner pid=281526)[0m Filtering prompts longer than 2048 tokens (num_proc=1): 100%|██████████| 4/4 [00:00<00:00,  8.12 examples/s]
+[36m(TaskRunner pid=281526)[0m filter dataset len: 4
+[36m(TaskRunner pid=281526)[0m Using dataset class: RLHFDataset
+[36m(TaskRunner pid=281526)[0m Filtering prompts longer than 2048 tokens (num_proc=1): 100%|██████████| 4/4 [00:00<00:00,  6.51 examples/s]
+[36m(TaskRunner pid=281526)[0m dataset len: 128
+[36m(TaskRunner pid=281526)[0m Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 128 examples [00:00, 51941.85 examples/s]
+[36m(TaskRunner pid=281526)[0m Filtering prompts longer than 2048 tokens (num_proc=1):   0%|          | 0/128 [00:00<?, ? examples/s]
+[36m(TaskRunner pid=281526)[0m Filtering prompts longer than 2048 tokens (num_proc=1): 100%|██████████| 128/128 [00:00<00:00, 253.23 examples/s]
+[33m(raylet)[0m WARNING: 50 PYTHON worker processes have been started on node: f14e4a542cb74bfe94959e9278fb41452320614684510d85828389e2 with address: 172.17.0.2. This could be a result of using a large number of actors, or due to tasks blocked in ray.get() calls (see https://github.com/ray-project/ray/issues/3644 for some discussion of workarounds).
+[36m(TaskRunner pid=281526)[0m filter dataset len: 128
+[36m(TaskRunner pid=281526)[0m WARNING: val_batch_size is deprecated. Validation datasets are sent to inference engines as a whole batch, which will schedule the memory themselves.
+[36m(TaskRunner pid=281526)[0m [validate_config] All configuration checks passed successfully!
+[36m(TaskRunner pid=281526)[0m Size of train dataloader: 1, Size of val dataloader: 1
+[36m(TaskRunner pid=281526)[0m Total training steps: 34
+[36m(TaskRunner pid=281526)[0m colocated worker base class <class 'verl.single_controller.base.worker.Worker'>
+[36m(TaskRunner pid=281526)[0m Filtering prompts longer than 2048 tokens (num_proc=1): 100%|██████████| 128/128 [00:00<00:00, 201.69 examples/s]
+[36m(TaskRunner pid=281526)[0m DeprecationWarning: `ray.state.available_resources_per_node` is a private attribute and access will be removed in a future Ray version.
+[36m(TaskRunner pid=281526)[0m WARNING:2026-11-10 08:11:30,736:Waiting for register center actor p7wxGe_register_center to be ready. Elapsed time: 0 seconds out of 300 seconds.
+[36m(WorkerDict pid=282966)[0m [Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[36m(WorkerDict pid=282966)[0m Model config after override: Qwen2Config {
+[36m(WorkerDict pid=282966)[0m   "architectures": [
+[36m(WorkerDict pid=282966)[0m     "Qwen2ForCausalLM"
+[36m(WorkerDict pid=282966)[0m   ],
+[36m(WorkerDict pid=282966)[0m   "attention_dropout": 0.0,
+[36m(WorkerDict pid=282966)[0m   "dtype": "bfloat16",
+[36m(WorkerDict pid=282966)[0m   "eos_token_id": 151645,
+[36m(WorkerDict pid=282966)[0m   "hidden_act": "silu",
+[36m(WorkerDict pid=282966)[0m   "hidden_size": 1536,
+[36m(WorkerDict pid=282966)[0m   "initializer_range": 0.02,
+[36m(WorkerDict pid=282966)[0m   "intermediate_size": 8960,
+[36m(WorkerDict pid=282966)[0m   "layer_types": [
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention"
+[36m(WorkerDict pid=282966)[0m   ],
+[36m(WorkerDict pid=282966)[0m   "max_position_embeddings": 32768,
+[36m(WorkerDict pid=282966)[0m   "max_window_layers": 21,
+[36m(WorkerDict pid=282966)[0m   "model_type": "qwen2",
+[36m(WorkerDict pid=282966)[0m   "num_attention_heads": 12,
+[36m(WorkerDict pid=282966)[0m   "num_hidden_layers": 28,
+[36m(WorkerDict pid=282966)[0m   "num_key_value_heads": 2,
+[36m(WorkerDict pid=282966)[0m   "pad_token_id": 151643,
+[36m(WorkerDict pid=282966)[0m   "rms_norm_eps": 1e-06,
+[36m(WorkerDict pid=282966)[0m   "rope_scaling": null,
+[36m(WorkerDict pid=282966)[0m   "rope_theta": 1000000.0,
+[36m(WorkerDict pid=282966)[0m   "sliding_window": null,
+[36m(WorkerDict pid=282966)[0m   "tie_word_embeddings": true,
+[36m(WorkerDict pid=282966)[0m   "transformers_version": "4.57.3",
+[36m(WorkerDict pid=282966)[0m   "use_cache": true,
+[36m(WorkerDict pid=282966)[0m   "use_sliding_window": false,
+[36m(WorkerDict pid=282966)[0m   "vocab_size": 151936
+[36m(WorkerDict pid=282966)[0m }
+[36m(WorkerDict pid=282966)[0m 
+[36m(WorkerDict pid=282966)[0m `torch_dtype` is deprecated! Use `dtype` instead!
+[36m(WorkerDict pid=282966)[0m Monkey patch _flash_attention_forward in transformers.integrations.flash_attention
+[36m(WorkerDict pid=282966)[0m Skipping monkey patch for Qwen2ForCausalLM as use_fused_kernels is False or fused_kernels_backend is None
+[36m(WorkerDict pid=282966)[0m Qwen2ForCausalLM contains 1.54B parameters
+[36m(WorkerDict pid=282966)[0m wrap_policy: functools.partial(<function _or_policy at 0x7f662a5c49a0>, policies=[functools.partial(<function transformer_auto_wrap_policy at 0x7f662a5c4860>, transformer_layer_cls={<class 'transformers.models.qwen2.modeling_qwen2.Qwen2DecoderLayer'>})])
+[36m(WorkerDict pid=282966)[0m NCCL version 2.27.3+cuda12.9
+[36m(WorkerDict pid=282966)[0m /workspace/verl-agent/.venv/lib/python3.12/site-packages/torch/distributed/fsdp/_init_utils.py:430: UserWarning: FSDP is switching to use `NO_SHARD` instead of ShardingStrategy.FULL_SHARD since the world size is 1.
+[36m(WorkerDict pid=282966)[0m   warnings.warn(
+[36m(WorkerDict pid=282966)[0m Actor use_remove_padding=True
+[36m(WorkerDict pid=282966)[0m Actor use_fused_kernels=False
+[36m(WorkerDict pid=282966)[0m Model config after override: Qwen2Config {
+[36m(WorkerDict pid=282966)[0m   "architectures": [
+[36m(WorkerDict pid=282966)[0m     "Qwen2ForCausalLM"
+[36m(WorkerDict pid=282966)[0m   ],
+[36m(WorkerDict pid=282966)[0m   "attention_dropout": 0.0,
+[36m(WorkerDict pid=282966)[0m   "dtype": "bfloat16",
+[36m(WorkerDict pid=282966)[0m   "eos_token_id": 151645,
+[36m(WorkerDict pid=282966)[0m   "hidden_act": "silu",
+[36m(WorkerDict pid=282966)[0m   "hidden_size": 1536,
+[36m(WorkerDict pid=282966)[0m   "initializer_range": 0.02,
+[36m(WorkerDict pid=282966)[0m   "intermediate_size": 8960,
+[36m(WorkerDict pid=282966)[0m   "layer_types": [
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention",
+[36m(WorkerDict pid=282966)[0m     "full_attention"
+[36m(WorkerDict pid=282966)[0m   ],
+[36m(WorkerDict pid=282966)[0m   "max_position_embeddings": 32768,
+[36m(WorkerDict pid=282966)[0m   "max_window_layers": 21,
+[36m(WorkerDict pid=282966)[0m   "model_type": "qwen2",
+[36m(WorkerDict pid=282966)[0m   "num_attention_heads": 12,
+[36m(WorkerDict pid=282966)[0m   "num_hidden_layers": 28,
+[36m(WorkerDict pid=282966)[0m   "num_key_value_heads": 2,
+[36m(WorkerDict pid=282966)[0m   "pad_token_id": 151643,
+[36m(WorkerDict pid=282966)[0m   "rms_norm_eps": 1e-06,
+[36m(WorkerDict pid=282966)[0m   "rope_scaling": null,
+[36m(WorkerDict pid=282966)[0m   "rope_theta": 1000000.0,
+[36m(WorkerDict pid=282966)[0m   "sliding_window": null,
+[36m(WorkerDict pid=282966)[0m   "tie_word_embeddings": true,
+[36m(WorkerDict pid=282966)[0m   "transformers_version": "4.57.3",
+[36m(WorkerDict pid=282966)[0m   "use_cache": true,
+[36m(WorkerDict pid=282966)[0m   "use_sliding_window": false,
+[36m(WorkerDict pid=282966)[0m   "vocab_size": 151936
+[36m(WorkerDict pid=282966)[0m }
+[36m(WorkerDict pid=282966)[0m 
+[36m(WorkerDict pid=282966)[0m Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in Qwen2ForCausalLM is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
+[36m(WorkerDict pid=282966)[0m Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in Qwen2Model is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
+[36m(WorkerDict pid=282966)[0m Monkey patch _flash_attention_forward in transformers.integrations.flash_attention
+[36m(WorkerDict pid=282966)[0m Skipping monkey patch for Qwen2ForCausalLM as use_fused_kernels is False or fused_kernels_backend is None
+[36m(WorkerDict pid=282966)[0m Qwen2ForCausalLM contains 1.54B parameters
+[36m(WorkerDict pid=282966)[0m wrap_policy: functools.partial(<function _or_policy at 0x7f662a5c49a0>, policies=[functools.partial(<function transformer_auto_wrap_policy at 0x7f662a5c4860>, transformer_layer_cls={<class 'transformers.models.qwen2.modeling_qwen2.Qwen2DecoderLayer'>})])
+[36m(WorkerDict pid=282966)[0m /workspace/verl-agent/.venv/lib/python3.12/site-packages/torch/distributed/fsdp/_init_utils.py:430: UserWarning: FSDP is switching to use `NO_SHARD` instead of ShardingStrategy.FULL_SHARD since the world size is 1.
+[36m(WorkerDict pid=282966)[0m   warnings.warn(
+[36m(WorkerDict pid=282966)[0m Total steps: 34, num_warmup_steps: 0
+[36m(WorkerDict pid=282966)[0m Actor use_remove_padding=True
+[36m(WorkerDict pid=282966)[0m Actor use_fused_kernels=False
+[36m(WorkerDict pid=282966)[0m [Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[36m(WorkerDict pid=282966)[0m [Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[36m(WorkerDict pid=282966)[0m `torch_dtype` is deprecated! Use `dtype` instead!
+[36m(WorkerDict pid=282966)[0m [Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[36m(WorkerDict pid=282966)[0m [Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[36m(WorkerDict pid=282966)[0m [Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[36m(WorkerDict pid=282966)[0m [Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[36m(WorkerDict pid=282966)[0m [Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[36m(WorkerDict pid=282966)[0m [Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[36m(WorkerDict pid=282966)[0m WARNING 11-10 08:11:51 [topk_topp_sampler.py:66] FlashInfer is not available. Falling back to the PyTorch-native implementation of top-p & top-k sampling. For the best performance, please install FlashInfer.
+[36m(WorkerDict pid=282966)[0m Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   0%|          | 0/67 [00:00<?, ?it/s]
+[36m(WorkerDict pid=282966)[0m Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   6%|▌         | 4/67 [00:00<00:01, 32.13it/s]
+[36m(WorkerDict pid=282966)[0m Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  12%|█▏        | 8/67 [00:00<00:01, 31.53it/s]
+[36m(WorkerDict pid=282966)[0m Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  18%|█▊        | 12/67 [00:00<00:01, 32.37it/s]
+[36m(WorkerDict pid=282966)[0m Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  24%|██▍       | 16/67 [00:00<00:01, 32.73it/s]
+[36m(WorkerDict pid=282966)[0m Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  30%|██▉       | 20/67 [00:00<00:01, 32.80it/s]
+[36m(WorkerDict pid=282966)[0m Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  36%|███▌      | 24/67 [00:00<00:01, 32.72it/s]
+[36m(WorkerDict pid=282966)[0m Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  42%|████▏     | 28/67 [00:00<00:01, 32.49it/s]
+[36m(WorkerDict pid=282966)[0m Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  48%|████▊     | 32/67 [00:00<00:01, 32.36it/s]
+[36m(WorkerDict pid=282966)[0m Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  54%|█████▎    | 36/67 [00:01<00:00, 32.19it/s]
+[36m(WorkerDict pid=282966)[0m Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  60%|█████▉    | 40/67 [00:01<00:00, 32.15it/s]
+[36m(WorkerDict pid=282966)[0m Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  66%|██████▌   | 44/67 [00:01<00:00, 32.12it/s]
+[36m(WorkerDict pid=282966)[0m Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  72%|███████▏  | 48/67 [00:01<00:00, 32.02it/s]
+[36m(WorkerDict pid=282966)[0m Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  78%|███████▊  | 52/67 [00:01<00:00, 31.85it/s]
+[36m(WorkerDict pid=282966)[0m Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  84%|████████▎ | 56/67 [00:01<00:00, 31.78it/s]
+[36m(WorkerDict pid=282966)[0m Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  90%|████████▉ | 60/67 [00:01<00:00, 30.15it/s]
+[36m(WorkerDict pid=282966)[0m Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  96%|█████████▌| 64/67 [00:02<00:00, 30.26it/s]
+[36m(WorkerDict pid=282966)[0m Capturing CUDA graphs (mixed prefill-decode, PIECEWISE): 100%|██████████| 67/67 [00:02<00:00, 31.24it/s]
+[36m(WorkerDict pid=282966)[0m Capturing CUDA graphs (decode, FULL):   0%|          | 0/67 [00:00<?, ?it/s]
+[36m(WorkerDict pid=282966)[0m Capturing CUDA graphs (decode, FULL):   4%|▍         | 3/67 [00:00<00:02, 28.15it/s]
+[36m(WorkerDict pid=282966)[0m Capturing CUDA graphs (decode, FULL):  10%|█         | 7/67 [00:00<00:02, 29.49it/s]
+[36m(WorkerDict pid=282966)[0m Capturing CUDA graphs (decode, FULL):  16%|█▋        | 11/67 [00:00<00:01, 31.11it/s]
+[36m(WorkerDict pid=282966)[0m Capturing CUDA graphs (decode, FULL):  22%|██▏       | 15/67 [00:00<00:01, 32.49it/s]
+[36m(WorkerDict pid=282966)[0m Capturing CUDA graphs (decode, FULL):  28%|██▊       | 19/67 [00:00<00:01, 33.04it/s]
+[36m(WorkerDict pid=282966)[0m Capturing CUDA graphs (decode, FULL):  34%|███▍      | 23/67 [00:00<00:01, 32.96it/s]
+[36m(WorkerDict pid=282966)[0m Capturing CUDA graphs (decode, FULL):  40%|████      | 27/67 [00:00<00:01, 33.31it/s]
+[36m(WorkerDict pid=282966)[0m Capturing CUDA graphs (decode, FULL):  46%|████▋     | 31/67 [00:00<00:01, 33.57it/s]
+[36m(WorkerDict pid=282966)[0m Capturing CUDA graphs (decode, FULL):  52%|█████▏    | 35/67 [00:01<00:00, 33.73it/s]
+[36m(WorkerDict pid=282966)[0m Capturing CUDA graphs (decode, FULL):  58%|█████▊    | 39/67 [00:01<00:00, 33.93it/s]
+[36m(WorkerDict pid=282966)[0m Capturing CUDA graphs (decode, FULL):  64%|██████▍   | 43/67 [00:01<00:00, 34.01it/s]
+[36m(WorkerDict pid=282966)[0m Capturing CUDA graphs (decode, FULL):  70%|███████   | 47/67 [00:01<00:00, 34.26it/s]
+[36m(WorkerDict pid=282966)[0m Capturing CUDA graphs (decode, FULL):  76%|███████▌  | 51/67 [00:01<00:00, 34.52it/s]
+[36m(WorkerDict pid=282966)[0m Capturing CUDA graphs (decode, FULL):  82%|████████▏ | 55/67 [00:01<00:00, 34.68it/s]
+[36m(WorkerDict pid=282966)[0m Capturing CUDA graphs (decode, FULL):  88%|████████▊ | 59/67 [00:01<00:00, 34.49it/s]
+[36m(WorkerDict pid=282966)[0m Capturing CUDA graphs (decode, FULL):  94%|█████████▍| 63/67 [00:01<00:00, 34.41it/s]
+[36m(WorkerDict pid=282966)[0m Capturing CUDA graphs (decode, FULL): 100%|██████████| 67/67 [00:01<00:00, 34.64it/s]Capturing CUDA graphs (decode, FULL): 100%|██████████| 67/67 [00:01<00:00, 33.66it/s]
+[36m(WorkerDict pid=282966)[0m kwargs: {'n': 1, 'logprobs': 0, 'max_tokens': 512, 'detokenize': False, 'temperature': 1.0, 'top_k': -1, 'top_p': 1, 'ignore_eos': False}
+[36m(WorkerDict pid=282966)[0m /workspace/verl-agent/.venv/lib/python3.12/site-packages/torch/distributed/fsdp/fully_sharded_data_parallel.py:678: FutureWarning: FSDP.state_dict_type() and FSDP.set_state_dict_type() are being deprecated. Please use APIs, get_state_dict() and set_state_dict(), which can support different parallelisms, FSDP1, FSDP2, DDP. API doc: https://pytorch.org/docs/stable/distributed.checkpoint.html#torch.distributed.checkpoint.state_dict.get_state_dict .Tutorial: https://pytorch.org/tutorials/recipes/distributed_checkpoint_recipe.html .
+[36m(WorkerDict pid=282966)[0m   warnings.warn(
+[36m(TaskRunner pid=281526)[0m Using LocalLogger is deprecated. The constructor API will change 
+[36m(TaskRunner pid=281526)[0m Checkpoint tracker file does not exist: %s /workspace/AIKnowledgeSystemsTermProject/src/runs/verl/commit_ref/ckpt/latest_checkpointed_iteration.txt
+[36m(TaskRunner pid=281526)[0m Training from scratch
+[36m(TaskRunner pid=281526)[0m test_gen_batch meta info: {'eos_token_id': 151645, 'pad_token_id': 151643, 'recompute_log_prob': False, 'do_sample': True, 'validate': True}
+*** SIGTERM received at time=1794298595 on cpu 3 ***
+PC: @     0x7f80280ede51  (unknown)  (unknown)
+    @     0x7f802809a330  (unknown)  (unknown)
+    @     0x7f80280f0d6e        224  pthread_cond_timedwait
+    @     0x7f8014dea38f       1184  ray::core::GetRequest::Wait()
+    @     0x7f8014decadf       1408  ray::core::CoreWorkerMemoryStore::GetImpl()
+    @     0x7f8014ded7de         64  ray::core::CoreWorkerMemoryStore::Get()
+    @     0x7f8014ded9ed        208  ray::core::CoreWorkerMemoryStore::Get()
+    @     0x7f8014c98427       1472  ray::core::CoreWorker::GetObjects()
+    @     0x7f8014c9ff70        160  ray::core::CoreWorker::Get()
+    @     0x7f8014bd02b0        240  __pyx_pw_3ray_7_raylet_10CoreWorker_39get_objects()
+    @           0x5499b5         32  PyObject_Vectorcall
+    @           0x5d710f        384  _PyEval_EvalFrameDefault
+    @           0x5d55eb        128  PyEval_EvalCode
+    @           0x5d33dc        112  (unknown)
+    @           0x581fed         64  (unknown)
+    @           0x5499b5         32  PyObject_Vectorcall
+    @           0x5d710f        384  _PyEval_EvalFrameDefault
+    @           0x6bcf22         80  (unknown)
+    @           0x6bcb52        288  Py_RunMain
+    @           0x6bc7bd         48  Py_BytesMain
+    @     0x7f802807f1ca        160  (unknown)
+    @     0x7f802807f28b         96  __libc_start_main
+    @           0x657a05  (unknown)  _start
+[2026-11-10 08:16:35,673 E 280096 280096] logging.cc:474: *** SIGTERM received at time=1794298595 on cpu 3 ***
+[2026-11-10 08:16:35,673 E 280096 280096] logging.cc:474: PC: @     0x7f80280ede51  (unknown)  (unknown)
+[2026-11-10 08:16:35,673 E 280096 280096] logging.cc:474:     @     0x7f802809a330  (unknown)  (unknown)
+[2026-11-10 08:16:35,673 E 280096 280096] logging.cc:474:     @     0x7f80280f0d6e        224  pthread_cond_timedwait
+[2026-11-10 08:16:35,673 E 280096 280096] logging.cc:474:     @     0x7f8014dea38f       1184  ray::core::GetRequest::Wait()
+[2026-11-10 08:16:35,673 E 280096 280096] logging.cc:474:     @     0x7f8014decadf       1408  ray::core::CoreWorkerMemoryStore::GetImpl()
+[2026-11-10 08:16:35,673 E 280096 280096] logging.cc:474:     @     0x7f8014ded7de         64  ray::core::CoreWorkerMemoryStore::Get()
+[2026-11-10 08:16:35,673 E 280096 280096] logging.cc:474:     @     0x7f8014ded9ed        208  ray::core::CoreWorkerMemoryStore::Get()
+[2026-11-10 08:16:35,673 E 280096 280096] logging.cc:474:     @     0x7f8014c98427       1472  ray::core::CoreWorker::GetObjects()
+[2026-11-10 08:16:35,673 E 280096 280096] logging.cc:474:     @     0x7f8014c9ff70        160  ray::core::CoreWorker::Get()
+[2026-11-10 08:16:35,673 E 280096 280096] logging.cc:474:     @     0x7f8014bd02b0        240  __pyx_pw_3ray_7_raylet_10CoreWorker_39get_objects()
+[2026-11-10 08:16:35,673 E 280096 280096] logging.cc:474:     @           0x5499b5         32  PyObject_Vectorcall
+[2026-11-10 08:16:35,673 E 280096 280096] logging.cc:474:     @           0x5d710f        384  _PyEval_EvalFrameDefault
+[2026-11-10 08:16:35,673 E 280096 280096] logging.cc:474:     @           0x5d55eb        128  PyEval_EvalCode
+[2026-11-10 08:16:35,673 E 280096 280096] logging.cc:474:     @           0x5d33dc        112  (unknown)
+[2026-11-10 08:16:35,673 E 280096 280096] logging.cc:474:     @           0x581fed         64  (unknown)
+[2026-11-10 08:16:35,673 E 280096 280096] logging.cc:474:     @           0x5499b5         32  PyObject_Vectorcall
+[2026-11-10 08:16:35,673 E 280096 280096] logging.cc:474:     @           0x5d710f        384  _PyEval_EvalFrameDefault
+[2026-11-10 08:16:35,673 E 280096 280096] logging.cc:474:     @           0x6bcf22         80  (unknown)
+[2026-11-10 08:16:35,674 E 280096 280096] logging.cc:474:     @           0x6bcb52        288  Py_RunMain
+[2026-11-10 08:16:35,674 E 280096 280096] logging.cc:474:     @           0x6bc7bd         48  Py_BytesMain
+[2026-11-10 08:16:35,674 E 280096 280096] logging.cc:474:     @     0x7f802807f1ca        160  (unknown)
+[2026-11-10 08:16:35,674 E 280096 280096] logging.cc:474:     @     0x7f802807f28b         96  __libc_start_main
+[2026-11-10 08:16:35,674 E 280096 280096] logging.cc:474:     @           0x657a05  (unknown)  _start

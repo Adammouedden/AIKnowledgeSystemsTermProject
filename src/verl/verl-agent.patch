@@ -204,10 +204,10 @@ index 0000000..dd93f1a
 +    return a, a, {f"gaca/{k}": float(v) for k, v in diag.items()}
 diff --git a/gigpo/core_probe.py b/gigpo/core_probe.py
 new file mode 100644
-index 0000000..8f7a254
+index 0000000..42020f6
 --- /dev/null
 +++ b/gigpo/core_probe.py
-@@ -0,0 +1,184 @@
+@@ -0,0 +1,215 @@
 +"""Probe-weighted token credit (term project, IDEAS.md treatment 1).
 +
 +For each step row with a well-formed response, the commitment probe
@@ -392,11 +392,42 @@ index 0000000..8f7a254
 +            "probe/w_max_mean": float(torch.stack([w[i][resp_mask[i].bool()].max() for i in rows]).mean()) if rows else 1.0,
 +            "probe/w_std": float(wm.std()), "probe/q0_mean": float(np.mean([np.exp(s) for (i, c, _, _), s in zip(reqs, scores) if c == 0])),
 +            **extra}
++
++
++def apply_action_weights(trainer, batch, k=2.0):
++    """Probe-free baseline for COMMIT (term project, hill-climbing queue): the tokens
++    from '<action>' to the end of the response get weight k, the reasoning gets 1,
++    renormalized to mean 1 per row (mean-preserving, like the probe). Rows without a
++    well-formed <think>/<action> response stay uniform. If this matches COMMIT, the
++    probe's 40% overhead buys nothing; if not, the probe's timing information matters."""
++    tok = trainer.tokenizer
++    responses = batch.batch["responses"].cpu()
++    resp_mask = batch.batch["response_mask"].cpu()
++    w = torch.ones(responses.shape, dtype=torch.float32)
++    n = 0
++    for i in range(responses.shape[0]):
++        L = int(resp_mask[i].sum())
++        r = responses[i, :L].tolist()
++        text = tok.decode(r)
++        if L == 0 or "<think>" not in text or "</think>" not in text or not _ACT.findall(text):
++            continue
++        a0 = _act_start(tok, r)
++        if a0 is None:
++            continue
++        ww = np.ones(L, dtype=np.float32)
++        ww[a0:] = k
++        w[i, :L] = torch.as_tensor(ww / ww.mean())
++        n += 1
++    w = w.to(batch.batch["advantages"].device) * batch.batch["response_mask"].float()
++    batch.batch["advantages"] = batch.batch["advantages"] * w
++    batch.batch["returns"] = batch.batch["advantages"]
++    wm = w[batch.batch["response_mask"].bool()]
++    return {"action_w/rows": float(n) / responses.shape[0], "action_w/w_std": float(wm.std())}
 diff --git a/verl/trainer/config/ppo_trainer.yaml b/verl/trainer/config/ppo_trainer.yaml
-index d0f68ba..251ea68 100644
+index d0f68ba..a718648 100644
 --- a/verl/trainer/config/ppo_trainer.yaml
 +++ b/verl/trainer/config/ppo_trainer.yaml
-@@ -247,6 +247,22 @@ algorithm:
+@@ -247,6 +247,23 @@ algorithm:
    pf_ppo:
      reweight_method: pow  # ["pow", "max_min", "max_random"]
      weight_pow: 2.0
@@ -410,17 +441,18 @@ index d0f68ba..251ea68 100644
 +    alpha_c: 1.0
 +    score_mode: entropy # entropy | uniform | random | loo
 +    rel: none           # none | msize (anchor-group-size reliability gate)
-+    token_mode: none    # none | probe (probe-weighted token credit, gigpo/core_probe.py)
++    token_mode: none    # none | probe | action (probe-weighted token credit, gigpo/core_probe.py)
 +    probe_every: 16
 +    probe_clip_lo: 0.25
 +    probe_clip_hi: 4.0
 +    probe_sign: both    # both | pos (probe weights only where the step advantage is positive)
-+    probe_scorer: policy  # policy | ref (frozen reference model scores the probe; IDEAS 1e.2)
++    action_weight: 2.0  # token_mode=action: weight of the <action> span vs reasoning (mean-preserving)
++  probe_scorer: policy  # policy | ref (frozen reference model scores the probe; IDEAS 1e.2)
    gigpo:
      step_advantage_w: 1.0
      mode: "mean_norm" # "mean_norm" or "mean_std_norm"
 diff --git a/verl/trainer/ppo/ray_trainer.py b/verl/trainer/ppo/ray_trainer.py
-index d85e23a..c1f6c6a 100644
+index d85e23a..24f5b84 100644
 --- a/verl/trainer/ppo/ray_trainer.py
 +++ b/verl/trainer/ppo/ray_trainer.py
 @@ -94,6 +94,7 @@ class AdvantageEstimator(str, Enum):
@@ -541,7 +573,7 @@ index d85e23a..c1f6c6a 100644
                          response_masks = batch.batch["response_mask"]
                          loss_agg_mode = self.config.actor_rollout_ref.actor.loss_agg_mode
                          entropy_loss = agg_loss(loss_mat=entropys, loss_mask=response_masks, loss_agg_mode=loss_agg_mode)
-@@ -1233,7 +1298,28 @@ class RayPPOTrainer:
+@@ -1233,7 +1298,31 @@ class RayPPOTrainer:
                              gigpo_mode=self.config.algorithm.gigpo.mode,
                              gigpo_enable_similarity= self.config.algorithm.gigpo.enable_similarity,
                              gigpo_similarity_thresh=self.config.algorithm.gigpo.similarity_thresh,
@@ -561,6 +593,9 @@ index d85e23a..c1f6c6a 100644
 +                                sign=str(_g.get("probe_sign", "both")),
 +                                scorer=str(_g.get("probe_scorer", "policy"))))
 +                            metrics["timing_s/probe"] = _tp.time() - _t0
++                        elif _g is not None and _g.get("token_mode", "none") == "action":
++                            from gigpo import core_probe
++                            metrics.update(core_probe.apply_action_weights(self, batch, k=float(_g.get("action_weight", 2.0))))
 +                        # Term project: per-step dump (logging only, never affects training).
 +                        if os.environ.get("GACA_STEP_DUMP"):
 +                            try:
@@ -570,7 +605,7 @@ index d85e23a..c1f6c6a 100644
  
                      # update critic
                      if self.use_critic:
-@@ -1298,7 +1384,42 @@ class RayPPOTrainer:
+@@ -1298,7 +1387,42 @@ class RayPPOTrainer:
  
                  progress_bar.update(1)
                  self.global_steps += 1

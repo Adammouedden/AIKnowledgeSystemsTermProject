@@ -994,3 +994,19 @@ Older records keep the old names: `arms.log`, commit messages, earlier entries i
 Hugging Face checkpoint folders (`Adammouedden/gaca-term-checkpoints/gaca_probe_s1` etc.).
 `report.py` matches both names in `arms.log`. The frozen-reference arm (`commit_ref`) was stopped at
 iteration 33/34 for the project deadline; it saved no checkpoint and must be re-run from scratch.
+
+## Hill-climbing queue replaces the frozen-reference re-run (2026-11-10)
+
+The user's priority moved from ablation rigor to performance. The commit_ref re-run was killed a few
+minutes in (logs in `src/runs/verl/commit_ref_restart_killed`); the frozen-reference question stays open.
+Queue, in order, each 34 iterations like every other arm:
+1. `commit_lr3`, `gaca_lr3`: learning rate 3e-6 instead of 1e-6. Our runs are 34 iterations where the
+   paper's are 150, so the conservative paper rate is the first suspect for slow learning.
+2. `gaca_actw`: probe-free token weighting, `<action>` span 2x and reasoning 1x, mean-preserving. Tests
+   whether COMMIT's gain needs the probe, which costs ~40% wall-clock (5.19 h vs 3.67 h).
+3. `commit_ds`: COMMIT plus DAPO dynamic sampling (verl-agent's `algorithm.filter_groups`: groups whose 8
+   rollouts all get the same reward carry zero advantage and are dropped and refilled, up to 3 rollout
+   passes). At ~5% base success most groups have no win, so most of each batch carries no gradient.
+   Launched at lr 1e-6 unless `commit_lr3` wins first, in which case its lr is raised before it starts.
+Caveat for reading these: one 128-game evaluation has a standard deviation of ~3.4 points near 18%, so
+a gain smaller than ~5 points from one seed is not distinguishable from noise.
