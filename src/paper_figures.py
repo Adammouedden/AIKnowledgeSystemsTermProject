@@ -136,7 +136,7 @@ def _plt():
     return plt
 
 
-ARM_ORDER = ["grpo", "gaca", "gaca_msize", "gaca_loo", "gaca_probe_s1", "gaca_probe_c05", "gaca_probe_pos", "gaca_probe_ref"]
+ARM_ORDER = ["grpo", "gaca", "gaca_msize", "gaca_loo", "gaca_probe_s1", "gaca_probe_c05", "gaca_probe_pos"]
 
 
 def fig_curves(arms):
@@ -322,7 +322,7 @@ def fig_robust():
 
 def figs():
     os.makedirs(FIG, exist_ok=True)
-    arms = [a for a in R.verl_load() if a["curve"] and (a["done"] or a["key"] == "gaca_probe_ref")]
+    arms = [a for a in R.verl_load() if a["curve"] and a["done"] and a["key"] in ARM_ORDER]
     arms.sort(key=lambda a: ARM_ORDER.index(a["key"]) if a["key"] in ARM_ORDER else 99)
     fig_curves(arms)
     fig_oracle()
@@ -339,7 +339,7 @@ def figs():
 def tables():
     """docs/paper/tables/results.tex from the arms' logs (final checkpoints, paired McNemar)."""
     os.makedirs(os.path.join(ROOT, "docs", "paper", "tables"), exist_ok=True)
-    arms = {a["key"]: a for a in R.verl_load() if a["curve"] and a["done"]}
+    arms = {a["key"]: a for a in R.verl_load() if a["curve"] and a["done"] and a["key"] in ARM_ORDER}
     order = [k for k in ARM_ORDER if k in arms]
     fin = {k: arms[k]["curve"][-1][2] for k in order}
     base = arms["grpo"]["curve"][0][2]

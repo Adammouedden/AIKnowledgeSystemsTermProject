@@ -3,7 +3,7 @@
 \documentclass[10pt,twocolumn,letterpaper]{article}
 
 %%%%%%%%% PAPER TYPE
-\usepackage[review]{cvpr}      % To produce the REVIEW version
+\usepackage[review]{cvpr}      % layout of the review version; watermark and line numbers removed below      % To produce the REVIEW version
 
 \input{preamble}
 \usepackage{amsmath,amssymb}
@@ -32,6 +32,8 @@
 }
 
 \begin{document}
+\ClearShipoutPicture\nolinenumbers  % no CONFIDENTIAL header, CVPR corner marks or line-number ruler
+\toggletrue{cvprfinal}  % show the author block instead of "Anonymous submission"
 \maketitle
 \input{sec/0_abstract}
 \input{sec/1_intro}

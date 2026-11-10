@@ -46,7 +46,7 @@ tokens. The probability of the eventual action before any reasoning, $q(0)$, \em
 opposite of the drift Yu~\etal~\cite{yu2026cir} warn about for outcome rewards.
 
 \paragraph{How the probe is applied matters.}
-The three variants were designed to fix failure modes of concentration, and none helped.
+The two variants were designed to fix failure modes of concentration, and none helped.
 A tighter clip $[0.5, 2]$ brought the gradient norm to GACA's level (0.93) and finished at 14.1\%, level
 with GRPO. Applying the probe only to positive advantages, so that blame always stays uniform, was the
 worst method: 5.5\%, essentially no learning, and significantly below both GRPO (16 to 5, $p = 0.027$)
@@ -54,7 +54,7 @@ and GACA (20 to 3, $p < 0.001$). Its KL rose to 0.059 over the last iterations a
 (0.20 to 0.19), so early commitment does not explain the failure. A plausible reading is that the
 asymmetry itself is harmful: positive steps push hard on a few decisive tokens while negative steps push
 weakly on all tokens, so the policy is moved toward specific reasoning patterns without a matching
-signal moving it away from bad ones. \TODO{frozen-reference arm result and reading.}
+signal moving it away from bad ones.
 
 \paragraph{Step-level treatments.}
 Neither change to GACA's step estimator helped. Scaling the gate's odds by $1 - 1/m_z$ changes little

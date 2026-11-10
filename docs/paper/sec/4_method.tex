@@ -50,13 +50,10 @@ In our runs this added about 150\,s to a $\sim$390\,s iteration (\cref{sec:resul
 unaffected and inference uses no probe at all.
 
 \paragraph{Variants.}
-We test three ways of applying the probe, each motivated by a failure mode of concentrating credit:
+We test two ways of applying the probe, each motivated by a failure mode of concentrating credit:
 \emph{(i)} a tighter clip $[0.5, 2]$, in case large weights make updates too big;
 \emph{(ii)} probe weights only where $A_t > 0$, in case a wrong-signed advantage concentrated on the
-decisive reasoning is especially harmful at low success rates; and \emph{(iii)} scoring the probe with
-the frozen reference policy instead of the current one, to break a possible feedback loop in which the
-policy grades its own reasoning and credit for early commitment pushes the decision earlier, the
-pattern~\cite{yu2026cir} report for outcome rewards. We also evaluate two step-level changes to GACA
+decisive reasoning is especially harmful at low success rates. We also evaluate two step-level changes to GACA
 that target its estimator's reliability rather than tokens: scaling the gate's odds by
 $1 - 1/m_z$ (GACA's own analysis says $\lambda^\star$ grows with $m_z$, but $m_z$ never enters its gate;
 a singleton anchor group gets $\lambda_t = 0$) and the leave-one-out score of GACA's Appendix B.4.
