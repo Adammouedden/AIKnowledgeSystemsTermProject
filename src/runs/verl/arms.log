@@ -42,3 +42,7 @@
 [13:09:43] start gaca_lr3 (gaca, rel=none)
 [13:09:43]   lr=3e-6 extra: 
 [16:55:34] end gaca_lr3
+[16:57:44] queue -> gaca_actw
+[16:57:44] start gaca_actw (gaca, rel=none)
+[16:57:44]   lr=1e-6 extra: algorithm.gaca.token_mode=action algorithm.gaca.action_weight=2.0
+[20:44:28] end gaca_actw
