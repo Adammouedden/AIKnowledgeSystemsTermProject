@@ -34,3 +34,7 @@
 [08:10:57] queue -> commit_ref
 [08:10:57] start commit_ref (gaca, rel=none)
 [08:16:52] killed commit_ref (restart) early: user replaced it with the lr / action-weight / dynamic-sampling queue
+[08:19:59] queue -> commit_lr3
+[08:19:59] start commit_lr3 (gaca, rel=none)
+[08:19:59]   lr=3e-6 extra: algorithm.gaca.token_mode=probe env.seed=1 +env.val_seed=1000
+[13:07:31] end commit_lr3

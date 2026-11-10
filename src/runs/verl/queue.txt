@@ -1,4 +1,3 @@
-commit_lr3
 gaca_lr3
 gaca_actw
 commit_ds

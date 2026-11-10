@@ -27,7 +27,6 @@ is 0.78 points.
 | COMMIT | treatment | GACA, step advantage spread over tokens by the commitment probe (training seed 1) | done | 34 | 5.19 | **20.3%** (26/128) | 20.3% (34) |
 | COMMIT, clip [0.5, 2] | treatment | probe with token weights clipped to [0.5, 2] instead of [0.25, 4] | done | 34 | 4.96 | **14.1%** (18/128) | 14.1% (34) |
 | COMMIT, positive A only | treatment | probe weights only on steps with a positive advantage; others uniform | done | 34 | 4.98 | **5.5%** (7/128) | 6.2% (20) |
-| COMMIT, frozen-ref scorer | treatment | probe scored by the frozen reference model instead of the policy | running | 33 | 5.36 | **12.5%** (16/128) | 12.5% (30) |
 
 Final = the last evaluation (the end-of-training checkpoint). Best is reported for comparison with the
 paper's best-checkpoint convention but is optimistic: it picks the maximum over five noisy evaluations.
@@ -45,7 +44,6 @@ paper's best-checkpoint convention but is optimistic: it picks the maximum over 
 | COMMIT | 4.7 | 8.6 | 12.5 | 14.8 | 20.3 (34) |
 | COMMIT, clip [0.5, 2] | 4.7 | 5.5 | 9.4 | 7.8 | 14.1 (34) |
 | COMMIT, positive A only | 4.7 | 2.3 | 6.2 | 4.7 | 5.5 (34) |
-| COMMIT, frozen-ref scorer | 4.7 | 3.9 | 8.6 | 12.5 |  |
 
 ## Paired comparison of final checkpoints
 
@@ -107,7 +105,6 @@ the other does not. The base model is each arm's own iteration-0 evaluation.
 | COMMIT | 550 | 151 | 99.2% | 91 | 0.034 | 0.36 | 0.090 | 0.96 | 0.19 -> 0.14 | -- |
 | COMMIT, clip [0.5, 2] | 525 | 131 | 99.1% | 81 | 0.021 | 0.37 | 0.092 | 0.96 | 0.20 -> 0.18 | 0.11 -> 0.10 |
 | COMMIT, positive A only | 527 | 137 | 99.2% | 78 | 0.059 | 0.36 | 0.089 | 0.96 | 0.20 -> 0.19 | 0.11 -> 0.09 |
-| COMMIT, frozen-ref scorer | 585 | 195 | 99.1% | 87 | 0.025 | 0.35 | 0.088 | 0.96 | 0.20 -> 0.19 | 0.10 -> 0.09 |
 
 Paper Table 7 (ALFWorld): c_t std 0.31, lambda std 0.08, clamped < 0.01, step coverage 0.86.
 q(0): probability of the eventual action before any reasoning (probe arms). CIR: Causal Importance of
