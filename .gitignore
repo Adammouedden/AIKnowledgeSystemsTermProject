@@ -45,3 +45,4 @@ docs/paper/*.fls
 docs/paper/*.fdb_latexmk
 docs/paper/*.out
 docs/paper/build.log
+docs/paper/*.brf
