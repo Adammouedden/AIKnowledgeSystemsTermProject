@@ -1,0 +1,588 @@
+<title>Credit Debugger</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: an IDE-style debugger. Source listing (the trainer) | the program state (rollout grid, current frame, credit) | watch + console. */
+:root {
+  --bg: #F3F4F6; --panel: #FFFFFF; --sunk: #F7F8FA; --ink: #14161B; --muted: #5B6270; --faint: #8A919D; --line: #DCE0E6;
+  --exec: #F5C518; --exec-bg: rgba(245,197,24,.22); --bp: #D93B3B;
+  --grpo: #2A78D6; --gigpo: #1F9E89; --gaca: #EB6834; --ours: #C9449A;
+  --pos: 33,102,172; --neg: 178,24,43; --cell: 20,22,27;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E1014; --panel: #161920; --sunk: #12151B; --ink: #E5E8ED; --muted: #A0A8B5; --faint: #6F7784; --line: #2A2F39;
+    --exec: #E0B000; --exec-bg: rgba(224,176,0,.16); --bp: #F06262;
+    --grpo: #3A86E0; --gigpo: #22A58F; --gaca: #E86A36; --ours: #D255A3;
+    --pos: 67,147,195; --neg: 214,96,77; --cell: 229,232,237; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0E1014; --panel: #161920; --sunk: #12151B; --ink: #E5E8ED; --muted: #A0A8B5; --faint: #6F7784; --line: #2A2F39;
+  --exec: #E0B000; --exec-bg: rgba(224,176,0,.16); --bp: #F06262;
+  --grpo: #3A86E0; --gigpo: #22A58F; --gaca: #E86A36; --ours: #D255A3;
+  --pos: 67,147,195; --neg: 214,96,77; --cell: 229,232,237; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { background: var(--bg); color: var(--ink); }
+body { font: 14px/1.45 var(--sans); padding-block: 14px 28px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1 { font: 600 19px/1.2 var(--sans); margin: 0; letter-spacing: -.01em; }
+h2 { font: 600 11px/1 var(--sans); text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 0; }
+.mono, code { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+button, select, input { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--exec); outline-offset: 2px; }
+
+header { display: flex; flex-wrap: wrap; gap: 10px 24px; align-items: end; justify-content: space-between; margin-bottom: 12px; }
+.sub { color: var(--muted); font-size: 13px; margin-top: 4px; max-width: 80ch; }
+.sub b { color: var(--ink); font-weight: 500; }
+
+.toolbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+  background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; margin-bottom: 12px; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.btn { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: var(--sunk); border-radius: 6px;
+  padding: 5px 10px; cursor: pointer; font-size: 13px; white-space: nowrap; }
+.btn:hover { border-color: var(--muted); }
+.btn kbd { font: 11px var(--mono); color: var(--faint); }
+.btn.primary { background: var(--ink); color: var(--panel); border-color: var(--ink); }
+.btn.primary kbd { color: inherit; opacity: .6; }
+.btn svg { width: 14px; height: 14px; }
+.scrub { flex: 1 1 200px; display: flex; align-items: center; gap: 8px; min-width: 160px; }
+.scrub input { flex: 1; accent-color: var(--exec); }
+.pc { font: 12px var(--mono); color: var(--muted); white-space: nowrap; }
+
+.layout { display: grid; grid-template-columns: minmax(300px, 25fr) minmax(0, 47fr) minmax(280px, 28fr); gap: 12px; align-items: start; }
+@media (max-width: 1180px) { .layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .col-mid { grid-column: 1 / -1; order: -1; } }
+@media (max-width: 720px) { .layout { grid-template-columns: minmax(0, 1fr); } }
+.pane { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 12px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.col { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.panehead { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.hint { font-size: 12px; color: var(--faint); }
+
+/* source listing */
+.src { font: 12.5px/1.6 var(--mono); overflow-x: auto; margin: 0 -12px; }
+.ln { display: grid; grid-template-columns: 22px 26px 1fr; align-items: start; padding-right: 10px; white-space: pre; }
+.ln .bp { cursor: pointer; display: grid; place-items: center; height: 20px; }
+.ln .bp i { width: 9px; height: 9px; border-radius: 50%; border: 1px solid transparent; }
+.ln .bp:hover i { border-color: var(--faint); }
+.ln.has-bp .bp i { background: var(--bp); border-color: var(--bp); }
+.ln .no { color: var(--faint); text-align: right; padding-right: 8px; user-select: none; }
+.ln .code { color: var(--ink); }
+.ln .cm { color: var(--faint); }
+.ln.stage { margin-top: 6px; }
+.ln .tag { font: 600 10px var(--sans); letter-spacing: .08em; text-transform: uppercase; padding: 1px 5px; border-radius: 3px; margin-left: 6px; color: var(--panel); }
+.ln.cur { background: var(--exec-bg); box-shadow: inset 3px 0 0 var(--exec); }
+.ln.ctx { background: linear-gradient(90deg, var(--exec-bg), transparent 70%); }
+.ln.done .code { color: var(--muted); }
+
+/* group grid */
+.grid-wrap { overflow-x: auto; }
+.ggrid { display: grid; gap: 2px; align-items: center; min-width: 380px; }
+.rowlab { font: 12px var(--mono); color: var(--muted); white-space: nowrap; padding-right: 8px; cursor: pointer; }
+.rowlab.on { color: var(--ink); font-weight: 600; }
+.cell { height: 20px; border-radius: 2px; background: transparent; cursor: pointer; position: relative; border: 0; padding: 0; }
+.cell.empty { cursor: default; }
+.cell.live { background: rgba(var(--cell), .14); }
+.cell.invalid { box-shadow: inset 0 0 0 1.5px rgb(var(--neg)); }
+.cell.win { background: rgb(var(--pos)); }
+.cell.sel { outline: 2px solid var(--ink); outline-offset: 1px; z-index: 1; }
+.cell.anchor { box-shadow: inset 0 0 0 2px var(--exec); }
+.cell.now::after { content: ""; position: absolute; left: 50%; top: -6px; width: 0; height: 0; border: 4px solid transparent; border-top-color: var(--exec); transform: translateX(-50%); }
+.tick { font: 10px var(--mono); color: var(--faint); text-align: center; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12px; color: var(--muted); align-items: center; }
+.sw { display: inline-block; width: 12px; height: 12px; border-radius: 2px; vertical-align: -2px; margin-right: 5px; }
+.ramp { display: inline-block; width: 120px; height: 10px; border-radius: 2px; vertical-align: -1px; margin: 0 6px; }
+.ctl { display: flex; gap: 8px; align-items: center; font-size: 12px; color: var(--muted); }
+.ctl select { background: var(--sunk); border: 1px solid var(--line); border-radius: 5px; padding: 3px 6px; font-size: 12px; }
+
+/* frame */
+.frame-meta { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12.5px; color: var(--muted); }
+.frame-meta b { color: var(--ink); font-weight: 500; }
+.obs { background: var(--sunk); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; font-size: 13px; }
+.obs .k { font: 600 10px var(--sans); text-transform: uppercase; letter-spacing: .08em; color: var(--faint); display: block; margin-bottom: 3px; }
+details.prompt summary { cursor: pointer; font-size: 12px; color: var(--muted); }
+details.prompt pre { white-space: pre-wrap; font: 11.5px/1.5 var(--mono); background: var(--sunk); border: 1px solid var(--line); border-radius: 6px; padding: 8px; max-height: 260px; overflow: auto; margin: 6px 0 0; }
+.chips { display: flex; flex-wrap: wrap; gap: 4px; }
+.chip { font: 11.5px var(--mono); border: 1px solid var(--line); border-radius: 4px; padding: 1px 6px; color: var(--muted); }
+.chip.pick { border-color: var(--ink); color: var(--ink); font-weight: 600; background: var(--exec-bg); }
+.resp { font: 13px/1.75 var(--mono); background: var(--sunk); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; white-space: pre-wrap; word-break: break-word; min-height: 48px; max-height: 340px; overflow: auto; }
+.tk { border-radius: 2px; position: relative; }
+.tk.act { text-decoration: underline; text-decoration-color: var(--faint); text-underline-offset: 3px; }
+.cut { display: inline-block; width: 2px; height: 1.2em; background: var(--ours); vertical-align: -3px; margin: 0 1px; position: relative; }
+.cut b { position: absolute; top: -1.15em; left: -2px; font: 600 9px var(--mono); color: var(--ours); background: var(--sunk); padding: 0 1px; white-space: nowrap; }
+.pending { color: var(--faint); font: italic 13px var(--sans); }
+.envout { display: grid; grid-template-columns: auto 1fr; gap: 4px 10px; font-size: 13px; }
+.envout .k { font: 600 10px/20px var(--sans); text-transform: uppercase; letter-spacing: .08em; color: var(--faint); }
+
+/* credit strips */
+.strips { display: grid; grid-template-columns: auto 1fr auto; gap: 4px 10px; align-items: center; }
+.strips .nm { font-size: 12px; white-space: nowrap; display: flex; align-items: center; }
+.strips .val { font: 12px var(--mono); text-align: right; color: var(--muted); white-space: nowrap; }
+.strips svg { width: 100%; height: 34px; display: block; }
+.strips .off { color: var(--faint); font-size: 12px; font-style: italic; }
+.qchart svg { width: 100%; height: 120px; display: block; }
+
+/* watch */
+.watch { display: flex; flex-direction: column; }
+.w { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; padding: 6px 0; border-top: 1px solid var(--line); }
+.w:first-child { border-top: 0; }
+.w .nm { font: 13px var(--mono); }
+.w .v { font: 600 13px var(--mono); text-align: right; font-variant-numeric: tabular-nums; }
+.w .f { grid-column: 1 / -1; font: 11.5px var(--mono); color: var(--muted); overflow-wrap: anywhere; }
+.w.na .v, .w.na .nm { color: var(--faint); font-weight: 400; }
+.w.na .f { display: none; }
+.w.fresh { background: var(--exec-bg); margin: 0 -12px; padding-inline: 12px; }
+.wgroup { font: 600 10px var(--sans); text-transform: uppercase; letter-spacing: .08em; color: var(--faint); margin-top: 10px; display: flex; align-items: center; gap: 6px; }
+.console { font: 11.5px/1.55 var(--mono); background: var(--sunk); border: 1px solid var(--line); border-radius: 6px; padding: 8px; max-height: 260px; overflow: auto; white-space: pre-wrap; color: var(--muted); }
+.console .last { color: var(--ink); }
+.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; flex: none; }
+footer { margin-top: 14px; font-size: 12px; color: var(--faint); max-width: 100ch; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<header>
+  <div>
+    <h1>Credit Debugger</h1>
+    <div class="sub" id="sub"></div>
+  </div>
+  <div class="legend" id="methods"></div>
+</header>
+
+<div class="toolbar" role="toolbar" aria-label="Debugger controls">
+  <button class="btn" id="b-restart" title="Restart (Home)"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M3 2h2v12H3zM14 2v12L6 8z"/></svg>Restart</button>
+  <button class="btn" id="b-back" title="Step back (←)"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M11 2v12L3 8z"/></svg>Back <kbd>←</kbd></button>
+  <button class="btn" id="b-step" title="Step (→)"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M5 2v12l8-6z"/></svg>Step <kbd>→</kbd></button>
+  <button class="btn" id="b-over" title="Step over: next environment step t (Shift+→)"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 10a6 6 0 0 1 11-3"/><path d="M13 3v4H9"/><circle cx="8" cy="13" r="1.3" fill="currentColor"/></svg>Next t <kbd>⇧→</kbd></button>
+  <button class="btn primary" id="b-run" title="Continue to the next breakpoint (Space)"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 2h2v12H2zM6 2v12l8-6z"/></svg><span>Continue</span> <kbd>Space</kbd></button>
+  <div class="scrub"><input type="range" id="scrub" min="0" max="0" value="0" aria-label="Program position"><span class="pc" id="pc"></span></div>
+</div>
+
+<div class="layout">
+  <section class="col col-src">
+    <div class="pane">
+      <div class="panehead"><h2>Trainer</h2><span class="hint">Click the gutter to set breakpoints</span></div>
+      <div class="src" id="src"></div>
+    </div>
+  </section>
+
+  <section class="col col-mid">
+    <div class="pane">
+      <div class="panehead"><h2>Rollout group</h2>
+        <label class="ctl" for="colorby">Color cells by <select id="colorby"></select></label></div>
+      <div class="grid-wrap"><div class="ggrid" id="ggrid"></div></div>
+      <div class="legend" id="glegend"></div>
+    </div>
+    <div class="pane" id="frame"></div>
+    <div class="pane" id="credit"></div>
+  </section>
+
+  <section class="col col-right">
+    <div class="pane"><div class="panehead"><h2>Watch</h2><span class="hint" id="watchwho"></span></div><div class="watch" id="watch"></div></div>
+    <div class="pane"><h2>Console</h2><div class="console" id="console" aria-live="polite"></div></div>
+  </section>
+</div>
+<footer id="foot"></footer>
+
+<script id="trace" type="application/json">/*TRACE*/</script>
+<script>
+"use strict";
+const D = JSON.parse(document.getElementById("trace").textContent);
+const M = D.meta, TR = D.trajs, G = TR.length;
+const OURS = "GACA + probe";      // display name of our estimator; rename here
+const METHODS = [
+  { key: "grpo", name: "GRPO", color: "--grpo" },
+  { key: "gigpo", name: "GiGPO", color: "--gigpo" },
+  { key: "gaca", name: "GACA", color: "--gaca" },
+  { key: "ours", name: OURS, color: "--ours" },
+];
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const f = (x, d = 2) => (x === undefined || x === null || Number.isNaN(x)) ? "–" : (Math.abs(x) < 5e-13 ? 0 : x).toFixed(d);
+const sgn = (x, d = 2) => (x >= 0 ? "+" : "−") + Math.abs(x).toFixed(d);
+const Tmax = Math.max(...TR.map((t) => t.steps.length));
+
+// ---------- derived quantities shown in the watch panel (all checkable against the trace)
+TR.forEach((tr) => {
+  const h = tr.steps.map((s) => s.nll); tr.Hbar = h.reduce((a, b) => a + b, 0) / h.length;
+  tr.steps.forEach((s) => {
+    s.A_ours = s.w.map((w) => s.A_gaca * w);
+    s.isAct = s.tokens.map(() => false);
+    if (s.probe) for (let j = s.probe.act_start; j < s.tokens.length; j++) s.isAct[j] = true;
+  });
+});
+const anchorStats = {};
+for (const [a, rows] of Object.entries(M.anchor_groups)) {
+  const g = rows.map((r) => r[2]), m = g.length, mu = g.reduce((x, y) => x + y, 0) / m;
+  const sd = m > 1 ? Math.sqrt(g.reduce((x, y) => x + (y - mu) ** 2, 0) / (m - 1)) : 0;
+  anchorStats[a] = { m, mu, sd, rows };
+}
+const allG = TR.flatMap((t) => t.steps.map((s) => s.g_hat));
+const gMu = allG.reduce((a, b) => a + b, 0) / allG.length;
+const gSd = Math.sqrt(allG.reduce((a, b) => a + (b - gMu) ** 2, 0) / (allG.length - 1));
+
+// ---------- the program: the trainer as pseudo-code, one event per executed line
+const SRC = [
+  { n: 1, code: "task = sample_task()", cm: "  # one ALFWorld game", stage: "Rollout", c: "--muted" },
+  { n: 2, code: `for t in 0, 1, … until all ${G} envs done:`, cm: "" },
+  { n: 3, code: "  prompt[i] = template(task, history[i], obs[i])", cm: "" },
+  { n: 4, code: "  a[i] ~ π_θ(· | prompt[i])", cm: "  # <think>…</think><action>…</action>" },
+  { n: 5, code: "  obs[i], r[i,t] = env[i].step(parse(a[i]))", cm: `  # r = ${M.win_reward}·won − ${M.penalty}·invalid` },
+  { n: 6, code: "R(τ_i) = Σ_t r[i,t]", cm: "  # episode return", stage: "Returns", c: "--muted" },
+  { n: 7, code: "ĝ[i,t] = r[i,t] + γ·ĝ[i,t+1]", cm: `  # γ = ${M.gamma}` },
+  { n: 8, code: "μ, σ = mean, std of R over all step rows", cm: "", stage: "GRPO", c: "--grpo" },
+  { n: 9, code: "A_E[i,t] = (R(τ_i) − μ) / σ", cm: "  # episode advantage" },
+  { n: 10, code: "group steps by anchor state z", cm: "  # same observation", stage: "GiGPO", c: "--gigpo" },
+  { n: 11, code: "A_S[i,t] = (ĝ[i,t] − μ_z) / σ_z", cm: "  # step advantage" },
+  { n: 12, code: "A_GiGPO = A_E + A_S", cm: "" },
+  { n: 13, code: "H[i,t] = mean token NLL of a[i,t]", cm: "", stage: "GACA", c: "--gaca" },
+  { n: 14, code: "c[i,t] = H[i,t] / mean_t H[i,·]", cm: "  # criticality" },
+  { n: 15, code: "λ[i,t] = gate(c[i,t])", cm: `  # λ0=${M.lam0}, α=β=${M.alpha}` },
+  { n: 16, code: "A_GACA = λ·A_S + (1 − λ)·A_E", cm: "" },
+  { n: 17, code: "q(c) = π_θ(a* | s, a[:c], '</think><action>')", cm: `  # every ${M.probe_every} tok`, stage: "Probe (ours)", c: "--ours" },
+  { n: 18, code: "w[j] ∝ q(c_k+1) − q(c_k)   for j in segment k", cm: `  # clip [${M.clip}], mean 1` },
+  { n: 19, code: "A_ours[t,j] = A_GACA[t] · w[t,j]", cm: "" },
+  { n: 20, code: "loss = −mean_j ρ[t,j]·A[t,j] + β·KL", cm: "  # PPO-clip update", stage: "Update", c: "--muted" },
+];
+const EVENTS = [{ line: 1 }];
+for (let t = 0; t < Tmax; t++) for (const line of [3, 4, 5]) EVENTS.push({ line, t });
+for (let line = 6; line <= 20; line++) EVENTS.push({ line });
+const BP = new Set([6, 8, 10, 13, 17, 20]);
+
+// ---------- state
+const S = { pc: 0, sel: null, follow: firstWin(), colorby: "auto", timer: null, prevWatch: {} };
+function firstWin() { const i = TR.findIndex((t) => t.won); return i < 0 ? 0 : i; }
+const ev = () => EVENTS[S.pc];
+const L = () => ev().line;                       // current line
+const rolloutDone = () => L() >= 6;
+// has the step (i,t) produced its response / reward yet?
+function seen(i, t, what) {
+  const st = TR[i].steps[t]; if (!st) return false;
+  if (rolloutDone()) return true;
+  const e = ev(); if (e.line < 3) return false;
+  if (t < e.t) return true;
+  if (t > e.t) return false;
+  return what === "prompt" ? e.line >= 3 : what === "resp" ? e.line >= 4 : e.line >= 5;
+}
+function selStep() {
+  if (S.sel) return S.sel;
+  const i = S.follow, n = TR[i].steps.length;
+  const t = rolloutDone() ? n - 1 : Math.min(Math.max(ev().t ?? 0, 0), n - 1);
+  return { i, t };
+}
+
+// ---------- colour scales
+const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+function div(v, vmax) { // diverging: sign → hue, magnitude → alpha over the surface
+  if (!vmax) return "transparent";
+  const a = Math.min(1, Math.abs(v) / vmax) ** 0.75 * 0.9;
+  return `rgba(${css(v >= 0 ? "--pos" : "--neg")},${a.toFixed(3)})`;
+}
+function seq(v, lo, hi, rgbVar) { const a = Math.max(0, Math.min(1, (v - lo) / ((hi - lo) || 1))) * 0.85 + 0.05; return `rgba(${css(rgbVar)},${a.toFixed(3)})`; }
+const absMax = (arr) => arr.reduce((m, x) => Math.max(m, Math.abs(x)), 0);
+const stepVals = (k) => TR.flatMap((t) => t.steps.map((s) => s[k]));
+
+const QUANT = [ // what a cell can be coloured by, and from which line it exists
+  { k: "status", name: "Outcome", from: 0 },
+  { k: "g_hat", name: "Step return ĝ", from: 7, scale: "div" },
+  { k: "A_ep", name: "A_E (GRPO)", from: 9, scale: "div" },
+  { k: "A_st", name: "A_S (anchor contrast)", from: 11, scale: "div" },
+  { k: "A_gigpo", name: "A (GiGPO)", from: 12, scale: "div" },
+  { k: "nll", name: "H (mean NLL)", from: 13, scale: "seq" },
+  { k: "lam", name: "λ (GACA mix)", from: 15, scale: "seq01" },
+  { k: "A_gaca", name: "A (GACA)", from: 16, scale: "div" },
+];
+function autoQuant() {
+  const l = L();
+  if (l < 7) return "status"; if (l < 9) return "g_hat"; if (l < 11) return "A_ep"; if (l < 12) return "A_st";
+  if (l < 13) return "A_gigpo"; if (l < 15) return "nll"; if (l < 16) return "lam"; return "A_gaca";
+}
+const curQuant = () => (S.colorby === "auto" || QUANT.find((q) => q.k === S.colorby).from > L()) ? autoQuant() : S.colorby;
+
+// ---------- render: source
+function renderSrc() {
+  const l = L(), inLoop = l >= 3 && l <= 5;
+  $("src").innerHTML = SRC.map((r) => {
+    const cls = ["ln", r.stage ? "stage" : "", BP.has(r.n) ? "has-bp" : "", r.n === l ? "cur" : "", (inLoop && r.n === 2) ? "ctx" : "", r.n < l && !(inLoop && r.n === 2) ? "done" : ""].join(" ");
+    const tag = r.stage ? `<span class="tag" style="background:var(${r.c})">${r.stage}</span>` : "";
+    return `<div class="${cls}" data-n="${r.n}"><span class="bp" role="button" aria-label="Toggle breakpoint on line ${r.n}" tabindex="0"><i></i></span><span class="no">${r.n}</span><span class="code">${esc(r.code)}<span class="cm">${esc(r.cm)}</span>${tag}</span></div>`;
+  }).join("");
+}
+
+// ---------- render: group grid
+function renderGrid() {
+  const q = curQuant(), Q = QUANT.find((x) => x.k === q), { i: si, t: st } = selStep(), l = L();
+  const vals = q === "status" ? [] : stepVals(q);
+  const vmax = absMax(vals), lo = Math.min(...vals), hi = Math.max(...vals);
+  const selAnchor = (l >= 10 && l <= 12) ? TR[si].steps[st]?.anchor : null;
+  const g = $("ggrid");
+  g.style.gridTemplateColumns = `max-content repeat(${Tmax}, minmax(7px, 1fr))`;
+  let h = `<span></span>` + Array.from({ length: Tmax }, (_, t) => `<span class="tick">${t % 5 === 0 ? t : ""}</span>`).join("");
+  TR.forEach((tr, i) => {
+    const done = rolloutDone(), n = tr.steps.length;
+    const finished = done || (ev().t !== undefined && (ev().t > n - 1 || (ev().t === n - 1 && ev().line >= 5)));
+    const status = finished ? (tr.won ? "✓" : "✗") : "…";
+    const R = l >= 6 ? ` R=${f(tr.ret, 1)}` : "";
+    h += `<span class="rowlab ${i === si ? "on" : ""}" data-i="${i}">τ${i + 1} ${status}${R}</span>`;
+    for (let t = 0; t < Tmax; t++) {
+      const s = tr.steps[t];
+      if (!s || !seen(i, t, "prompt")) { h += `<span class="cell empty"></span>`; continue; }
+      const cls = ["cell"]; let bg = "";
+      if (q === "status") {
+        if (seen(i, t, "reward")) { if (!s.valid) cls.push("invalid"); cls.push(s.reward > 0 ? "win" : "live"); }
+        else cls.push("live");
+      } else {
+        cls.push("live");
+        bg = Q.scale === "div" ? div(s[q], vmax) : Q.scale === "seq01" ? seq(s[q], 0, 1, "--cell") : seq(s[q], lo, hi, "--cell");
+      }
+      if (i === si && t === st) cls.push("sel");
+      if (selAnchor && s.anchor === selAnchor) cls.push("anchor");
+      if (!rolloutDone() && ev().t === t && l >= 3) cls.push("now");
+      const tip = `τ${i + 1}, t=${t}: ${s.action}${s.valid ? "" : " (invalid)"}` + (q !== "status" ? ` · ${Q.name} = ${f(s[q], 3)}` : "");
+      h += `<button class="${cls.join(" ")}" data-i="${i}" data-t="${t}" title="${esc(tip)}" aria-label="${esc(tip)}"${bg ? ` style="background:${bg}"` : ""}></button>`;
+    }
+  });
+  g.innerHTML = h;
+  // legend
+  let lg = "";
+  if (q === "status") {
+    lg = `<span><span class="sw" style="background:rgba(${css("--cell")},.14)"></span>step taken</span>
+          <span><span class="sw" style="box-shadow:inset 0 0 0 1.5px rgb(${css("--neg")})"></span>invalid action (−${M.penalty})</span>
+          <span><span class="sw" style="background:rgb(${css("--pos")})"></span>task solved (+${M.win_reward})</span>`;
+  } else if (Q.scale === "div") {
+    lg = `<span>${esc(Q.name)}: <span class="mono">−${f(vmax)}</span><span class="ramp" style="background:linear-gradient(90deg,rgba(${css("--neg")},.9),transparent,rgba(${css("--pos")},.9))"></span><span class="mono">+${f(vmax)}</span></span>`;
+  } else {
+    const a = Q.scale === "seq01" ? 0 : lo, b = Q.scale === "seq01" ? 1 : hi;
+    lg = `<span>${esc(Q.name)}: <span class="mono">${f(a)}</span><span class="ramp" style="background:linear-gradient(90deg,rgba(${css("--cell")},.05),rgba(${css("--cell")},.9))"></span><span class="mono">${f(b)}</span></span>`;
+  }
+  if (selAnchor) lg += `<span><span class="sw" style="box-shadow:inset 0 0 0 2px var(--exec)"></span>same anchor state as the selected step (m_z = ${anchorStats[selAnchor].m})</span>`;
+  $("glegend").innerHTML = lg;
+  // colour-by options
+  const opts = [`<option value="auto">Auto (follows the program)</option>`].concat(QUANT.filter((x) => x.from <= l).map((x) => `<option value="${x.k}">${esc(x.name)}</option>`));
+  const sel = $("colorby"); const want = S.colorby;
+  sel.innerHTML = opts.join(""); sel.value = [...sel.options].some((o) => o.value === want) ? want : "auto";
+}
+
+// ---------- render: frame (the selected step)
+function tokenBg(s, j, l) {
+  if (l >= 19) return div(s.A_ours[j], absMax(TR.flatMap((t) => t.steps.flatMap((x) => x.A_ours))) * 0.6);
+  if (l >= 18) return seq(s.w[j], 0, M.clip[1], "--cell");
+  if (l >= 13 && l < 17) return seq(Math.min(s.tok_nll[j], 4), 0, 4, "--cell");
+  return "";
+}
+function renderFrame() {
+  const { i, t } = selStep(), s = TR[i].steps[t], l = L();
+  const head = `<div class="panehead"><h2>Step τ${i + 1}, t = ${t}</h2><span class="hint">${S.sel ? `<a href="#" id="unpin">Follow the program</a>` : "Click any cell to inspect it"}</span></div>`;
+  if (!s || !seen(i, t, "prompt")) { $("frame").innerHTML = head + `<div class="pending">Not executed yet. Step forward to sample it.</div>`; return; }
+  const meta = `<div class="frame-meta"><span>Task <b>${esc(s.task)}</b></span><span>Anchor <b class="mono">${s.anchor}</b></span><span>Prompt <b>${s.prompt.length.toLocaleString()} chars</b></span></div>`;
+  const obs = `<div class="obs"><span class="k">Observation</span>${esc(s.obs)}</div>`;
+  const prompt = `<details class="prompt"><summary>Full prompt sent to the policy</summary><pre>${esc(s.prompt)}</pre></details>`;
+  let resp;
+  if (!seen(i, t, "resp")) resp = `<div class="resp"><span class="pending">Waiting for π_θ to sample a response…</span></div>`;
+  else {
+    const cuts = (l >= 17 && s.probe) ? new Map(s.probe.cuts.map((c, k) => [c, s.probe.q[k]])) : new Map();
+    let h = "";
+    s.tokens.forEach((tk, j) => {
+      if (cuts.has(j)) h += `<span class="cut" title="cut at token ${j}: q = ${f(cuts.get(j), 3)}"><b>${f(cuts.get(j), 2)}</b></span>`;
+      const bg = tokenBg(s, j, l);
+      const tip = l >= 19 ? `A = ${f(s.A_ours[j], 3)} (w = ${f(s.w[j], 2)})` : l >= 18 ? `w = ${f(s.w[j], 2)}` : (l >= 13 ? `NLL = ${f(s.tok_nll[j], 2)}` : "");
+      h += `<span class="tk${s.isAct[j] ? " act" : ""}"${bg ? ` style="background:${bg}"` : ""}${tip ? ` title="${esc(tip)}"` : ""}>${esc(tk)}</span>`;
+    });
+    resp = `<div class="resp" aria-label="Sampled response">${h}</div>`;
+  }
+  const respHint = l >= 19 ? "Token colour: per-token advantage A_ours (blue +, red −)" : l >= 18 ? "Token shade: probe weight w (mean 1)" : l >= 17 ? "Pink marks: probe cuts with q(c), the probability of the chosen action if the reasoning stopped there" : l >= 13 ? "Token shade: NLL (darker = less certain)" : "";
+  const chips = `<div class="chips">${s.admissible.map((a) => `<span class="chip${seen(i, t, "resp") && a === s.action ? " pick" : ""}">${esc(a)}</span>`).join("")}</div>`;
+  let env = "";
+  if (seen(i, t, "reward")) env = `<div class="envout"><span class="k">Action</span><span class="mono">${esc(s.action)}${s.valid ? "" : " · invalid, not admissible"}</span>
+     <span class="k">Env</span><span>${esc(s.next_obs || "(episode ended)")}</span>
+     <span class="k">Reward</span><span class="mono">r = ${f(s.reward, 1)}${s.done ? (TR[i].won ? " · task solved, episode ends" : " · episode ends") : ""}</span></div>`;
+  $("frame").innerHTML = head + meta + obs + prompt +
+    `<div><h2 style="margin-bottom:6px">Admissible actions</h2>${chips}</div>` +
+    `<div><div class="panehead" style="margin-bottom:6px"><h2>Response</h2><span class="hint">${respHint}</span></div>${resp}</div>` + env;
+  const u = $("unpin"); if (u) u.onclick = (e) => { e.preventDefault(); S.sel = null; render(); };
+}
+
+// ---------- render: per-token credit under all four estimators, and the probe curve
+function strip(vals, vmax, color) {
+  const n = vals.length, W = 600, H = 34, mid = H / 2, bw = W / n;
+  let h = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img"><line x1="0" x2="${W}" y1="${mid}" y2="${mid}" stroke="var(--line)" stroke-width="1"/>`;
+  vals.forEach((v, j) => {
+    const hh = Math.max(0.5, Math.abs(v) / vmax * (mid - 1));
+    h += `<rect x="${(j * bw).toFixed(2)}" width="${Math.max(bw - 0.6, 0.6).toFixed(2)}" y="${(v >= 0 ? mid - hh : mid).toFixed(2)}" height="${hh.toFixed(2)}" fill="${color(v)}"/>`;
+  });
+  return h + `</svg>`;
+}
+function renderCredit() {
+  const { i, t } = selStep(), s = TR[i].steps[t], l = L();
+  const head = `<div class="panehead"><h2>Credit on each token of this step</h2><span class="hint">bar = A[t,j]; same scale for every row</span></div>`;
+  if (!s || l < 9) { $("credit").innerHTML = head + `<div class="pending">Advantages are computed after the whole group has finished (line 8 on).</div>`; return; }
+  const n = s.tokens.length, rows = [
+    { m: METHODS[0], ok: l >= 9, v: Array(n).fill(s.A_grpo), note: "A_E, same for every token" },
+    { m: METHODS[1], ok: l >= 12, v: Array(n).fill(s.A_gigpo), note: "A_E + A_S, same for every token" },
+    { m: METHODS[2], ok: l >= 16, v: Array(n).fill(s.A_gaca), note: "λ·A_S + (1−λ)·A_E, same for every token" },
+    { m: METHODS[3], ok: l >= 19, v: s.A_ours, note: "A_GACA · w[j], mean over tokens = A_GACA" },
+  ];
+  const vmax = Math.max(1e-9, ...rows.filter((r) => r.ok).map((r) => absMax(r.v)));
+  const col = (v) => `rgb(${css(v >= 0 ? "--pos" : "--neg")})`;
+  let h = `<div class="strips">`;
+  for (const r of rows) {
+    h += `<span class="nm"><span class="dot" style="background:var(${r.m.color})"></span>${esc(r.m.name)}</span>`;
+    if (r.ok) {
+      const mean = r.v.reduce((a, b) => a + b, 0) / n, mx = r.v.reduce((a, b) => Math.abs(b) > Math.abs(a) ? b : a, 0);
+      h += `<span title="${esc(r.note)}">${strip(r.v, vmax, col)}</span><span class="val">${r.m.key === "ours" ? `mean ${sgn(mean)} · peak ${sgn(mx)}` : sgn(mean)}</span>`;
+    } else h += `<span class="off">not computed yet</span><span></span>`;
+  }
+  h += `</div>`;
+  if (l >= 17 && s.probe) h += `<div class="qchart"><div class="panehead" style="margin:6px 0 2px"><h2>Commitment probe q(c)</h2><span class="hint">probability of the chosen action if reasoning stopped after c tokens</span></div>${qchart(s)}</div>`;
+  else if (l >= 17) h += `<div class="pending">This response had no well-formed &lt;think&gt;/&lt;action&gt; pair, so the probe is skipped and its tokens keep uniform credit.</div>`;
+  $("credit").innerHTML = head + h;
+}
+function qchart(s) {
+  const W = 600, H = 120, pl = 34, pr = 10, pt = 10, pb = 22, n = s.tokens.length;
+  const X = (c) => pl + (c / n) * (W - pl - pr), Y = (q) => pt + (1 - q) * (H - pt - pb);
+  const pts = s.probe.cuts.map((c, k) => [c, s.probe.q[k]]).concat([[n, 1]]);
+  let h = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Probe curve">`;
+  for (const q of [0, 0.5, 1]) h += `<line x1="${pl}" x2="${W - pr}" y1="${Y(q)}" y2="${Y(q)}" stroke="var(--line)"/><text x="${pl - 6}" y="${Y(q) + 4}" text-anchor="end" font-size="10" fill="var(--faint)" font-family="var(--mono)">${q}</text>`;
+  const a = s.probe.act_start;
+  h += `<line x1="${X(a)}" x2="${X(a)}" y1="${pt}" y2="${H - pb}" stroke="var(--muted)" stroke-dasharray="3 3"/><text x="${X(a) + 4}" y="${pt + 9}" font-size="10" fill="var(--muted)" font-family="var(--sans)">&lt;action&gt;</text>`;
+  h += `<polyline fill="none" stroke="var(--ours)" stroke-width="2" points="${pts.map(([c, q]) => `${X(c).toFixed(1)},${Y(q).toFixed(1)}`).join(" ")}"/>`;
+  pts.forEach(([c, q], k) => { h += `<circle cx="${X(c)}" cy="${Y(q)}" r="${k === pts.length - 1 ? 3 : 4}" fill="var(--ours)" stroke="var(--panel)" stroke-width="2"><title>c = ${c}: q = ${f(q, 3)}</title></circle>`; });
+  h += `<text x="${pl}" y="${H - 6}" font-size="10" fill="var(--faint)" font-family="var(--mono)">token 0</text><text x="${W - pr}" y="${H - 6}" text-anchor="end" font-size="10" fill="var(--faint)" font-family="var(--mono)">${n}</text>`;
+  return h + `</svg>`;
+}
+
+// ---------- render: watch
+function renderWatch() {
+  const { i, t } = selStep(), tr = TR[i], s = tr.steps[t], l = L();
+  $("watchwho").textContent = `τ${i + 1}, t = ${t}`;
+  const W = [];
+  const add = (grp, nm, ok, v, fm) => W.push({ grp, nm, ok, v, fm });
+  const sv = s && seen(i, t, "reward");
+  add("Rollout", "a_t", s && seen(i, t, "resp"), s ? s.action : "", s && !s.valid ? "not admissible → treated as an invalid action" : "parsed from <action>…</action>");
+  add("Rollout", "r_t", sv, s ? f(s.reward, 1) : "", s ? `${s.reward > 0 ? M.win_reward + " (solved)" : "0"}${s.valid ? "" : " − " + M.penalty + " (invalid)"}` : "");
+  add("Returns", "R(τ)", l >= 6, f(tr.ret, 2), `Σ_t r over ${tr.steps.length} steps`);
+  if (s) {
+    const nxt = tr.steps[t + 1];
+    add("Returns", "ĝ_t", l >= 7, f(s.g_hat, 3), nxt ? `${f(s.reward, 1)} + ${M.gamma}·${f(nxt.g_hat, 3)}` : `${f(s.reward, 1)} (last step)`);
+    add("GRPO", "μ, σ", l >= 8, `${f(M.ret_mean)}, ${f(M.ret_std)}`, `over ${M.n_rows} step rows; each row carries its trajectory's R`);
+    add("GRPO", "A_E", l >= 9, sgn(s.A_ep, 3), `(${f(tr.ret)} − ${f(M.ret_mean)}) / ${f(M.ret_std)}`);
+    const z = anchorStats[s.anchor];
+    add("GiGPO", "m_z", l >= 10, String(s.m_z), z.m > 1 ? `${z.m} visits to this state across the group` : "singleton: no other visit to this state");
+    add("GiGPO", "A_S", l >= 11, sgn(s.A_st, 3), z.m > 1 ? `(${f(s.g_hat, 3)} − ${f(z.mu, 3)}) / ${f(z.sd, 3)}  (μ_z, σ_z over the ${z.m} visits)` : `fallback: (${f(s.g_hat, 3)} − ${f(gMu, 3)}) / ${f(gSd, 3)}  (group step returns)`);
+    add("GiGPO", "A_GiGPO", l >= 12, sgn(s.A_gigpo, 3), `${f(s.A_ep, 3)} ${s.A_st >= 0 ? "+" : "−"} ${f(Math.abs(s.A_st), 3)}`);
+    add("GACA", "H_t", l >= 13, f(s.nll, 3), `mean of ${s.tokens.length} token NLLs`);
+    add("GACA", "c_t", l >= 14, f(s.c, 3), `${f(s.nll, 3)} / ${f(tr.Hbar, 3)}  (trajectory mean)`);
+    add("GACA", "λ_t", l >= 15, f(s.lam, 3), s.c >= 1 ? `${M.lam0}·(1 + ${M.alpha}·(${f(s.c, 3)} − 1))` : `${M.lam0}·(1 − ${M.beta}·(1 − ${f(s.c, 3)}))`);
+    add("GACA", "A_GACA", l >= 16, sgn(s.A_gaca, 3), `${f(s.lam, 3)}·${sgn(s.A_st, 3)} + ${f(1 - s.lam, 3)}·${sgn(s.A_ep, 3)}`);
+    const p = s.probe;
+    add("Probe (ours)", "q(0) → q(<action>)", l >= 17 && !!p, p ? `${f(p.q[0], 3)} → ${f(p.q[p.q.length - 1], 3)}` : "–", p ? `${p.cuts.length} cuts; the reasoning raised the chosen action's probability by ${f(p.q[p.q.length - 1] - p.q[0], 3)}` : "");
+    const wmin = Math.min(...s.w), wmax = Math.max(...s.w);
+    add("Probe (ours)", "w range", l >= 18, `${f(wmin)} – ${f(wmax)}`, p ? "mean 1 over the response, so the step's total credit is unchanged" : "no probe: uniform");
+    const amin = Math.min(...s.A_ours), amax = Math.max(...s.A_ours);
+    add("Probe (ours)", "A_ours[t,j]", l >= 19, `${sgn(amin)} … ${sgn(amax)}`, `${sgn(s.A_gaca, 3)} × w[j]`);
+    add("Update", "ρ at first minibatch", l >= 20, "1.000", "π_θ = π_old before the first update, so ∇loss ∝ −Σ_j A[t,j] ∇log π(a_j)");
+  }
+  const prev = S.prevWatch, now = {};
+  let grp = "", h = "";
+  for (const w of W) {
+    if (w.grp !== grp) { grp = w.grp; const m = { GRPO: "--grpo", GiGPO: "--gigpo", GACA: "--gaca", "Probe (ours)": "--ours" }[grp]; h += `<div class="wgroup">${m ? `<span class="dot" style="background:var(${m})"></span>` : ""}${grp}</div>`; }
+    const key = w.nm, val = w.ok ? w.v : null; now[key] = val;
+    const fresh = w.ok && prev[key] === null;
+    h += `<div class="w${w.ok ? "" : " na"}${fresh ? " fresh" : ""}"><span class="nm">${esc(w.nm)}</span><span class="v">${w.ok ? esc(w.v) : "not set"}</span><span class="f">${esc(w.fm || "")}</span></div>`;
+  }
+  S.prevWatch = now;
+  $("watch").innerHTML = h;
+}
+
+// ---------- console: what the program printed up to the current position
+function renderConsole() {
+  const out = [], fi = S.follow;
+  for (let p = 0; p <= S.pc; p++) {
+    const e = EVENTS[p];
+    if (e.line === 1) out.push(`task: ${M.task}  (${M.gamefile})`);
+    if (e.line === 5) {
+      const live = TR.filter((tr) => tr.steps.length > e.t);
+      const ends = live.filter((tr) => tr.steps.length === e.t + 1);
+      const s = TR[fi].steps[e.t];
+      if (s) out.push(`t=${e.t}  τ${fi + 1}: ${s.action}${s.valid ? "" : " (invalid)"}  r=${f(s.reward, 1)}`);
+      if (ends.length) out.push(`t=${e.t}  ${ends.map((tr) => `τ${tr.traj + 1} ${tr.won ? "solved" : "ended"}`).join(", ")}; ${live.length - ends.length} still running`);
+    }
+    if (e.line === 6) out.push(`R = [${TR.map((t) => f(t.ret, 1)).join(", ")}]  ${TR.filter((t) => t.won).length}/${G} solved`);
+    if (e.line === 8) out.push(`μ = ${f(M.ret_mean, 3)}, σ = ${f(M.ret_std, 3)} over ${M.n_rows} step rows`);
+    if (e.line === 10) { const a = Object.values(anchorStats); out.push(`${a.length} anchor states; ${f(100 * M.step_coverage, 0)}% of steps share theirs with another visit`); }
+    if (e.line === 15) { const lam = stepVals("lam"); out.push(`λ: mean ${f(lam.reduce((a, b) => a + b, 0) / lam.length, 3)}, range ${f(Math.min(...lam), 2)}–${f(Math.max(...lam), 2)}`); }
+    if (e.line === 17) { const n = TR.flatMap((t) => t.steps).filter((s) => s.probe).reduce((a, s) => a + s.probe.cuts.length, 0); out.push(`probe: ${n} teacher-forced passes, no sampling`); }
+    if (e.line === 20) out.push(`update: every token of every step now has its own advantage; one PPO step follows`);
+  }
+  const c = $("console");
+  c.innerHTML = out.slice(-60).map((x, k, a) => `<div${k === a.length - 1 ? ' class="last"' : ""}>${esc(x)}</div>`).join("");
+  c.scrollTop = c.scrollHeight;
+}
+
+function render() {
+  const e = ev();
+  $("scrub").max = EVENTS.length - 1; $("scrub").value = S.pc;
+  $("pc").textContent = `line ${e.line}${e.t !== undefined ? ` · t = ${e.t}` : ""} · ${S.pc + 1}/${EVENTS.length}`;
+  renderSrc(); renderGrid(); renderFrame(); renderCredit(); renderWatch(); renderConsole();
+}
+
+// ---------- controls
+function go(pc) { S.pc = Math.max(0, Math.min(EVENTS.length - 1, pc)); render(); }
+function stepOver() {
+  const e = ev();
+  if (e.t === undefined) return go(S.pc + 1);
+  let p = S.pc + 1; while (p < EVENTS.length && EVENTS[p].t === e.t) p++;
+  go(p);
+}
+function stop() { clearInterval(S.timer); S.timer = null; $("b-run").querySelector("span").textContent = "Continue"; }
+function run() {
+  if (S.timer) return stop();
+  if (S.pc >= EVENTS.length - 1) go(0);
+  $("b-run").querySelector("span").textContent = "Pause";
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  S.timer = setInterval(() => {
+    if (S.pc >= EVENTS.length - 1) return stop();
+    go(S.pc + 1);
+    if (BP.has(L()) && EVENTS[S.pc - 1].line !== L()) stop();
+  }, reduce ? 0 : 90);
+}
+$("b-restart").onclick = () => { stop(); S.prevWatch = {}; go(0); };
+$("b-back").onclick = () => { stop(); go(S.pc - 1); };
+$("b-step").onclick = () => { stop(); go(S.pc + 1); };
+$("b-over").onclick = () => { stop(); stepOver(); };
+$("b-run").onclick = run;
+$("scrub").oninput = (e) => { stop(); go(+e.target.value); };
+$("colorby").onchange = (e) => { S.colorby = e.target.value; render(); };
+$("src").addEventListener("click", (e) => {
+  const b = e.target.closest(".bp"); if (!b) return;
+  const n = +b.parentElement.dataset.n; BP.has(n) ? BP.delete(n) : BP.add(n); renderSrc();
+});
+$("src").addEventListener("keydown", (e) => { if ((e.key === "Enter" || e.key === " ") && e.target.closest(".bp")) { e.preventDefault(); e.stopPropagation(); e.target.click(); } });
+$("ggrid").addEventListener("click", (e) => {
+  const c = e.target.closest(".cell:not(.empty)"), r = e.target.closest(".rowlab");
+  if (c) { S.sel = { i: +c.dataset.i, t: +c.dataset.t }; S.follow = +c.dataset.i; render(); }
+  else if (r) { S.follow = +r.dataset.i; S.sel = null; render(); }
+});
+document.addEventListener("keydown", (e) => {
+  if (e.target.closest("input,select,textarea,summary")) return;
+  if (e.key === "ArrowRight" && e.shiftKey) { e.preventDefault(); stop(); stepOver(); }
+  else if (e.key === "ArrowRight") { e.preventDefault(); stop(); go(S.pc + 1); }
+  else if (e.key === "ArrowLeft") { e.preventDefault(); stop(); go(S.pc - 1); }
+  else if (e.key === " ") { e.preventDefault(); run(); }
+  else if (e.key === "Home") { e.preventDefault(); stop(); go(0); }
+});
+
+// ---------- header
+const wins = TR.filter((t) => t.won).length;
+$("sub").innerHTML = `One training iteration of <b>${esc(M.model)}</b> (Qwen2.5-1.5B-Instruct, GACA + probe, final weights) on ALFWorld: ` +
+  `<b>${G}</b> rollouts of the task “${esc(M.task)}”, sampled at temperature ${M.temperature}; <b>${wins}/${G}</b> solved it. ` +
+  `Every number below was computed by the project's own advantage code on these rollouts.`;
+$("methods").innerHTML = METHODS.map((m) => `<span><span class="dot" style="background:var(${m.color})"></span>${esc(m.name)}</span>`).join("");
+$("foot").textContent = `Advantages use group mean-and-std normalization over step rows, γ = ${M.gamma}, GACA gate λ0 = ${M.lam0}, α = β = ${M.alpha}; probe cuts every ${M.probe_every} tokens plus the <action> tag, weights clipped to [${M.clip}] and renormalized to mean 1. Model: ${M.model}.`;
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", render);
+new MutationObserver(render).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+render();
+</script>
