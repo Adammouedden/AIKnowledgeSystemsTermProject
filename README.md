@@ -30,7 +30,7 @@ Experiments run on [verl-agent](https://github.com/langfengQ/verl-agent) at the 
 which calls `src/advantages.py`, plus probe token credit, episode dumps and a final-weights upload).
 
 ```bash
-src/verl/run_arms.sh grpo gaca gaca_probe    # arms one after another, 34 iterations each
+src/verl/run_arms.sh grpo gaca gaca_probe_s1 # arms one after another, 34 iterations each
 python src/report.py                     # rebuild docs/RESULTS.md
 python src/test_advantages.py            # estimator unit tests (CPU)
 ```

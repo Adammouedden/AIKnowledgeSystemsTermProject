@@ -8,7 +8,7 @@ Kept for the record; nothing here is run any more. Current code is in `src/`.
   that time), and the generator of `docs/RESULTS_4060.md` (`report_4060.py`). Paths inside assume the old
   layout (`src/`, `runs/*.jsonl`).
 - `4060_launchers/`: retired launchers of attempts 1-3. **Do not run them**: none waits for the GPU.
-- `a100_one_shot_launchers/`: single-purpose launchers of the A100 arms, superseded by
+- `a100_one_shot_launchers/`: single-purpose launcher of the A100 LOO arm, superseded by
   `src/verl/queue_runner.sh` + `src/runs/verl/queue.txt`.
 
 pixi (`pixi.toml`, `pixi.lock`) was removed: the experiments run in verl-agent's own venv

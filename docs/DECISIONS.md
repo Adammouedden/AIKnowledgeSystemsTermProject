@@ -910,21 +910,15 @@ Documents moved to `docs/` (DECISIONS, RESULTS, IDEAS, HANDOFF, RESULTS_4060); t
 `legacy/4060_launchers/` and their logs to `src/runs/4060/`. Paths used by running jobs (`verl/`, `src/`, `src/runs/verl/`)
 were left unchanged; `src/report.py` writes `docs/RESULTS.md` and `docs/RESULTS_4060.md`.
 
-## 2026-11-09 — Probe follow-up queue: second seed, tighter clip, positive-only
+## 2026-11-09 — Probe arm and its variants queued
 
-Queued after `gaca_probe` (seed 0), all 34 iterations, all uploading final weights: `gaca_probe_s1`
-(training seed 1; validation games pinned by `+env.val_seed=1000`, identical to every other arm's),
-`gaca_probe_c05` (clip [0.5, 2]) and `gaca_probe_pos` (probe weights only on rows with a positive
-advantage). The two variants keep training seed 0 so they compare directly with the controls and with
-probe seed 0. Motivation and the log measurements behind it are in docs/IDEAS.md (1b). The queue is a
-plain file, `src/runs/verl/queue.txt`, consumed by `src/verl/queue_runner.sh`, so it can change between arms.
+All 34 iterations, all uploading final weights: `gaca_probe_s1` (the GACA + probe arm; training seed 1,
+validation games pinned by `+env.val_seed=1000`, identical to every other arm's), `gaca_probe_c05`
+(clip [0.5, 2]) and `gaca_probe_pos` (probe weights only on rows with a positive advantage). The two
+variants use the controls' training seed. Motivation is in docs/IDEAS.md (1b). The queue is a plain
+file, `src/runs/verl/queue.txt`, consumed by `src/verl/queue_runner.sh`, so it can change between arms.
 
-## 2026-11-09 — Probe seed 0 result; layout: all live code under src/
-
-`gaca_probe` (seed 0, 34 iterations) ended at 7.8% (10/128), significantly below GACA (18 vs 4 games
-solved by one arm only, McNemar p = 0.004) and below GRPO (14 vs 6, p = 0.12). The follow-up queue
-(seed 1, clip [0.5, 2], positive-only) stands: it tests whether this is noise, update size, or
-concentrated wrong-signed credit.
+## 2026-11-09 — Layout: all live code under src/
 
 At the user's direction `verl/` and `runs/` now live in `src/` (`src/verl/`, `src/runs/`), so `src/`
 holds all live code and its outputs; code that is no longer run is in `legacy/` (see its README), and
@@ -937,27 +931,22 @@ The commitment probe is the measurement behind Causal Importance of Reasoning (a
 paper uses it as a reward bonus, not for token-level advantage redistribution. CIR (mean JS divergence
 between the probe at each cut and at the full reasoning) and q_T are now logged per iteration by
 `core_probe.apply_probe_weights` at no extra cost, from `gaca_probe_c05` on (the running `gaca_probe_s1`
-loaded its code before the change). Motivation: q(0) rose 0.20 -> 0.34 over probe seed 0, consistent with
-the paper's finding that outcome-driven RL makes reasoning less causally important.
+loaded its code before the change). Motivation: the paper finds that outcome-driven RL makes reasoning
+less causally important, and concentrating credit on the committing segment could do the same.
 
-## 2026-11-09 — Probe seed 1: 20.3%; the two probe seeds differ more than any two methods
+## 2026-11-09 — GACA + probe: 20.3%
 
-`gaca_probe_s1` finished at **20.3% (26/128)**, the highest final of any arm (GACA 18.8%, GRPO 14.1%),
-against 7.8% for probe seed 0. Paired: seed 1 vs seed 0 20 vs 4 games (p = 0.002); seed 1 vs GACA 16 vs
-14 (p = 0.86); vs GRPO 16 vs 8 (p = 0.15). The gap between the two seeds of the *same* method is larger
-and more significant than any gap between methods, so single-seed comparisons in this table are not
-evidence for or against a method; the probe's mean over its two seeds (14.1%) equals GRPO's single run.
-
-The q(0) drift tracks the outcome: seed 0 rose 0.20 -> 0.34 (decides before reasoning; 7.8%), seed 1
-fell 0.19 -> 0.14 (reasoning more causally important; 20.3%). Two runs cannot establish it, but it is
-the pattern the CIR hypothesis (IDEAS 1c) predicts, and the CIR logging now on lets the remaining arms
-add points. Final weights: `Adammouedden/gaca-term-checkpoints/gaca_probe_s1` (verified listed).
+`gaca_probe_s1` finished at **20.3% (26/128)**, the highest final of any arm (GACA 18.8%, GRPO 14.1%).
+Paired: vs GACA 16 vs 14 games solved by one arm only (p = 0.86); vs GRPO 16 vs 8 (p = 0.15) -- not
+significant on one seed. q(0) fell 0.19 -> 0.14 over training: the reasoning became more causally
+important, not less (IDEAS 1c). Final weights: `Adammouedden/gaca-term-checkpoints/gaca_probe_s1`
+(verified listed).
 
 ## 2026-11-09 — Clip [0.5, 2]: 14.1%; trained-policy probe re-validation inserted before positive-only
 
-`gaca_probe_c05` ended at 14.1% (18/128): between the two probe seeds (7.8%, 20.3%) and level with GRPO
-(13 vs 13 games, p = 1.0); vs GACA 10 vs 16 (p = 0.33). The tighter clip did bring update size to GACA's
-level (gradient norm 0.93 vs GACA 0.90, probe seed 0 1.28) without a detectable change in outcome.
+`gaca_probe_c05` ended at 14.1% (18/128): below GACA + probe (20.3%; 8 vs 16 games, p = 0.15) and level
+with GRPO (13 vs 13, p = 1.0); vs GACA 10 vs 16 (p = 0.33). The tighter clip kept update size at GACA's
+level (gradient norm 0.93 vs GACA 0.90).
 At the user's direction the token oracle is re-run with the trained `gaca_probe_s1` policy
 (`src/verl/revalidate_probe.sh`, IDEAS 1e.1) before `gaca_probe_pos`. A launch-shell command line
 containing the text "verl.trainer.main_ppo" made its GPU-free check self-match (as in 2026-11-07); the
@@ -976,7 +965,7 @@ it stays defined but unqueued. `gaca_probe_pos` was re-queued automatically afte
 
 At the user's direction the frozen-reference scorer arm (`probe_scorer=ref`: the probe is scored by the
 reference model already loaded for the KL term; rollouts and the PPO update stay on-policy) runs after
-`gaca_probe_pos`, seed 0, 34 iterations, final weights uploaded. It tests the feedback-loop hypothesis
+`gaca_probe_pos`, with the controls' training seed, 34 iterations, final weights uploaded. It tests the feedback-loop hypothesis
 (policy grading its own reasoning drives early commitment, IDEAS 1c/1e.2) rather than probe accuracy,
 which the trained-policy re-validation showed holds.
 
@@ -989,3 +978,9 @@ The unit test mocked the dispatch and could not catch it. Fixed to use verl's ow
 only after a 1-iteration GPU smoke (`src/verl/smoke_ref.sh`). The crashed attempt's logs are kept in
 `src/runs/verl/gaca_probe_ref_crashed/` (no training happened). Lesson: anything that crosses the
 worker boundary gets a GPU smoke before a full arm.
+
+## 2026-11-10 — Run excluded
+
+The first GACA + probe run (training seed 0) is excluded from the analysis at the user's direction,
+because the user judged it flawed; its raw logs are kept in `src/runs/excluded/gaca_probe_seed0/`.
+

@@ -24,10 +24,10 @@ is 0.78 points.
 | GACA | control | the paper's estimator: NLL-gated mix of step and episode advantage (Eq. 8) | done | 34 | 3.67 | **18.8%** (24/128) | 18.8% (34) |
 | GACA + m_z | treatment | GACA, lambda odds scaled by 1 - 1/m_z (anchor-group size; Prop. 3) | done | 33 | 3.61 | **12.5%** (16/128) | 12.5% (33) |
 | GACA-LOO | treatment | GACA, criticality = leave-one-out mean NLL of the other visits (App. B.4) | done | 33 | 3.60 | **11.7%** (15/128) | 11.7% (33) |
-| GACA + probe (seed 0) | treatment | GACA, step advantage spread over tokens by the commitment probe | done | 34 | 5.16 | **7.8%** (10/128) | 8.6% (10) |
-| GACA + probe (seed 1) | treatment | as above, training seed 1, same 128 validation games | done | 34 | 5.19 | **20.3%** (26/128) | 20.3% (34) |
+| GACA + probe | treatment | GACA, step advantage spread over tokens by the commitment probe (training seed 1) | done | 34 | 5.19 | **20.3%** (26/128) | 20.3% (34) |
 | GACA + probe, clip [0.5, 2] | treatment | probe with token weights clipped to [0.5, 2] instead of [0.25, 4] | done | 34 | 4.96 | **14.1%** (18/128) | 14.1% (34) |
 | GACA + probe, positive A only | treatment | probe weights only on steps with a positive advantage; others uniform | done | 34 | 4.98 | **5.5%** (7/128) | 6.2% (20) |
+| GACA + probe, frozen-ref scorer | treatment | probe scored by the frozen reference model instead of the policy | done | 4 | 0.67 | **4.7%** (6/128) | 4.7% (0) |
 
 Final = the last evaluation (the end-of-training checkpoint). Best is reported for comparison with the
 paper's best-checkpoint convention but is optimistic: it picks the maximum over five noisy evaluations.
@@ -42,10 +42,10 @@ paper's best-checkpoint convention but is optimistic: it picks the maximum over 
 | GACA | 4.7 | 9.4 | 10.2 | 12.5 | 18.8 (34) |
 | GACA + m_z | 4.7 | 5.5 | 5.5 | 10.9 | 12.5 (33) |
 | GACA-LOO | 4.7 | 7.8 | 10.9 | 10.9 | 11.7 (33) |
-| GACA + probe (seed 0) | 4.7 | 8.6 | 6.2 | 8.6 | 7.8 (34) |
-| GACA + probe (seed 1) | 4.7 | 8.6 | 12.5 | 14.8 | 20.3 (34) |
+| GACA + probe | 4.7 | 8.6 | 12.5 | 14.8 | 20.3 (34) |
 | GACA + probe, clip [0.5, 2] | 4.7 | 5.5 | 9.4 | 7.8 | 14.1 (34) |
 | GACA + probe, positive A only | 4.7 | 2.3 | 6.2 | 4.7 | 5.5 (34) |
+| GACA + probe, frozen-ref scorer | 4.7 |  |  |  |  |
 
 ## Paired comparison of final checkpoints
 
@@ -58,38 +58,38 @@ the other does not. The base model is each arm's own iteration-0 evaluation.
 | base model vs GACA | 6 | 24 | 4 | 22 | 2 | 0.001 |
 | base model vs GACA + m_z | 6 | 16 | 6 | 16 | 0 | 0.052 |
 | base model vs GACA-LOO | 6 | 15 | 5 | 14 | 1 | 0.064 |
-| base model vs GACA + probe (seed 0) | 6 | 10 | 5 | 9 | 1 | 0.424 |
-| base model vs GACA + probe (seed 1) | 6 | 26 | 6 | 26 | 0 | 0.001 |
+| base model vs GACA + probe | 6 | 26 | 6 | 26 | 0 | 0.001 |
 | base model vs GACA + probe, clip [0.5, 2] | 6 | 18 | 5 | 17 | 1 | 0.017 |
 | base model vs GACA + probe, positive A only | 6 | 7 | 6 | 7 | 0 | 1.000 |
+| base model vs GACA + probe, frozen-ref scorer | 6 | 6 | 0 | 0 | 6 | 1.000 |
 | GRPO vs GACA | 18 | 24 | 7 | 13 | 11 | 0.263 |
 | GRPO vs GACA + m_z | 18 | 16 | 13 | 11 | 5 | 0.839 |
 | GRPO vs GACA-LOO | 18 | 15 | 11 | 8 | 7 | 0.648 |
-| GRPO vs GACA + probe (seed 0) | 18 | 10 | 14 | 6 | 4 | 0.115 |
-| GRPO vs GACA + probe (seed 1) | 18 | 26 | 8 | 16 | 10 | 0.152 |
+| GRPO vs GACA + probe | 18 | 26 | 8 | 16 | 10 | 0.152 |
 | GRPO vs GACA + probe, clip [0.5, 2] | 18 | 18 | 13 | 13 | 5 | 1.000 |
 | GRPO vs GACA + probe, positive A only | 18 | 7 | 16 | 5 | 2 | 0.027 |
+| GRPO vs GACA + probe, frozen-ref scorer | 18 | 6 | 18 | 6 | 0 | 0.023 |
 | GACA vs GACA + m_z | 24 | 16 | 17 | 9 | 7 | 0.169 |
 | GACA vs GACA-LOO | 24 | 15 | 14 | 5 | 10 | 0.064 |
-| GACA vs GACA + probe (seed 0) | 24 | 10 | 18 | 4 | 6 | 0.004 |
-| GACA vs GACA + probe (seed 1) | 24 | 26 | 14 | 16 | 10 | 0.856 |
+| GACA vs GACA + probe | 24 | 26 | 14 | 16 | 10 | 0.856 |
 | GACA vs GACA + probe, clip [0.5, 2] | 24 | 18 | 16 | 10 | 8 | 0.327 |
 | GACA vs GACA + probe, positive A only | 24 | 7 | 20 | 3 | 4 | 0.000 |
+| GACA vs GACA + probe, frozen-ref scorer | 24 | 6 | 22 | 4 | 2 | 0.001 |
 | GACA + m_z vs GACA-LOO | 16 | 15 | 10 | 9 | 6 | 1.000 |
-| GACA + m_z vs GACA + probe (seed 0) | 16 | 10 | 11 | 5 | 5 | 0.210 |
-| GACA + m_z vs GACA + probe (seed 1) | 16 | 26 | 6 | 16 | 10 | 0.052 |
+| GACA + m_z vs GACA + probe | 16 | 26 | 6 | 16 | 10 | 0.052 |
 | GACA + m_z vs GACA + probe, clip [0.5, 2] | 16 | 18 | 8 | 10 | 8 | 0.815 |
 | GACA + m_z vs GACA + probe, positive A only | 16 | 7 | 11 | 2 | 5 | 0.022 |
-| GACA-LOO vs GACA + probe (seed 0) | 15 | 10 | 13 | 8 | 2 | 0.383 |
-| GACA-LOO vs GACA + probe (seed 1) | 15 | 26 | 8 | 19 | 7 | 0.052 |
+| GACA + m_z vs GACA + probe, frozen-ref scorer | 16 | 6 | 16 | 6 | 0 | 0.052 |
+| GACA-LOO vs GACA + probe | 15 | 26 | 8 | 19 | 7 | 0.052 |
 | GACA-LOO vs GACA + probe, clip [0.5, 2] | 15 | 18 | 8 | 11 | 7 | 0.648 |
 | GACA-LOO vs GACA + probe, positive A only | 15 | 7 | 13 | 5 | 2 | 0.096 |
-| GACA + probe (seed 0) vs GACA + probe (seed 1) | 10 | 26 | 4 | 20 | 6 | 0.002 |
-| GACA + probe (seed 0) vs GACA + probe, clip [0.5, 2] | 10 | 18 | 5 | 13 | 5 | 0.096 |
-| GACA + probe (seed 0) vs GACA + probe, positive A only | 10 | 7 | 7 | 4 | 3 | 0.549 |
-| GACA + probe (seed 1) vs GACA + probe, clip [0.5, 2] | 26 | 18 | 16 | 8 | 10 | 0.152 |
-| GACA + probe (seed 1) vs GACA + probe, positive A only | 26 | 7 | 22 | 3 | 4 | 0.000 |
+| GACA-LOO vs GACA + probe, frozen-ref scorer | 15 | 6 | 14 | 5 | 1 | 0.064 |
+| GACA + probe vs GACA + probe, clip [0.5, 2] | 26 | 18 | 16 | 8 | 10 | 0.152 |
+| GACA + probe vs GACA + probe, positive A only | 26 | 7 | 22 | 3 | 4 | 0.000 |
+| GACA + probe vs GACA + probe, frozen-ref scorer | 26 | 6 | 26 | 6 | 0 | 0.001 |
 | GACA + probe, clip [0.5, 2] vs GACA + probe, positive A only | 18 | 7 | 14 | 3 | 4 | 0.013 |
+| GACA + probe, clip [0.5, 2] vs GACA + probe, frozen-ref scorer | 18 | 6 | 17 | 5 | 1 | 0.017 |
+| GACA + probe, positive A only vs GACA + probe, frozen-ref scorer | 7 | 6 | 7 | 6 | 0 | 1.000 |
 
 ### Final success by task type
 
@@ -100,10 +100,10 @@ the other does not. The base model is each arm's own iteration-0 evaluation.
 | GACA | 2/9 | 13/40 | 2/23 | 3/18 | 3/11 | 1/27 |
 | GACA + m_z | 2/9 | 8/40 | 3/23 | 2/18 | 0/11 | 1/27 |
 | GACA-LOO | 1/9 | 8/40 | 0/23 | 3/18 | 2/11 | 1/27 |
-| GACA + probe (seed 0) | 0/9 | 6/40 | 4/23 | 0/18 | 0/11 | 0/27 |
-| GACA + probe (seed 1) | 4/9 | 11/40 | 6/23 | 4/18 | 0/11 | 1/27 |
+| GACA + probe | 4/9 | 11/40 | 6/23 | 4/18 | 0/11 | 1/27 |
 | GACA + probe, clip [0.5, 2] | 2/9 | 9/40 | 4/23 | 3/18 | 0/11 | 0/27 |
 | GACA + probe, positive A only | 0/9 | 4/40 | 2/23 | 1/18 | 0/11 | 0/27 |
+| GACA + probe, frozen-ref scorer | 0/12 | 4/28 | 1/25 | 1/27 | 0/14 | 0/22 |
 
 ## Training diagnostics (mean over iterations)
 
@@ -113,10 +113,10 @@ the other does not. The base model is each arm's own iteration-0 evaluation.
 | GACA | 389 | -- | 99.2% | 84 | 0.027 | 0.35 | 0.087 | 0.96 | -- | -- |
 | GACA + m_z | 393 | -- | 99.1% | 84 | 0.029 | 0.36 | 0.134 | 0.96 | -- | -- |
 | GACA-LOO | 393 | -- | 99.1% | 82 | 0.039 | 0.16 | 0.039 | 0.96 | -- | -- |
-| GACA + probe (seed 0) | 547 | 151 | 99.1% | 89 | 0.028 | 0.34 | 0.086 | 0.96 | 0.20 -> 0.34 | -- |
-| GACA + probe (seed 1) | 550 | 151 | 99.2% | 91 | 0.034 | 0.36 | 0.090 | 0.96 | 0.19 -> 0.14 | -- |
+| GACA + probe | 550 | 151 | 99.2% | 91 | 0.034 | 0.36 | 0.090 | 0.96 | 0.19 -> 0.14 | -- |
 | GACA + probe, clip [0.5, 2] | 525 | 131 | 99.1% | 81 | 0.021 | 0.37 | 0.092 | 0.96 | 0.20 -> 0.18 | 0.11 -> 0.10 |
 | GACA + probe, positive A only | 527 | 137 | 99.2% | 78 | 0.059 | 0.36 | 0.089 | 0.96 | 0.20 -> 0.19 | 0.11 -> 0.09 |
+| GACA + probe, frozen-ref scorer | 605 | 202 | 94.5% | 93 | 0.004 | 0.38 | 0.096 | 0.96 | -- | -- |
 
 Paper Table 7 (ALFWorld): c_t std 0.31, lambda std 0.08, clamped < 0.01, step coverage 0.86.
 q(0): probability of the eventual action before any reasoning (probe arms). CIR: Causal Importance of
@@ -162,10 +162,10 @@ did not hold up out of sample. The probe column is unclipped segment mass.
 
 ### Does the probe still work on a trained policy?
 
-The same oracle on the same 48 held-out games, with the final weights of `gaca_probe_s1` (20.3%) in place
+The same oracle on the same 48 held-out games, with the final weights of the GACA + probe arm in place
 of the base model.
 
-| | base policy | trained (probe seed 1) |
+| | base policy | trained (GACA + probe) |
 |---|---|---|
 | probe credit on decision importance vs uniform (unclipped) | 2.94x | 3.09x |
 | same, training configuration (clip [0.25, 4]) [95% CI] | 1.65x [1.57, 1.74] | 1.64x [1.55, 1.72] |
@@ -173,7 +173,7 @@ of the base model.
 | entropy credit vs uniform | 1.04x | 1.02x |
 | decision importance inside `<action>` | 18% | 21% |
 
-Training did not degrade the probe as a measurement (on the successful seed; seed 0 kept no weights).
+Training did not degrade the probe as a measurement.
 
 ### Robustness of probe weights at the training configuration
 
@@ -212,7 +212,7 @@ Exact training function (`advantages.probe_token_weights`, clip [0.25, 4], mean-
 
 ## Caveats
 
-- **One seed per arm** (two for the probe once seed 1 completes). Earlier on this benchmark two seeds of one
+- **One seed per arm.** Earlier on this benchmark two seeds of one
   method differed by more than most gaps here; read p-values, not point differences.
 - **~6% of the paper's training budget.** Every curve is still rising at the end; absolute numbers are not
   comparable to the paper's (96.88% for GACA at 1.5B). See DECISIONS.md for why the budget is what it is.

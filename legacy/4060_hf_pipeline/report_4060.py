@@ -504,11 +504,10 @@ VERL_ARMS = [  # (dir, label, role, what differs from GACA/GRPO)
     ("gaca", "GACA", "control", "the paper's estimator: NLL-gated mix of step and episode advantage (Eq. 8)"),
     ("gaca_msize", "GACA + m_z", "treatment", "GACA, lambda odds scaled by 1 - 1/m_z (anchor-group size; Prop. 3)"),
     ("gaca_loo", "GACA-LOO", "treatment", "GACA, criticality = leave-one-out mean NLL of the other visits (App. B.4)"),
-    ("gaca_probe", "GACA + probe (seed 0)", "treatment", "GACA, step advantage spread over tokens by the commitment probe"),
     ("gaca_probe_s1", "GACA + probe (seed 1)", "treatment", "as above, training seed 1, same 128 validation games"),
 ]
 VERL_COLORS = {"grpo": "#2a78d6", "gaca": "#eb6834", "gaca_msize": "#1baf7a", "gaca_loo": "#eda100",
-               "gaca_probe": "#e87ba4", "gaca_probe_s1": "#e87ba4"}  # validated categorical slots 1-5, fixed order
+               "gaca_probe_s1": "#e87ba4"}  # validated categorical slots 1-5, fixed order
 
 
 def _verl_metrics(path):

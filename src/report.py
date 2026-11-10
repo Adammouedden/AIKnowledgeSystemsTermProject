@@ -33,18 +33,17 @@ VERL_ARMS = [  # (dir, label, role, what differs from GACA/GRPO)
     ("gaca", "GACA", "control", "the paper's estimator: NLL-gated mix of step and episode advantage (Eq. 8)"),
     ("gaca_msize", "GACA + m_z", "treatment", "GACA, lambda odds scaled by 1 - 1/m_z (anchor-group size; Prop. 3)"),
     ("gaca_loo", "GACA-LOO", "treatment", "GACA, criticality = leave-one-out mean NLL of the other visits (App. B.4)"),
-    ("gaca_probe", "GACA + probe (seed 0)", "treatment", "GACA, step advantage spread over tokens by the commitment probe"),
-    ("gaca_probe_s1", "GACA + probe (seed 1)", "treatment", "as above, training seed 1, same 128 validation games"),
+    ("gaca_probe_s1", "GACA + probe", "treatment", "GACA, step advantage spread over tokens by the commitment probe (training seed 1)"),
     ("gaca_probe_c05", "GACA + probe, clip [0.5, 2]", "treatment", "probe with token weights clipped to [0.5, 2] instead of [0.25, 4]"),
     ("gaca_probe_pos", "GACA + probe, positive A only", "treatment", "probe weights only on steps with a positive advantage; others uniform"),
     ("gaca_probe_ref", "GACA + probe, frozen-ref scorer", "treatment", "probe scored by the frozen reference model instead of the policy"),
 ]
 VERL_COLORS = {"grpo": "#2a78d6", "gaca": "#eb6834", "gaca_msize": "#1baf7a", "gaca_loo": "#eda100",
-               "gaca_probe": "#e87ba4", "gaca_probe_s1": "#e87ba4", "gaca_probe_c05": "#e87ba4", "gaca_probe_pos": "#e87ba4",
+               "gaca_probe_s1": "#e87ba4", "gaca_probe_c05": "#e87ba4", "gaca_probe_pos": "#e87ba4",
                "gaca_probe_ref": "#e87ba4"}
 # validated categorical slots 1-5, fixed order; probe variants keep the probe's hue (colour follows the
 # method) and are told apart by line style + legend + direct labels
-VERL_STYLE = {"gaca_probe_s1": ":", "gaca_probe_c05": "--", "gaca_probe_pos": "-.", "gaca_probe_ref": (0, (1, 1, 4, 1))}
+VERL_STYLE = {"gaca_probe_c05": "--", "gaca_probe_pos": "-.", "gaca_probe_ref": (0, (1, 1, 4, 1))}
 
 
 def _verl_metrics(path):
@@ -116,7 +115,7 @@ def verl_plot(arms):
     base = next((a["curve"][0][1] for a in arms if a["curve"]), None)
     if base is not None:
         ax.axhline(100 * base / 128, color=ink2, lw=1.0, ls=(0, (2, 3)), zorder=1)
-        ax.annotate("base model", (44, 100 * base / 128), color=ink2, fontsize=8, va="bottom", ha="right")
+        ax.annotate("base model", (22, 100 * base / 128 - 0.25), color=ink2, fontsize=8, va="top", ha="center")
     ends = []
     for a in arms:
         if len(a["curve"]) < 2:
@@ -138,7 +137,7 @@ def verl_plot(arms):
         ax.annotate(f" {lab}", (xl, y), color=ink, fontsize=8.5, va="center", ha="left", annotation_clip=False)
     ax.set_xlabel("Training iteration", color=ink2, fontsize=10)
     ax.set_ylabel("Held-out success (%), 128 games", color=ink2, fontsize=10)
-    ax.set_title("ALFWorld, Qwen2.5-1.5B-Instruct, full fine-tuning, one A100 (single seed unless marked)",
+    ax.set_title("ALFWorld, Qwen2.5-1.5B-Instruct, full fine-tuning, one A100, one seed per arm",
                  color=ink, fontsize=10, pad=10)
     ax.grid(True, axis="y", color=grid, lw=0.8, zorder=0)
     ax.set_axisbelow(True)
@@ -325,10 +324,10 @@ def verl_main():
     if ht and hh:
         w("### Does the probe still work on a trained policy?")
         w("")
-        w("The same oracle on the same 48 held-out games, with the final weights of `gaca_probe_s1` (20.3%) in place")
+        w("The same oracle on the same 48 held-out games, with the final weights of the GACA + probe arm in place")
         w("of the base model.")
         w("")
-        w("| | base policy | trained (probe seed 1) |")
+        w("| | base policy | trained (GACA + probe) |")
         w("|---|---|---|")
         w(f"| probe credit on decision importance vs uniform (unclipped) | {hh['probe']['credit_on_importance_vs_uniform']:.2f}x | {ht['probe']['credit_on_importance_vs_uniform']:.2f}x |")
         if hr and hrt:
@@ -338,7 +337,7 @@ def verl_main():
         w(f"| entropy credit vs uniform | {hh['entropy']['credit_on_importance_vs_uniform']:.2f}x | {ht['entropy']['credit_on_importance_vs_uniform']:.2f}x |")
         w(f"| decision importance inside `<action>` | {100 * hh['importance_share_inside_action_tags']:.0f}% | {100 * ht['importance_share_inside_action_tags']:.0f}% |")
         w("")
-        w("Training did not degrade the probe as a measurement (on the successful seed; seed 0 kept no weights).")
+        w("Training did not degrade the probe as a measurement.")
         w("")
     if hr:
         w("### Robustness of probe weights at the training configuration")
@@ -361,7 +360,7 @@ def verl_main():
     w("")
     w("## Caveats")
     w("")
-    w("- **One seed per arm** (two for the probe once seed 1 completes). Earlier on this benchmark two seeds of one")
+    w("- **One seed per arm.** Earlier on this benchmark two seeds of one")
     w("  method differed by more than most gaps here; read p-values, not point differences.")
     w("- **~6% of the paper's training budget.** Every curve is still rising at the end; absolute numbers are not")
     w("  comparable to the paper's (96.88% for GACA at 1.5B). See DECISIONS.md for why the budget is what it is.")

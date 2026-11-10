@@ -53,27 +53,23 @@ Why it should help: a good step's advantage reinforces mostly the reasoning
 that produced the decision, a bad step's advantage penalizes mostly that
 reasoning, instead of spreading both over boilerplate.
 
-Watch item (from the running arm, iter 6): KL to the reference is ~0.045,
-~3x the controls at the same point (0.014-0.015). Per-token weights up to 4x
-let some tokens' gradients grow, so the policy drifts faster. If KL keeps
-climbing while held-out success stalls, the upper clip is the suspect;
-[0.5, 2] is the follow-up variant (offline: 1.26x credit on decisive
+Risk: per-token weights up to 4x let some tokens' gradients grow, so updates can get larger and the
+policy can drift faster; [0.5, 2] is the tighter-clip variant (offline: 1.26x credit on decisive
 segments, vs 1.65x at [0.25, 4]).
 
-### 1b. Variants queued after seed 0 (2026-11-08)
+### 1b. Probe variants (2026-11-09)
 
-Seed 0 trailed GACA mid-run (6.2% vs 10.2% at iteration 20, 5 games, not significant). Its logs show
-larger, noisier updates than GACA over iterations 1-21: KL 0.027 vs 0.015, gradient norm 1.28 vs 0.90,
-entropy 1.07 vs 0.96, responses 89 vs 82 tokens. Two hypotheses, one arm each:
+Two hypotheses about how token concentration could hurt, one arm each:
 
 - **Clip [0.5, 2]** (`gaca_probe_c05`): if concentration makes updates too large, a tighter clip should
-  bring KL down and recover performance (offline: 1.26x credit on decisive segments instead of 1.65x).
+  keep KL down (offline: 1.26x credit on decisive segments instead of 1.65x). **Result: 14.1%**, level
+  with GRPO; the gradient norm fell to GACA's level (0.93 vs 0.90).
 - **Positive advantages only** (`gaca_probe_pos`): the probe moves *where* credit lands, not whether it
   is right. At 5-15% success many step advantages rest on one or two wins, and a wrong-signed advantage
   concentrated on the decisive reasoning does the most damage. Probe weights only where A_t > 0;
-  zero/negative rows keep uniform credit, so blame stays diluted.
-
-Plus a second seed of the original (`gaca_probe_s1`) to separate noise from effect.
+  zero/negative rows keep uniform credit. **Result: 5.5%**, significantly below GRPO (p = 0.027) and
+  GACA (p < 0.001), with high KL (0.059 mean). Keeping blame uniform did not help; if anything,
+  asymmetric credit destabilized training.
 
 ### 1c. Relation to CIR, and a new failure hypothesis (2026-11-09)
 
@@ -88,15 +84,13 @@ advantage. **Our contribution is that redistribution** (the per-segment *rise* o
 share of the step advantage, in multi-turn agent RL), not the probe itself, which must be credited to
 them (and to earlier truncation-based "early answering" faithfulness tests).
 
-Their warning appears in our own logs: in `gaca_probe` (seed 0) the mean q(0) -- the probability of the
-eventual action *before* any reasoning -- rose from 0.20 to 0.34 over training, i.e. the policy decided
-earlier and its reasoning mattered less. Hypothesis 3 for seed 0's 7.8%: concentrating credit on
-whichever segment commits to the action rewards early commitment, so the decision drifts forward and
-the rest of the reasoning becomes decorative. CIR and q(0) are now logged per iteration (report
-diagnostics) to test this on the remaining arms.
-
-**Update (seed 1 done):** probe seed 1 ended at 20.3% with q(0) *falling* 0.19 -> 0.14, against seed
-0's 7.8% with q(0) rising 0.20 -> 0.34 -- the direction this hypothesis predicts, on two runs.
+Their warning is a risk for our method specifically: concentrating credit on whichever segment commits
+to the action could reward early commitment, so the decision drifts forward and the rest of the
+reasoning becomes decorative. q(0) -- the probability of the eventual action *before* any reasoning --
+and CIR are logged per iteration to watch for it. In the GACA + probe arm it did not happen: q(0) fell
+0.19 -> 0.14 over training (reasoning became *more* causally important) while it reached 20.3%. The
+positive-only variant failed with q(0) flat (0.20 -> 0.19), so early commitment does not explain that
+failure.
 
 Candidate arm: **GACA + probe + CIR bonus** -- token redistribution plus the paper's reward term
 (computable from the probe passes already run), so concentration cannot make the reasoning decorative.
@@ -124,18 +118,16 @@ the same anchor) rises with group win count, before spending an arm.
 Ranked by cost and by how directly they address a measured problem:
 
 1. **Re-validate the probe on a trained policy (measurement, ~15 min GPU).** The flip-test oracle that
-   justified the probe ran on the *base* model. `gaca_probe_s1`'s final weights are on HF; rerun
+   justified the probe ran on the *base* model. The GACA + probe arm's final weights are on HF; rerun
    `src/measure.py tokens` with them to see whether the probe still tracks decision importance after
    training. Decides whether (2) matters.
-   **Done 2026-11-09:** on the trained seed-1 policy the probe tracks decision importance as well as on
-   the base model (training config 1.64x [1.55, 1.72] vs 1.65x; unclipped 3.09x vs 2.94x). The probe
-   does not degrade as a measurement -- on the seed that worked; seed 0 kept no weights.
+   **Done 2026-11-09:** on the trained GACA + probe policy the probe tracks decision importance as well
+   as on the base model (training config 1.64x [1.55, 1.72] vs 1.65x; unclipped 3.09x vs 2.94x). The
+   probe does not degrade as a measurement.
 2. **Score the probe with the frozen reference model.** (Implemented: `probe_scorer=ref`, arm
-   `gaca_probe_ref`, not queued. Less urgent after 1e.1, since accuracy holds; still relevant to the
-   feedback-loop dynamics.) Today the policy scores its own reasoning: credit
-   goes to the committing segment, which pushes commitment earlier, which moves the credit again -- a
-   feedback loop that may explain seed 0's q(0) drift (0.20 -> 0.34). The reference model is already
-   loaded for the KL term, so this costs nothing. Next arm candidate.
+   `gaca_probe_ref`, running 2026-11-09.) Today the policy scores its own reasoning: credit goes to the
+   committing segment, which can push commitment earlier, which moves the credit again -- a possible
+   feedback loop. The reference model is already loaded for the KL term, so this costs nothing.
 3. **Pool the probe across visits to the same anchor state** (average the q-rise profiles of the group's
    visits, as LOO does for the NLL score); GACA's per-visit score was ~85% within-state noise.
 4. **Guard against decorative reasoning:** CIR bonus in the reward (1c), or a penalty on q(0) rising

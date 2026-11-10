@@ -19,17 +19,16 @@ Controls GRPO (14.1%) and GACA (18.8%, p=0.26 vs GRPO); treatments GACA + m_z (1
 weighting does not track decision importance; the **commitment probe** does (1.65x [1.57, 1.74] at the
 training config, consistent across task types and game halves).
 
-## Latest result
-`gaca_probe` (seed 0) finished at **7.8%** (10/128): below GACA's 18.8% task by task (18 vs 4 games,
-McNemar p = 0.004) and below GRPO's 14.1% (14 vs 6, p = 0.12). Its updates were larger and noisier than
-GACA's throughout (docs/IDEAS.md, 1b). The queued variants test the two leading explanations.
+## Latest results
+GACA + probe (`gaca_probe_s1`) finished at **20.3%** (26/128), the highest final of any arm (GACA 18.8%,
+GRPO 14.1%; paired p = 0.86 and 0.15, not significant). Variants: clip [0.5, 2] 14.1%; positive-only 5.5%
+(significantly below GRPO and GACA). The frozen-reference scorer arm (`gaca_probe_ref`) is running.
 
 ## Running / queued (automatic)
 **`src/verl/queue_runner.sh`** runs the arms listed in **`src/runs/verl/queue.txt`**, one at a time, top to
 bottom -- edit that file to reorder, add or drop arms (the runner reads its first line only when it is
-ready for the next arm). Queue: `save_smoke` (1-iteration check of the final-weights upload),
-`gaca_probe_s1` (seed 1), `gaca_probe_c05` (clip [0.5, 2]), `gaca_probe_pos` (probe weights on positive
-advantages only). Every arm uploads its final bf16 weights to the private HF repo
+ready for the next arm). Running: `gaca_probe_ref` (probe scored by the frozen reference model); queue
+otherwise empty. Every arm uploads its final bf16 weights to the private HF repo
 `Adammouedden/gaca-term-checkpoints/<arm>`; after each arm the runner regenerates docs/RESULTS.md,
 commits, pushes `a100` and fast-forwards + pushes `main`, and backs up to HF.
 

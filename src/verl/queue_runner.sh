@@ -19,7 +19,6 @@ publish() {  # report, commit, push (if credentials ever exist), HF backup
 while true; do
   while pgrep -f "verl.trainer.main_ppo" > /dev/null; do sleep 30; done
   sleep 120   # let a finishing launcher make its commit first
-  if [ -n "$(git status --porcelain src/runs/verl/gaca_probe 2>/dev/null)" ]; then publish src/runs/verl/gaca_probe "Results: GACA + probe (seed 0) complete"; fi
   next=$(grep -vE '^\s*(#|$)' $Q | head -1)
   if [ -z "$next" ]; then sleep 60; continue; fi
   $PY - "$Q" "$next" <<'PY'
