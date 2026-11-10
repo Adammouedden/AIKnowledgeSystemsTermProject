@@ -10,10 +10,10 @@ where (the final tenth of a response holds 19\% of the decision but 3\% of the e
 teacher-forced \emph{commitment probe}, the measurement behind Causal Importance of Reasoning, tracks
 it closely: weighting tokens by the probe's rise places $1.65\times$ more credit on decisive segments
 than uniform credit, consistently across task types, held-out games and a trained policy, whereas the
-model's own attention from action to reasoning does so only weakly ($1.12\times$). We turn the probe into a mean-preserving,
+model's own attention from action to reasoning does so only weakly ($1.12\times$). We turn the probe into COMMIT (COMMItment-weighted Token credit), a mean-preserving,
 clipped redistribution of each step's GACA advantage over its tokens. In a budget-matched study on
 ALFWorld with Qwen2.5-1.5B-Instruct and full fine-tuning (about 6\% of GACA's training budget, same
-128 held-out games for every method), probe-weighted credit reaches the highest final success of all
+128 held-out games for every method), COMMIT reaches the highest final success of all
 arms (20.3\% against 18.8\% for GACA and 14.1\% for GRPO), but none of the method differences is
 statistically resolved at this budget, and a variant that applies the probe to positive advantages only
 performs significantly worse than both baselines. We also find that

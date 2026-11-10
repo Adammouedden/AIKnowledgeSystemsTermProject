@@ -984,3 +984,13 @@ worker boundary gets a GPU smoke before a full arm.
 The first GACA + probe run (training seed 0) is excluded from the analysis at the user's direction,
 because the user judged it flawed; its raw logs are kept in `src/runs/excluded/gaca_probe_seed0/`.
 
+
+## Method renamed to COMMIT (2026-11-10)
+
+Probe-weighted token credit is now called **COMMIT** (COMMItment-weighted Token credit) in the paper,
+code and demo. "GACA + probe" undersold it: the token weights are estimator-agnostic and GACA is only
+the step estimator underneath. Arm keys and run folders were renamed `gaca_probe_*` -> `commit_*`.
+Older records keep the old names: `arms.log`, commit messages, earlier entries in this file, and the
+Hugging Face checkpoint folders (`Adammouedden/gaca-term-checkpoints/gaca_probe_s1` etc.).
+`report.py` matches both names in `arms.log`. The frozen-reference arm (`commit_ref`) was stopped at
+iteration 33/34 for the project deadline; it saved no checkpoint and must be re-run from scratch.

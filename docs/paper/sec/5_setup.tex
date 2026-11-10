@@ -31,7 +31,7 @@ is 0.78 points. The base model solves 6 of 128 (4.7\%).
 
 \paragraph{Methods.}
 The controls are GRPO and GACA. The treatments are GACA with the $m_z$ reliability gate, GACA with the
-leave-one-out score (GACA-LOO), GACA with probe-weighted token credit, and the probe's two variants
+leave-one-out score (GACA-LOO), COMMIT applied to GACA's step advantage, and two COMMIT variants
 (\cref{sec:method}). One seed per method; the probe arm used a different training-environment seed
 (the order in which training games are drawn) than the other arms, with the evaluation games pinned to
 be identical. In an earlier pilot of this project, two seeds of the same method differed by 3.1 points at a matched

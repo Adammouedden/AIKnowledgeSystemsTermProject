@@ -136,7 +136,7 @@ def _plt():
     return plt
 
 
-ARM_ORDER = ["grpo", "gaca", "gaca_msize", "gaca_loo", "gaca_probe_s1", "gaca_probe_c05", "gaca_probe_pos"]
+ARM_ORDER = ["grpo", "gaca", "gaca_msize", "gaca_loo", "commit_s1", "commit_c05", "commit_pos"]
 
 
 def fig_curves(arms):
@@ -195,7 +195,7 @@ def fig_oracle():
     vb = [hb[k]["credit_on_importance_vs_uniform"] for k, _ in keys]
     vt = [ht[k]["credit_on_importance_vs_uniform"] for k, _ in keys]
     ax.bar(x - wdt / 2 - 0.01, vb, wdt, color="#2a78d6", label="base policy", zorder=3)
-    ax.bar(x + wdt / 2 + 0.01, vt, wdt, color="#eb6834", label="trained (GACA + probe)", zorder=3)
+    ax.bar(x + wdt / 2 + 0.01, vt, wdt, color="#eb6834", label="trained (COMMIT)", zorder=3)
     for xi, a, b in zip(x, vb, vt):
         ax.annotate(f"{a:.2f}", (xi - wdt / 2, a), ha="center", va="bottom", fontsize=5.5, color=INK)
         ax.annotate(f"{b:.2f}", (xi + wdt / 2, b), ha="center", va="bottom", fontsize=5.5, color=INK)
@@ -358,8 +358,8 @@ def tables():
 
     names = {"grpo": "GRPO~\\cite{shao2024deepseekmath}", "gaca": "GACA~\\cite{liang2026gaca}",
              "gaca_msize": "GACA + $m_z$ gate", "gaca_loo": "GACA-LOO (App.~B.4 of~\\cite{liang2026gaca})",
-             "gaca_probe_s1": "\\textbf{GACA + probe (ours)}", "gaca_probe_c05": "\\quad clip $[0.5, 2]$",
-             "gaca_probe_pos": "\\quad positive $A_t$ only", "gaca_probe_ref": "\\quad frozen-reference scorer"}
+             "commit_s1": "\\textbf{COMMIT (ours)}", "commit_c05": "\\quad clip $[0.5, 2]$",
+             "commit_pos": "\\quad positive $A_t$ only", "commit_ref": "\\quad frozen-reference scorer"}
     lines = ["\\begin{tabular}{@{}lrrcc@{}}", "\\toprule",
              "Method & Final & Best & vs.\\ GRPO & vs.\\ GACA \\\\", "\\midrule",
              f"Base model (no training) & {100 * sum(e['won'] for e in base.values()) / 128:.1f} & -- & -- & -- \\\\"]

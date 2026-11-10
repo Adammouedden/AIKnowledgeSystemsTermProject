@@ -64,7 +64,7 @@ $2.94\times$ more credit on decisive segments (TV $-0.065$, CI $[-0.093, -0.037]
 \centering
 \includegraphics[width=\linewidth]{figs/oracle.pdf}
 \caption{\textbf{Credit on decisive segments relative to uniform credit}, by weighting scheme, on held-out
-games, for the base policy and for the final policy of the GACA + probe training run. Unclipped
+games, for the base policy and for the final policy of the COMMIT training run. Unclipped
 segment weights; the clipped training configuration gives $1.65\times$ and $1.64\times$.}
 \label{fig:oracle}
 \end{figure}
@@ -107,7 +107,7 @@ themselves, explanations~\cite{jain2019attention}.
 \centering
 \includegraphics[width=\linewidth]{figs/example.pdf}
 \caption{\textbf{One held-out step, token by token.} Top: decision importance measured by the flip
-test (darker = more of the decision settled there). Middle: probe-weighted credit. Bottom: attention
+test (darker = more of the decision settled there). Middle: COMMIT credit. Bottom: attention
 from the command tokens to each reasoning token (last third of the layers, mean over heads). The
 vertical line marks the \texttt{<action>} tag. The task is to put a keychain on a desk; before any
 reasoning the eventual command has probability $q(0) = 0.04$ and resampling the whole response changes
@@ -119,7 +119,7 @@ action tag.}
 
 \subsection{The probe survives training}
 The flip test above uses the base policy. Repeating it on the same held-out games with the final weights
-of our GACA + probe training run gives the same picture: the probe's credit on decisive segments is
+of our COMMIT training run gives the same picture: the probe's credit on decisive segments is
 $1.64\times$ at the training configuration (CI $[1.55, 1.72]$; base model $1.65\times$) and $3.09\times$
 unclipped, entropy stays near $1\times$, and the share of the decision inside the action tags moves only
 from 18\% to 21\%. Training does not degrade the probe as a measurement of where decisions are made.

@@ -33,17 +33,17 @@ VERL_ARMS = [  # (dir, label, role, what differs from GACA/GRPO)
     ("gaca", "GACA", "control", "the paper's estimator: NLL-gated mix of step and episode advantage (Eq. 8)"),
     ("gaca_msize", "GACA + m_z", "treatment", "GACA, lambda odds scaled by 1 - 1/m_z (anchor-group size; Prop. 3)"),
     ("gaca_loo", "GACA-LOO", "treatment", "GACA, criticality = leave-one-out mean NLL of the other visits (App. B.4)"),
-    ("gaca_probe_s1", "GACA + probe", "treatment", "GACA, step advantage spread over tokens by the commitment probe (training seed 1)"),
-    ("gaca_probe_c05", "GACA + probe, clip [0.5, 2]", "treatment", "probe with token weights clipped to [0.5, 2] instead of [0.25, 4]"),
-    ("gaca_probe_pos", "GACA + probe, positive A only", "treatment", "probe weights only on steps with a positive advantage; others uniform"),
-    ("gaca_probe_ref", "GACA + probe, frozen-ref scorer", "treatment", "probe scored by the frozen reference model instead of the policy"),
+    ("commit_s1", "COMMIT", "treatment", "GACA, step advantage spread over tokens by the commitment probe (training seed 1)"),
+    ("commit_c05", "COMMIT, clip [0.5, 2]", "treatment", "probe with token weights clipped to [0.5, 2] instead of [0.25, 4]"),
+    ("commit_pos", "COMMIT, positive A only", "treatment", "probe weights only on steps with a positive advantage; others uniform"),
+    ("commit_ref", "COMMIT, frozen-ref scorer", "treatment", "probe scored by the frozen reference model instead of the policy"),
 ]
 VERL_COLORS = {"grpo": "#2a78d6", "gaca": "#eb6834", "gaca_msize": "#1baf7a", "gaca_loo": "#eda100",
-               "gaca_probe_s1": "#e87ba4", "gaca_probe_c05": "#e87ba4", "gaca_probe_pos": "#e87ba4",
-               "gaca_probe_ref": "#e87ba4"}
+               "commit_s1": "#e87ba4", "commit_c05": "#e87ba4", "commit_pos": "#e87ba4",
+               "commit_ref": "#e87ba4"}
 # validated categorical slots 1-5, fixed order; probe variants keep the probe's hue (colour follows the
 # method) and are told apart by line style + legend + direct labels
-VERL_STYLE = {"gaca_probe_c05": "--", "gaca_probe_pos": "-.", "gaca_probe_ref": (0, (1, 1, 4, 1))}
+VERL_STYLE = {"commit_c05": "--", "commit_pos": "-.", "commit_ref": (0, (1, 1, 4, 1))}
 
 
 def _verl_metrics(path):
@@ -87,8 +87,9 @@ def verl_load():
         tr = [r for r in rows if "timing_s/step" in r]
         # finished = its last "end" line comes after its last "start" line (a crashed earlier
         # attempt leaves an "end" that must not mark a later re-run as done)
-        starts = [m.start() for m in re.finditer(rf"start {key} ", log_lines)]
-        ends = [m.start() for m in re.finditer(rf"end {key}$", log_lines, re.M)]
+        logkey = rf"(?:{key}|{key.replace('commit_', 'gaca_probe_')})"  # arms.log predates the COMMIT rename
+        starts = [m.start() for m in re.finditer(rf"start {logkey} ", log_lines)]
+        ends = [m.start() for m in re.finditer(rf"end {logkey}$", log_lines, re.M)]
         done = bool(ends) and (not starts or ends[-1] > starts[-1])
         arms.append(dict(key=key, label=label, role=role, what=what, rows=tr, curve=curve, done=done,
                          iters=int(tr[-1]["step"]) if tr else 0))
@@ -281,7 +282,7 @@ def verl_main():
     w("Paper Table 7 (ALFWorld): c_t std 0.31, lambda std 0.08, clamped < 0.01, step coverage 0.86.")
     w("q(0): probability of the eventual action before any reasoning (probe arms). CIR: Causal Importance of")
     w("Reasoning (Yu et al., 2026), mean JS divergence between the probe at each cut and at the full reasoning;")
-    w("logged from `gaca_probe_c05` on. A rising q(0) / falling CIR means the reasoning matters less over training.")
+    w("logged from `commit_c05` on. A rising q(0) / falling CIR means the reasoning matters less over training.")
     w("")
     w("## Offline studies (no training)")
     w("")
@@ -328,10 +329,10 @@ def verl_main():
     if ht and hh:
         w("### Does the probe still work on a trained policy?")
         w("")
-        w("The same oracle on the same 48 held-out games, with the final weights of the GACA + probe arm in place")
+        w("The same oracle on the same 48 held-out games, with the final weights of the COMMIT arm in place")
         w("of the base model.")
         w("")
-        w("| | base policy | trained (GACA + probe) |")
+        w("| | base policy | trained (COMMIT) |")
         w("|---|---|---|")
         w(f"| probe credit on decision importance vs uniform (unclipped) | {hh['probe']['credit_on_importance_vs_uniform']:.2f}x | {ht['probe']['credit_on_importance_vs_uniform']:.2f}x |")
         if hr and hrt:

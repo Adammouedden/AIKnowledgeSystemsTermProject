@@ -48,7 +48,7 @@ one, so a step's total credit is unchanged and only where it lands moves
 (\cref{fig:method}). The probe costs a teacher-forced scoring pass and no generation. In a study on
 ALFWorld with full fine-tuning of Qwen2.5-1.5B-Instruct inside the authors' own training stack
 (verl-agent~\cite{feng2025gigpo,sheng2025hybridflow}), with every method evaluated on the same 128
-held-out games and compared game by game, probe-weighted credit reaches the highest final success of
+held-out games and compared game by game, COMMIT reaches the highest final success of
 any arm. Our budget is about 6\% of GACA's, one seed per arm; at that budget no difference between
 methods is statistically resolved, and we report it as such.
 
@@ -57,7 +57,7 @@ methods is statistically resolved, and we report it as such.
 \item A counterfactual measurement of where decisions are made inside agent reasoning, and evidence
   that the commitment probe tracks it while entropy and NLL do not and attention only weakly
   does (\cref{sec:measure}).
-\item Probe-weighted token credit: a critic-free redistribution of step-level advantage over tokens,
+\item COMMIT (COMMItment-weighted Token credit): a critic-free redistribution of step-level advantage over tokens,
   compatible with GRPO, GiGPO and GACA (\cref{sec:method}).
 \item A budget-matched, game-paired comparison of GRPO, GACA and five treatments on ALFWorld, with
   negative results reported (\cref{sec:results}), and a measurement that GACA's criticality score is
@@ -70,7 +70,7 @@ methods is statistically resolved, and we report it as such.
 \caption{\textbf{Credit at three granularities.} GRPO (left) gives every token of a trajectory one
 episode-level advantage. GiGPO and GACA (middle) give each environment step its own advantage, mixing
 an anchor-state step contrast $\Ast_t$ with the episode advantage $\Aep$ by a weight $\lambda_t$. All
-tokens of the step's response still share it. Probe-weighted credit (right) keeps the step advantage
+tokens of the step's response still share it. COMMIT (right) keeps the step advantage
 and redistributes it over the response: the commitment probe $q(j)$ scores how likely the eventual
 action is after the first $j$ tokens, and each segment's credit is proportional to how much $q$ rises
 across it (weights clipped to $[0.25, 4]$ and renormalized to mean one).}

@@ -192,7 +192,7 @@ footer { margin-top: 14px; font-size: 12px; color: var(--faint); max-width: 100c
 "use strict";
 const D = JSON.parse(document.getElementById("trace").textContent);
 const M = D.meta, TR = D.trajs, G = TR.length;
-const OURS = "GACA + probe";      // display name of our estimator; rename here
+const OURS = "COMMIT";      // display name of our estimator; rename here
 const METHODS = [
   { key: "grpo", name: "GRPO", color: "--grpo" },
   { key: "gigpo", name: "GiGPO", color: "--gigpo" },
@@ -242,7 +242,7 @@ const SRC = [
   { n: 14, code: "c[i,t] = H[i,t] / mean_t H[i,·]", cm: "  # criticality" },
   { n: 15, code: "λ[i,t] = gate(c[i,t])", cm: `  # λ0=${M.lam0}, α=β=${M.alpha}` },
   { n: 16, code: "A_GACA = λ·A_S + (1 − λ)·A_E", cm: "" },
-  { n: 17, code: "q(c) = π_θ(a* | s, a[:c], '</think><action>')", cm: `  # every ${M.probe_every} tok`, stage: "Probe (ours)", c: "--ours" },
+  { n: 17, code: "q(c) = π_θ(a* | s, a[:c], '</think><action>')", cm: `  # every ${M.probe_every} tok`, stage: "COMMIT (ours)", c: "--ours" },
   { n: 18, code: "w[j] ∝ q(c_k+1) − q(c_k)   for j in segment k", cm: `  # clip [${M.clip}], mean 1` },
   { n: 19, code: "A_ours[t,j] = A_GACA[t] · w[t,j]", cm: "" },
   { n: 20, code: "loss = −mean_j ρ[t,j]·A[t,j] + β·KL", cm: "  # PPO-clip update", stage: "Update", c: "--muted" },
@@ -478,17 +478,17 @@ function renderWatch() {
     add("GACA", "λ_t", l >= 15, f(s.lam, 3), s.c >= 1 ? `${M.lam0}·(1 + ${M.alpha}·(${f(s.c, 3)} − 1))` : `${M.lam0}·(1 − ${M.beta}·(1 − ${f(s.c, 3)}))`);
     add("GACA", "A_GACA", l >= 16, sgn(s.A_gaca, 3), `${f(s.lam, 3)}·${sgn(s.A_st, 3)} + ${f(1 - s.lam, 3)}·${sgn(s.A_ep, 3)}`);
     const p = s.probe;
-    add("Probe (ours)", "q(0) → q(<action>)", l >= 17 && !!p, p ? `${f(p.q[0], 3)} → ${f(p.q[p.q.length - 1], 3)}` : "–", p ? `${p.cuts.length} cuts; the reasoning raised the chosen action's probability by ${f(p.q[p.q.length - 1] - p.q[0], 3)}` : "");
+    add("COMMIT (ours)", "q(0) → q(<action>)", l >= 17 && !!p, p ? `${f(p.q[0], 3)} → ${f(p.q[p.q.length - 1], 3)}` : "–", p ? `${p.cuts.length} cuts; the reasoning raised the chosen action's probability by ${f(p.q[p.q.length - 1] - p.q[0], 3)}` : "");
     const wmin = Math.min(...s.w), wmax = Math.max(...s.w);
-    add("Probe (ours)", "w range", l >= 18, `${f(wmin)} – ${f(wmax)}`, p ? "mean 1 over the response, so the step's total credit is unchanged" : "no probe: uniform");
+    add("COMMIT (ours)", "w range", l >= 18, `${f(wmin)} – ${f(wmax)}`, p ? "mean 1 over the response, so the step's total credit is unchanged" : "no probe: uniform");
     const amin = Math.min(...s.A_ours), amax = Math.max(...s.A_ours);
-    add("Probe (ours)", "A_ours[t,j]", l >= 19, `${sgn(amin)} … ${sgn(amax)}`, `${sgn(s.A_gaca, 3)} × w[j]`);
+    add("COMMIT (ours)", "A_ours[t,j]", l >= 19, `${sgn(amin)} … ${sgn(amax)}`, `${sgn(s.A_gaca, 3)} × w[j]`);
     add("Update", "ρ at first minibatch", l >= 20, "1.000", "π_θ = π_old before the first update, so ∇loss ∝ −Σ_j A[t,j] ∇log π(a_j)");
   }
   const prev = S.prevWatch, now = {};
   let grp = "", h = "";
   for (const w of W) {
-    if (w.grp !== grp) { grp = w.grp; const m = { GRPO: "--grpo", GiGPO: "--gigpo", GACA: "--gaca", "Probe (ours)": "--ours" }[grp]; h += `<div class="wgroup">${m ? `<span class="dot" style="background:var(${m})"></span>` : ""}${grp}</div>`; }
+    if (w.grp !== grp) { grp = w.grp; const m = { GRPO: "--grpo", GiGPO: "--gigpo", GACA: "--gaca", "COMMIT (ours)": "--ours" }[grp]; h += `<div class="wgroup">${m ? `<span class="dot" style="background:var(${m})"></span>` : ""}${grp}</div>`; }
     const key = w.nm, val = w.ok ? w.v : null; now[key] = val;
     const fresh = w.ok && prev[key] === null;
     h += `<div class="w${w.ok ? "" : " na"}${fresh ? " fresh" : ""}"><span class="nm">${esc(w.nm)}</span><span class="v">${w.ok ? esc(w.v) : "not set"}</span><span class="f">${esc(w.fm || "")}</span></div>`;
@@ -577,7 +577,7 @@ document.addEventListener("keydown", (e) => {
 
 // ---------- header
 const wins = TR.filter((t) => t.won).length;
-$("sub").innerHTML = `One training iteration of <b>${esc(M.model)}</b> (Qwen2.5-1.5B-Instruct, GACA + probe, final weights) on ALFWorld: ` +
+$("sub").innerHTML = `One training iteration of <b>${esc(M.model)}</b> (Qwen2.5-1.5B-Instruct trained with COMMIT, final weights) on ALFWorld: ` +
   `<b>${G}</b> rollouts of the task “${esc(M.task)}”, sampled at temperature ${M.temperature}; <b>${wins}/${G}</b> solved it. ` +
   `Every number below was computed by the project's own advantage code on these rollouts.`;
 $("methods").innerHTML = METHODS.map((m) => `<span><span class="dot" style="background:var(${m.color})"></span>${esc(m.name)}</span>`).join("");

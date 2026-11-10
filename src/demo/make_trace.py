@@ -1,4 +1,4 @@
-"""Record one full RL iteration of the trained GACA + probe policy for the demo UI.
+"""Record one full RL iteration of the trained COMMIT policy (GACA step advantage + commitment-weighted token credit) for the demo UI.
 
 One ALFWorld task, a group of G rollouts at the training temperature, then
 everything the trainer computes from them: rewards, returns, the GRPO, GiGPO,
@@ -6,7 +6,7 @@ GACA and probe-weighted (ours) advantages, and the per-token credit. All the
 estimator math goes through src/advantages.py, the same code the training runs
 called, so the numbers in the demo are the numbers training would use.
 
-    python src/demo/make_trace.py --model models/ckpt/gaca_probe_s1 --out src/demo/trace.json
+    python src/demo/make_trace.py --model models/ckpt/commit_s1 --out src/demo/trace.json
     python src/demo/make_trace.py --device cpu --group 2 --max-steps 2 ...   # plumbing smoke test
 """
 
@@ -182,7 +182,7 @@ def advantages(trajs):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--model", default="models/ckpt/gaca_probe_s1")
+    ap.add_argument("--model", default="models/ckpt/commit_s1")
     ap.add_argument("--out", default="src/demo/trace.json")
     ap.add_argument("--device", default="cuda")
     ap.add_argument("--group", type=int, default=8)

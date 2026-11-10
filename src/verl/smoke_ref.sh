@@ -7,7 +7,7 @@ TRAIN_BS=4 VAL_BS=16 STEPS=1 TEST_FREQ=100 VAL_BEFORE=False \
 /workspace/verl-agent/.venv/bin/ray stop --force > /dev/null 2>&1
 if grep -q "probe/rows" src/runs/verl/ref_smoke/train.log && ! grep -q "Error executing" src/runs/verl/ref_smoke/train.log; then
   echo "[$(date +%T)] ref-scorer smoke passed" >> src/runs/verl/arms.log
-  echo gaca_probe_ref >> src/runs/verl/queue.txt
+  echo commit_ref >> src/runs/verl/queue.txt
 else
   echo "[$(date +%T)] ref-scorer smoke FAILED" >> src/runs/verl/arms.log
 fi
