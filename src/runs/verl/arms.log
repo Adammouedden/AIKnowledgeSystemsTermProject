@@ -29,3 +29,4 @@
 [23:06:49] ref-scorer smoke passed
 [23:09:00] queue -> gaca_probe_ref
 [23:09:00] start gaca_probe_ref (gaca, rel=none)
+[04:39:38] killed gaca_probe_ref at iteration 33/34 (user: project deadline); to be restarted from scratch later
