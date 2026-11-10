@@ -1007,6 +1007,7 @@ Queue, in order, each 34 iterations like every other arm:
 3. `commit_ds`: COMMIT plus DAPO dynamic sampling (verl-agent's `algorithm.filter_groups`: groups whose 8
    rollouts all get the same reward carry zero advantage and are dropped and refilled, up to 3 rollout
    passes). At ~5% base success most groups have no win, so most of each batch carries no gradient.
-   Launched at lr 1e-6 unless `commit_lr3` wins first, in which case its lr is raised before it starts.
+   Launched at lr 3e-6 (user decision after `commit_lr3`: 23.4% vs 20.3%, ahead at every evaluation; no
+   time for extra seeds), so it stacks on the best configuration so far.
 Caveat for reading these: one 128-game evaluation has a standard deviation of ~3.4 points near 18%, so
 a gain smaller than ~5 points from one seed is not distinguishable from noise.

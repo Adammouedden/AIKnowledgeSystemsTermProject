@@ -41,7 +41,7 @@ VERL_ARMS = [  # (dir, label, role, what differs from GACA/GRPO)
     ("commit_lr3", "COMMIT, lr 3e-6", "hill-climb", "COMMIT (as commit_s1) with learning rate 3e-6 instead of 1e-6"),
     ("gaca_lr3", "GACA, lr 3e-6", "hill-climb", "GACA with learning rate 3e-6 instead of 1e-6"),
     ("gaca_actw", "GACA + action-span weight", "hill-climb", "probe-free token weights: <action> span 2x, reasoning 1x, mean 1"),
-    ("commit_ds", "COMMIT + dynamic sampling", "hill-climb", "COMMIT, groups with all-equal rewards dropped and refilled (DAPO), up to 3 passes"),
+    ("commit_ds", "COMMIT, lr 3e-6 + dynamic sampling", "hill-climb", "COMMIT at lr 3e-6, groups with all-equal rewards dropped and refilled (DAPO), up to 3 passes"),
 ]
 VERL_COLORS = {"grpo": "#2a78d6", "gaca": "#eb6834", "gaca_msize": "#1baf7a", "gaca_loo": "#eda100",
                "commit_s1": "#e87ba4", "commit_c05": "#e87ba4", "commit_pos": "#e87ba4",

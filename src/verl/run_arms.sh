@@ -27,7 +27,7 @@ for arm in $ARMS; do
     commit_lr3) m=gaca; r=none; lr=3e-6; extra="algorithm.gaca.token_mode=probe env.seed=1 +env.val_seed=1000" ;;  # COMMIT (as commit_s1) at lr 3e-6
     gaca_lr3)   m=gaca; r=none; lr=3e-6 ;;                                                                         # GACA at lr 3e-6
     gaca_actw)  m=gaca; r=none; extra="algorithm.gaca.token_mode=action algorithm.gaca.action_weight=2.0" ;;      # probe-free: <action> span 2x, reasoning 1x
-    commit_ds)  m=gaca; r=none; extra="algorithm.gaca.token_mode=probe env.seed=1 +env.val_seed=1000 algorithm.filter_groups.enable=True algorithm.filter_groups.max_num_gen_batches=3" ;;  # COMMIT + DAPO dynamic sampling (drop all-same-reward groups, up to 3 rollout passes)
+    commit_ds)  m=gaca; r=none; lr=3e-6; extra="algorithm.gaca.token_mode=probe env.seed=1 +env.val_seed=1000 algorithm.filter_groups.enable=True algorithm.filter_groups.max_num_gen_batches=3" ;;  # COMMIT at lr 3e-6 + DAPO dynamic sampling (drop all-same-reward groups, up to 3 rollout passes)
     *) echo "unknown arm $arm"; continue ;;
   esac
   if grep -q "Training Progress: 100%" $ROOT/src/runs/verl/$arm/train.log 2>/dev/null; then
