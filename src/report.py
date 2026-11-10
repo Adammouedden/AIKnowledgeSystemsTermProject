@@ -37,13 +37,20 @@ VERL_ARMS = [  # (dir, label, role, what differs from GACA/GRPO)
     ("commit_c05", "COMMIT, clip [0.5, 2]", "treatment", "probe with token weights clipped to [0.5, 2] instead of [0.25, 4]"),
     ("commit_pos", "COMMIT, positive A only", "treatment", "probe weights only on steps with a positive advantage; others uniform"),
     ("commit_ref", "COMMIT, frozen-ref scorer", "treatment", "probe scored by the frozen reference model instead of the policy"),
+    # hill-climbing queue (2026-11-10, DECISIONS.md)
+    ("commit_lr3", "COMMIT, lr 3e-6", "hill-climb", "COMMIT (as commit_s1) with learning rate 3e-6 instead of 1e-6"),
+    ("gaca_lr3", "GACA, lr 3e-6", "hill-climb", "GACA with learning rate 3e-6 instead of 1e-6"),
+    ("gaca_actw", "GACA + action-span weight", "hill-climb", "probe-free token weights: <action> span 2x, reasoning 1x, mean 1"),
+    ("commit_ds", "COMMIT + dynamic sampling", "hill-climb", "COMMIT, groups with all-equal rewards dropped and refilled (DAPO), up to 3 passes"),
 ]
 VERL_COLORS = {"grpo": "#2a78d6", "gaca": "#eb6834", "gaca_msize": "#1baf7a", "gaca_loo": "#eda100",
                "commit_s1": "#e87ba4", "commit_c05": "#e87ba4", "commit_pos": "#e87ba4",
-               "commit_ref": "#e87ba4"}
+               "commit_ref": "#e87ba4", "commit_lr3": "#e87ba4", "commit_ds": "#e87ba4",
+               "gaca_lr3": "#eb6834", "gaca_actw": "#eb6834"}
 # validated categorical slots 1-5, fixed order; probe variants keep the probe's hue (colour follows the
 # method) and are told apart by line style + legend + direct labels
-VERL_STYLE = {"commit_c05": "--", "commit_pos": "-.", "commit_ref": (0, (1, 1, 4, 1))}
+VERL_STYLE = {"commit_c05": "--", "commit_pos": "-.", "commit_ref": (0, (1, 1, 4, 1)),
+              "commit_lr3": (0, (6, 2)), "commit_ds": ":", "gaca_lr3": (0, (6, 2)), "gaca_actw": ":"}
 
 
 def _verl_metrics(path):

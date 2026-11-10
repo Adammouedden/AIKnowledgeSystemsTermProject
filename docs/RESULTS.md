@@ -27,6 +27,9 @@ is 0.78 points.
 | COMMIT | treatment | GACA, step advantage spread over tokens by the commitment probe (training seed 1) | done | 34 | 5.19 | **20.3%** (26/128) | 20.3% (34) |
 | COMMIT, clip [0.5, 2] | treatment | probe with token weights clipped to [0.5, 2] instead of [0.25, 4] | done | 34 | 4.96 | **14.1%** (18/128) | 14.1% (34) |
 | COMMIT, positive A only | treatment | probe weights only on steps with a positive advantage; others uniform | done | 34 | 4.98 | **5.5%** (7/128) | 6.2% (20) |
+| COMMIT, lr 3e-6 | hill-climb | COMMIT (as commit_s1) with learning rate 3e-6 instead of 1e-6 | done | 34 | 4.66 | **23.4%** (30/128) | 23.4% (34) |
+| GACA, lr 3e-6 | hill-climb | GACA with learning rate 3e-6 instead of 1e-6 | done | 34 | 3.63 | **13.3%** (17/128) | 13.3% (34) |
+| GACA + action-span weight | hill-climb | probe-free token weights: <action> span 2x, reasoning 1x, mean 1 | running | 2 | 0.23 | **4.7%** (6/128) | 4.7% (0) |
 
 Final = the last evaluation (the end-of-training checkpoint). Best is reported for comparison with the
 paper's best-checkpoint convention but is optimistic: it picks the maximum over five noisy evaluations.
@@ -44,6 +47,9 @@ paper's best-checkpoint convention but is optimistic: it picks the maximum over 
 | COMMIT | 4.7 | 8.6 | 12.5 | 14.8 | 20.3 (34) |
 | COMMIT, clip [0.5, 2] | 4.7 | 5.5 | 9.4 | 7.8 | 14.1 (34) |
 | COMMIT, positive A only | 4.7 | 2.3 | 6.2 | 4.7 | 5.5 (34) |
+| COMMIT, lr 3e-6 | 4.7 | 11.7 | 18.0 | 20.3 | 23.4 (34) |
+| GACA, lr 3e-6 | 4.7 | 3.1 | 6.2 | 7.0 | 13.3 (34) |
+| GACA + action-span weight | 4.7 |  |  |  |  |
 
 ## Paired comparison of final checkpoints
 
@@ -59,27 +65,44 @@ the other does not. The base model is each arm's own iteration-0 evaluation.
 | base model vs COMMIT | 6 | 26 | 6 | 26 | 0 | 0.001 |
 | base model vs COMMIT, clip [0.5, 2] | 6 | 18 | 5 | 17 | 1 | 0.017 |
 | base model vs COMMIT, positive A only | 6 | 7 | 6 | 7 | 0 | 1.000 |
+| base model vs COMMIT, lr 3e-6 | 6 | 30 | 4 | 28 | 2 | 0.000 |
+| base model vs GACA, lr 3e-6 | 6 | 17 | 5 | 16 | 1 | 0.027 |
 | GRPO vs GACA | 18 | 24 | 7 | 13 | 11 | 0.263 |
 | GRPO vs GACA + m_z | 18 | 16 | 13 | 11 | 5 | 0.839 |
 | GRPO vs GACA-LOO | 18 | 15 | 11 | 8 | 7 | 0.648 |
 | GRPO vs COMMIT | 18 | 26 | 8 | 16 | 10 | 0.152 |
 | GRPO vs COMMIT, clip [0.5, 2] | 18 | 18 | 13 | 13 | 5 | 1.000 |
 | GRPO vs COMMIT, positive A only | 18 | 7 | 16 | 5 | 2 | 0.027 |
+| GRPO vs COMMIT, lr 3e-6 | 18 | 30 | 8 | 20 | 10 | 0.036 |
+| GRPO vs GACA, lr 3e-6 | 18 | 17 | 11 | 10 | 7 | 1.000 |
 | GACA vs GACA + m_z | 24 | 16 | 17 | 9 | 7 | 0.169 |
 | GACA vs GACA-LOO | 24 | 15 | 14 | 5 | 10 | 0.064 |
 | GACA vs COMMIT | 24 | 26 | 14 | 16 | 10 | 0.856 |
 | GACA vs COMMIT, clip [0.5, 2] | 24 | 18 | 16 | 10 | 8 | 0.327 |
 | GACA vs COMMIT, positive A only | 24 | 7 | 20 | 3 | 4 | 0.000 |
+| GACA vs COMMIT, lr 3e-6 | 24 | 30 | 12 | 18 | 12 | 0.362 |
+| GACA vs GACA, lr 3e-6 | 24 | 17 | 12 | 5 | 12 | 0.143 |
 | GACA + m_z vs GACA-LOO | 16 | 15 | 10 | 9 | 6 | 1.000 |
 | GACA + m_z vs COMMIT | 16 | 26 | 6 | 16 | 10 | 0.052 |
 | GACA + m_z vs COMMIT, clip [0.5, 2] | 16 | 18 | 8 | 10 | 8 | 0.815 |
 | GACA + m_z vs COMMIT, positive A only | 16 | 7 | 11 | 2 | 5 | 0.022 |
+| GACA + m_z vs COMMIT, lr 3e-6 | 16 | 30 | 6 | 20 | 10 | 0.009 |
+| GACA + m_z vs GACA, lr 3e-6 | 16 | 17 | 8 | 9 | 8 | 1.000 |
 | GACA-LOO vs COMMIT | 15 | 26 | 8 | 19 | 7 | 0.052 |
 | GACA-LOO vs COMMIT, clip [0.5, 2] | 15 | 18 | 8 | 11 | 7 | 0.648 |
 | GACA-LOO vs COMMIT, positive A only | 15 | 7 | 13 | 5 | 2 | 0.096 |
+| GACA-LOO vs COMMIT, lr 3e-6 | 15 | 30 | 9 | 24 | 6 | 0.014 |
+| GACA-LOO vs GACA, lr 3e-6 | 15 | 17 | 10 | 12 | 5 | 0.832 |
 | COMMIT vs COMMIT, clip [0.5, 2] | 26 | 18 | 16 | 8 | 10 | 0.152 |
 | COMMIT vs COMMIT, positive A only | 26 | 7 | 22 | 3 | 4 | 0.000 |
+| COMMIT vs COMMIT, lr 3e-6 | 26 | 30 | 9 | 13 | 17 | 0.523 |
+| COMMIT vs GACA, lr 3e-6 | 26 | 17 | 15 | 6 | 11 | 0.078 |
 | COMMIT, clip [0.5, 2] vs COMMIT, positive A only | 18 | 7 | 14 | 3 | 4 | 0.013 |
+| COMMIT, clip [0.5, 2] vs COMMIT, lr 3e-6 | 18 | 30 | 6 | 18 | 12 | 0.023 |
+| COMMIT, clip [0.5, 2] vs GACA, lr 3e-6 | 18 | 17 | 9 | 8 | 9 | 1.000 |
+| COMMIT, positive A only vs COMMIT, lr 3e-6 | 7 | 30 | 1 | 24 | 6 | 0.000 |
+| COMMIT, positive A only vs GACA, lr 3e-6 | 7 | 17 | 2 | 12 | 5 | 0.013 |
+| COMMIT, lr 3e-6 vs GACA, lr 3e-6 | 30 | 17 | 17 | 4 | 13 | 0.007 |
 
 ### Final success by task type
 
@@ -93,6 +116,8 @@ the other does not. The base model is each arm's own iteration-0 evaluation.
 | COMMIT | 4/9 | 11/40 | 6/23 | 4/18 | 0/11 | 1/27 |
 | COMMIT, clip [0.5, 2] | 2/9 | 9/40 | 4/23 | 3/18 | 0/11 | 0/27 |
 | COMMIT, positive A only | 0/9 | 4/40 | 2/23 | 1/18 | 0/11 | 0/27 |
+| COMMIT, lr 3e-6 | 4/9 | 15/40 | 8/23 | 1/18 | 0/11 | 2/27 |
+| GACA, lr 3e-6 | 3/9 | 9/40 | 4/23 | 1/18 | 0/11 | 0/27 |
 
 ## Training diagnostics (mean over iterations)
 
@@ -105,6 +130,9 @@ the other does not. The base model is each arm's own iteration-0 evaluation.
 | COMMIT | 550 | 151 | 99.2% | 91 | 0.034 | 0.36 | 0.090 | 0.96 | 0.19 -> 0.14 | -- |
 | COMMIT, clip [0.5, 2] | 525 | 131 | 99.1% | 81 | 0.021 | 0.37 | 0.092 | 0.96 | 0.20 -> 0.18 | 0.11 -> 0.10 |
 | COMMIT, positive A only | 527 | 137 | 99.2% | 78 | 0.059 | 0.36 | 0.089 | 0.96 | 0.20 -> 0.19 | 0.11 -> 0.09 |
+| COMMIT, lr 3e-6 | 493 | 127 | 99.3% | 75 | 0.123 | 0.39 | 0.098 | 0.95 | 0.18 -> 0.26 | 0.11 -> 0.09 |
+| GACA, lr 3e-6 | 384 | -- | 99.3% | 79 | 0.118 | 0.36 | 0.091 | 0.96 | -- | -- |
+| GACA + action-span weight | 410 | -- | 90.1% | 97 | 0.005 | 0.39 | 0.097 | 0.96 | -- | -- |
 
 Paper Table 7 (ALFWorld): c_t std 0.31, lambda std 0.08, clamped < 0.01, step coverage 0.86.
 q(0): probability of the eventual action before any reasoning (probe arms). CIR: Causal Importance of
