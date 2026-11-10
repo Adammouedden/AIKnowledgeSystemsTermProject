@@ -468,7 +468,7 @@ function renderWatch() {
     const nxt = tr.steps[t + 1];
     add("Returns", "ĝ_t", l >= 7, f(s.g_hat, 3), nxt ? `${f(s.reward, 1)} + ${M.gamma}·${f(nxt.g_hat, 3)}` : `${f(s.reward, 1)} (last step)`);
     add("GRPO", "μ, σ", l >= 8, `${f(M.ret_mean)}, ${f(M.ret_std)}`, `over ${M.n_rows} step rows; each row carries its trajectory's R`);
-    add("GRPO", "A_E", l >= 9, sgn(s.A_ep, 3), `(${f(tr.ret)} − ${f(M.ret_mean)}) / ${f(M.ret_std)}`);
+    add("GRPO", "A_E", l >= 9, sgn(s.A_ep, 3), `(${f(tr.ret)} − ${M.ret_mean < 0 ? "(" + f(M.ret_mean) + ")" : f(M.ret_mean)}) / ${f(M.ret_std)}`);
     const z = anchorStats[s.anchor];
     add("GiGPO", "m_z", l >= 10, String(s.m_z), z.m > 1 ? `${z.m} visits to this state across the group` : "singleton: no other visit to this state");
     add("GiGPO", "A_S", l >= 11, sgn(s.A_st, 3), z.m > 1 ? `(${f(s.g_hat, 3)} − ${f(z.mu, 3)}) / ${f(z.sd, 3)}  (μ_z, σ_z over the ${z.m} visits)` : `fallback: (${f(s.g_hat, 3)} − ${f(gMu, 3)}) / ${f(gSd, 3)}  (group step returns)`);
