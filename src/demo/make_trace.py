@@ -32,13 +32,13 @@ CLOSE = "</think>\n<action>"
 class Gen:
     """Sampling backend: vLLM on GPU, HF generate on CPU (smoke tests only)."""
 
-    def __init__(self, model, device, seed, temperature):
+    def __init__(self, model, device, seed, temperature, gpu_util=0.45):
         from transformers import AutoTokenizer
         self.tok = AutoTokenizer.from_pretrained(model)
         self.device, self.temperature = device, temperature
         if device == "cuda":
             from vllm import LLM, SamplingParams
-            self.llm = LLM(model, gpu_memory_utilization=0.45, max_model_len=4096, seed=seed, enable_prefix_caching=True)
+            self.llm = LLM(model, gpu_memory_utilization=gpu_util, max_model_len=4096, seed=seed, enable_prefix_caching=True)
             self.sp = SamplingParams(temperature=temperature, top_p=1.0, top_k=-1, max_tokens=512)
         else:
             import torch
@@ -61,8 +61,9 @@ class Gen:
         return res
 
 
-def rollout_group(gen, gamefile, G, max_steps):
-    """G rollouts of one game, stepped in lockstep like the trainer's env batch."""
+def rollout_group(gen, gamefile, G, max_steps, on_step=None):
+    """G rollouts of one game, stepped in lockstep like the trainer's env batch.
+    on_step(t, [(traj, step_record), ...]) is called after every lockstep round (live demo)."""
     tok = gen.tok
     envs = [E.AlfEnv(gamefile, max_steps) for _ in range(G)]
     for e in envs:
@@ -74,6 +75,7 @@ def rollout_group(gen, gamefile, G, max_steps):
         msgs = {i: E.build_think_prompt(envs[i], hist[i]) for i in alive}
         ids = {i: tok.apply_chat_template(msgs[i], tokenize=True, add_generation_prompt=True) for i in alive}
         outs = gen.generate([ids[i] for i in alive])
+        round_recs = []
         for i, resp in zip(list(alive), outs):
             e = envs[i]
             text = tok.decode(resp, skip_special_tokens=True)
@@ -81,6 +83,7 @@ def rollout_group(gen, gamefile, G, max_steps):
             rec = {"t": e.t, "obs": e.obs, "task": e.task, "admissible": list(e.admissible),
                    "anchor": hashlib.md5(e.obs.encode()).hexdigest()[:12],  # verl-agent anchors on the text observation
                    "prompt": msgs[i][0]["content"], "prompt_ids": ids[i], "resp_ids": resp, "text": text,
+                   "tokens": [tok.decode([x]) for x in resp],
                    "action": act, "valid": bool(valid)}
             ob, done, won, _ = e.step(act if valid else "noop")
             rec["next_obs"] = ob
@@ -88,18 +91,24 @@ def rollout_group(gen, gamefile, G, max_steps):
             rec["done"] = bool(done)
             trajs[i]["steps"].append(rec)
             hist[i].append((act, ob))
+            round_recs.append((i, rec))
             if done:
                 trajs[i]["won"] = bool(won)
                 alive.remove(i)
+        if on_step:
+            on_step(round_recs[0][1]["t"], round_recs)
     return trajs
 
 
-def score(tok, model, device, trajs, every=16, clip=(0.25, 4.0)):
-    """Per-token log-probs (NLL for GACA) and the commitment probe for every step."""
+def score(tok, model, device, trajs, every=16, clip=(0.25, 4.0), hf=None, progress=None):
+    """Per-token log-probs (NLL for GACA) and the commitment probe for every step.
+    `hf` reuses an already loaded model (live server); `progress(done, total)` reports per step."""
     import torch
     from transformers import AutoModelForCausalLM
-    dt = torch.bfloat16 if device == "cuda" else torch.float32
-    hf = AutoModelForCausalLM.from_pretrained(model, dtype=dt).to(device).eval()
+    if hf is None:
+        dt = torch.bfloat16 if device == "cuda" else torch.float32
+        hf = AutoModelForCausalLM.from_pretrained(model, dtype=dt).to(device).eval()
+    total, k = sum(len(tr["steps"]) for tr in trajs), 0
     close = tok(CLOSE, add_special_tokens=False).input_ids
 
     def logp(ctx, tgt):
@@ -128,7 +137,9 @@ def score(tok, model, device, trajs, every=16, clip=(0.25, 4.0)):
             else:
                 s["probe"] = None
                 s["w"] = [1.0] * L
-    del hf
+            k += 1
+            if progress:
+                progress(k, total)
 
 
 def _act_start(tok, ids):

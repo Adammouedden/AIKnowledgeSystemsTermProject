@@ -140,6 +140,10 @@ details.prompt pre { white-space: pre-wrap; font: 11.5px/1.5 var(--mono); backgr
 .console { font: 11.5px/1.55 var(--mono); background: var(--sunk); border: 1px solid var(--line); border-radius: 6px; padding: 8px; max-height: 260px; overflow: auto; white-space: pre-wrap; color: var(--muted); }
 .console .last { color: var(--ink); }
 .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; flex: none; }
+.live { margin-bottom: 12px; }
+.live-row { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; }
+.live-status { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; font-size: 13px; color: var(--muted); }
+.live-status progress { flex: 1 1 160px; accent-color: var(--ours); height: 8px; }
 footer { margin-top: 14px; font-size: 12px; color: var(--faint); max-width: 100ch; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
@@ -159,6 +163,18 @@ footer { margin-top: 14px; font-size: 12px; color: var(--faint); max-width: 100c
   <button class="btn" id="b-over" title="Step over: next environment step t (Shift+→)"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 10a6 6 0 0 1 11-3"/><path d="M13 3v4H9"/><circle cx="8" cy="13" r="1.3" fill="currentColor"/></svg>Next t <kbd>⇧→</kbd></button>
   <button class="btn primary" id="b-run" title="Continue to the next breakpoint (Space)"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 2h2v12H2zM6 2v12l8-6z"/></svg><span>Continue</span> <kbd>Space</kbd></button>
   <div class="scrub"><input type="range" id="scrub" min="0" max="0" value="0" aria-label="Program position"><span class="pc" id="pc"></span></div>
+</div>
+
+<div class="pane live" id="live" hidden>
+  <div class="panehead"><h2>Live run on the GPU</h2><span class="hint" id="lv-health"></span></div>
+  <div class="live-row">
+    <label class="ctl" for="lv-game">Task <select id="lv-game"><option value="-1">Random task</option></select></label>
+    <label class="ctl" for="lv-g">Rollouts <select id="lv-g"><option>4</option><option selected>8</option></select></label>
+    <label class="ctl" for="lv-steps">Max steps <select id="lv-steps"><option>15</option><option selected>30</option><option>50</option></select></label>
+    <label class="ctl" for="lv-temp">Temperature <select id="lv-temp"><option>0.4</option><option selected>1.0</option></select></label>
+    <button class="btn primary" id="lv-run">Run live</button>
+  </div>
+  <div class="live-status"><span id="lv-status">Showing the recorded run. Press Run live to sample a new group with the COMMIT checkpoint.</span><progress id="lv-prog" max="1" value="0" hidden></progress></div>
 </div>
 
 <div class="layout">
@@ -187,11 +203,11 @@ footer { margin-top: 14px; font-size: 12px; color: var(--faint); max-width: 100c
 </div>
 <footer id="foot"></footer>
 
+<script>/*LIVE*/</script>
 <script id="trace" type="application/json">/*TRACE*/</script>
 <script>
 "use strict";
-const D = JSON.parse(document.getElementById("trace").textContent);
-const M = D.meta, TR = D.trajs, G = TR.length;
+let D, M, TR, G, Tmax, EVENTS, SRC, anchorStats, gMu, gSd, SCORED = true;
 const OURS = "COMMIT";      // display name of our estimator; rename here
 const METHODS = [
   { key: "grpo", name: "GRPO", color: "--grpo" },
@@ -203,10 +219,13 @@ const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const f = (x, d = 2) => (x === undefined || x === null || Number.isNaN(x)) ? "–" : (Math.abs(x) < 5e-13 ? 0 : x).toFixed(d);
 const sgn = (x, d = 2) => (x >= 0 ? "+" : "−") + Math.abs(x).toFixed(d);
-const Tmax = Math.max(...TR.map((t) => t.steps.length));
+// ---------- load a trace (the recorded one, a live run in progress, or a finished live run)
+function load(data, scored) {
+D = data; M = D.meta; TR = D.trajs; G = TR.length; SCORED = scored;
+Tmax = Math.max(1, ...TR.map((t) => t.steps.length));
 
 // ---------- derived quantities shown in the watch panel (all checkable against the trace)
-TR.forEach((tr) => {
+if (SCORED) TR.forEach((tr) => {
   const h = tr.steps.map((s) => s.nll); tr.Hbar = h.reduce((a, b) => a + b, 0) / h.length;
   tr.steps.forEach((s) => {
     s.A_ours = s.w.map((w) => s.A_gaca * w);
@@ -214,18 +233,18 @@ TR.forEach((tr) => {
     if (s.probe) for (let j = s.probe.act_start; j < s.tokens.length; j++) s.isAct[j] = true;
   });
 });
-const anchorStats = {};
-for (const [a, rows] of Object.entries(M.anchor_groups)) {
+anchorStats = {};
+for (const [a, rows] of Object.entries(SCORED ? M.anchor_groups : {})) {
   const g = rows.map((r) => r[2]), m = g.length, mu = g.reduce((x, y) => x + y, 0) / m;
   const sd = m > 1 ? Math.sqrt(g.reduce((x, y) => x + (y - mu) ** 2, 0) / (m - 1)) : 0;
   anchorStats[a] = { m, mu, sd, rows };
 }
-const allG = TR.flatMap((t) => t.steps.map((s) => s.g_hat));
-const gMu = allG.reduce((a, b) => a + b, 0) / allG.length;
-const gSd = Math.sqrt(allG.reduce((a, b) => a + (b - gMu) ** 2, 0) / (allG.length - 1));
+const allG = SCORED ? TR.flatMap((t) => t.steps.map((s) => s.g_hat)) : [0, 0];
+gMu = allG.reduce((a, b) => a + b, 0) / allG.length;
+gSd = Math.sqrt(allG.reduce((a, b) => a + (b - gMu) ** 2, 0) / (allG.length - 1));
 
 // ---------- the program: the trainer as pseudo-code, one event per executed line
-const SRC = [
+SRC = [
   { n: 1, code: "task = sample_task()", cm: "  # one ALFWorld game", stage: "Rollout", c: "--muted" },
   { n: 2, code: `for t in 0, 1, … until all ${G} envs done:`, cm: "" },
   { n: 3, code: "  prompt[i] = template(task, history[i], obs[i])", cm: "" },
@@ -247,9 +266,12 @@ const SRC = [
   { n: 19, code: "A_ours[t,j] = A_GACA[t] · w[t,j]", cm: "" },
   { n: 20, code: "loss = −mean_j ρ[t,j]·A[t,j] + β·KL", cm: "  # PPO-clip update", stage: "Update", c: "--muted" },
 ];
-const EVENTS = [{ line: 1 }];
-for (let t = 0; t < Tmax; t++) for (const line of [3, 4, 5]) EVENTS.push({ line, t });
-for (let line = 6; line <= 20; line++) EVENTS.push({ line });
+EVENTS = [{ line: 1 }];
+const Tdone = SCORED ? Tmax : Math.max(0, ...TR.map((t) => t.steps.length));
+for (let t = 0; t < Tdone; t++) for (const line of [3, 4, 5]) EVENTS.push({ line, t });
+if (SCORED) for (let line = 6; line <= 20; line++) EVENTS.push({ line });
+}
+load(JSON.parse(document.getElementById("trace").textContent), true);
 const BP = new Set([6, 8, 10, 13, 17, 20]);
 
 // ---------- state
@@ -389,7 +411,7 @@ function renderFrame() {
       if (cuts.has(j)) h += `<span class="cut" title="cut at token ${j}: q = ${f(cuts.get(j), 3)}"><b>${f(cuts.get(j), 2)}</b></span>`;
       const bg = tokenBg(s, j, l);
       const tip = l >= 19 ? `A = ${f(s.A_ours[j], 3)} (w = ${f(s.w[j], 2)})` : l >= 18 ? `w = ${f(s.w[j], 2)}` : (l >= 13 ? `NLL = ${f(s.tok_nll[j], 2)}` : "");
-      h += `<span class="tk${s.isAct[j] ? " act" : ""}"${bg ? ` style="background:${bg}"` : ""}${tip ? ` title="${esc(tip)}"` : ""}>${esc(tk)}</span>`;
+      h += `<span class="tk${s.isAct && s.isAct[j] ? " act" : ""}"${bg ? ` style="background:${bg}"` : ""}${tip ? ` title="${esc(tip)}"` : ""}>${esc(tk)}</span>`;
     });
     resp = `<div class="resp" aria-label="Sampled response">${h}</div>`;
   }
@@ -464,7 +486,7 @@ function renderWatch() {
   add("Rollout", "a_t", s && seen(i, t, "resp"), s ? s.action : "", s && !s.valid ? "not admissible → treated as an invalid action" : "parsed from <action>…</action>");
   add("Rollout", "r_t", sv, s ? f(s.reward, 1) : "", s ? `${s.reward > 0 ? M.win_reward + " (solved)" : "0"}${s.valid ? "" : " − " + M.penalty + " (invalid)"}` : "");
   add("Returns", "R(τ)", l >= 6, f(tr.ret, 2), `Σ_t r over ${tr.steps.length} steps`);
-  if (s) {
+  if (s && SCORED) {
     const nxt = tr.steps[t + 1];
     add("Returns", "ĝ_t", l >= 7, f(s.g_hat, 3), nxt ? `${f(s.reward, 1)} + ${M.gamma}·${f(nxt.g_hat, 3)}` : `${f(s.reward, 1)} (last step)`);
     add("GRPO", "μ, σ", l >= 8, `${f(M.ret_mean)}, ${f(M.ret_std)}`, `over ${M.n_rows} step rows; each row carries its trajectory's R`);
@@ -575,14 +597,71 @@ document.addEventListener("keydown", (e) => {
   else if (e.key === "Home") { e.preventDefault(); stop(); go(0); }
 });
 
+
+// ---------- live mode (only when served by src/demo/server.py)
+function initLive() {
+  $("live").hidden = false;
+  fetch("api/games").then((r) => r.json()).then((gs) => {
+    $("lv-game").innerHTML += gs.map((g) => `<option value="${g.idx}">${esc(g.label)}</option>`).join("");
+  }).catch(() => {});
+  fetch("api/health").then((r) => r.json()).then((h) => { $("lv-health").textContent = `${h.model} loaded${h.busy ? " · busy" : " · ready"}`; }).catch(() => {});
+  $("lv-run").onclick = startLive;
+}
+function lvStatus(msg, prog) {
+  $("lv-status").textContent = msg;
+  const p = $("lv-prog"); p.hidden = prog === undefined; if (prog !== undefined) p.value = prog;
+}
+async function startLive() {
+  stop();
+  try { const h = await (await fetch("api/health")).json(); if (h.busy) return lvStatus("The GPU is busy with another run. Try again when it finishes."); }
+  catch (e) { return lvStatus("Cannot reach the live server."); }
+  const q = new URLSearchParams({ game: $("lv-game").value, group: $("lv-g").value, max_steps: $("lv-steps").value, temperature: $("lv-temp").value });
+  $("lv-run").disabled = true;
+  const es = new EventSource("api/run?" + q);
+  let live = null, total = 0;
+  const finish = () => { es.close(); $("lv-run").disabled = false; };
+  es.onmessage = (m) => {
+    const e = JSON.parse(m.data);
+    if (e.type === "start") {
+      live = { meta: { model: e.model, task: "", gamefile: e.label, group: e.group, temperature: e.temperature, gamma: 0.95, penalty: 0.1,
+                       win_reward: 10, lam0: 0.5, alpha: 0.5, beta: 0.5, probe_every: 16, clip: [0.25, 4] },
+               trajs: Array.from({ length: e.group }, (_, i) => ({ traj: i, steps: [], won: false })) };
+      S.sel = null; S.follow = 0; S.colorby = "auto"; S.prevWatch = {};
+      load(live, false); S.pc = 0; renderHeader(); render();
+      lvStatus(`${e.label}: sampling ${e.group} rollouts…`, 0);
+    } else if (e.type === "step") {
+      for (const st of e.steps) { live.trajs[st.traj].steps.push(st); live.meta.task = st.task; if (st.done) live.trajs[st.traj].won = st.won; }
+      load(live, false); S.pc = EVENTS.length - 1; renderHeader(); render();
+      const running = live.trajs.filter((t) => !(t.steps.length && t.steps[t.steps.length - 1].done)).length;
+      lvStatus(`t = ${e.t} · ${running} of ${live.trajs.length} rollouts still running · ${live.trajs.filter((t) => t.won).length} solved · ${e.elapsed}s`, Math.min(1, (e.t + 1) / +$("lv-steps").value));
+    } else if (e.type === "phase") {
+      total = e.steps;
+      lvStatus(`Rollouts finished: ${e.wins}/${live.trajs.length} solved in ${e.elapsed}s. Scoring ${e.steps} steps (token NLL + commitment probe)…`, 0);
+    } else if (e.type === "progress") {
+      lvStatus(`Scoring step ${e.done} of ${e.total} (token NLL + commitment probe)…`, e.done / e.total);
+    } else if (e.type === "done") {
+      load(e.trace, true); S.follow = firstWin(); S.sel = null; S.prevWatch = {};
+      S.pc = EVENTS.findIndex((x) => x.line === 6); renderHeader(); render();
+      lvStatus(`Done in ${e.elapsed}s. Press Space to continue through returns, GRPO, GiGPO, GACA and COMMIT.`);
+      finish();
+    } else if (e.type === "error") { lvStatus(`The run failed: ${e.message}`); finish(); }
+  };
+  es.onerror = () => { if (es.readyState !== EventSource.CLOSED) { lvStatus("Lost the connection to the live server."); finish(); } };
+}
+
 // ---------- header
+function renderHeader() {
 const wins = TR.filter((t) => t.won).length;
+if (!SCORED) { $("sub").innerHTML = `Live run of <b>${esc(M.model)}</b> on “${esc(M.task || M.gamefile)}”: sampling ${G} rollouts at temperature ${M.temperature}; ${wins} solved so far.`; return; }
 $("sub").innerHTML = `One training iteration of <b>${esc(M.model)}</b> (Qwen2.5-1.5B-Instruct trained with COMMIT, final weights) on ALFWorld: ` +
   `<b>${G}</b> rollouts of the task “${esc(M.task)}”, sampled at temperature ${M.temperature}; <b>${wins}/${G}</b> solved it. ` +
   `Every number below was computed by the project's own advantage code on these rollouts.`;
 $("methods").innerHTML = METHODS.map((m) => `<span><span class="dot" style="background:var(${m.color})"></span>${esc(m.name)}</span>`).join("");
 $("foot").textContent = `Advantages use group mean-and-std normalization over step rows, γ = ${M.gamma}, GACA gate λ0 = ${M.lam0}, α = β = ${M.alpha}; probe cuts every ${M.probe_every} tokens plus the <action> tag, weights clipped to [${M.clip}] and renormalized to mean 1. Model: ${M.model}.`;
+}
 matchMedia("(prefers-color-scheme: dark)").addEventListener("change", render);
 new MutationObserver(render).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+renderHeader();
 render();
+if (window.LIVE) initLive();
 </script>
