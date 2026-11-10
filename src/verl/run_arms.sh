@@ -12,6 +12,12 @@ export TRAIN_BS=${TRAIN_BS:-4} VAL_BS=${VAL_BS:-128} STEPS=${STEPS:-34} TEST_FRE
 for arm in $ARMS; do
   # one training process at a time
   while pgrep -f "verl.trainer.main_ppo" > /dev/null; do sleep 30; done
+  if [ "$arm" = "grad_snr" ]; then
+    echo "[$(date +%T)] start grad_snr (gradient signal-to-noise analysis)" | tee -a $ROOT/src/runs/verl/arms.log
+    $ROOT/src/analysis/grad_snr.sh > $ROOT/src/runs/verl/grad_snr.log 2>&1
+    echo "[$(date +%T)] end grad_snr (exit $?)" | tee -a $ROOT/src/runs/verl/arms.log
+    continue
+  fi
   extra=""; lr=1e-6
   case $arm in
     grpo)       m=grpo; r=none ;;
@@ -28,6 +34,10 @@ for arm in $ARMS; do
     gaca_lr3)   m=gaca; r=none; lr=3e-6 ;;                                                                         # GACA at lr 3e-6
     gaca_actw)  m=gaca; r=none; extra="algorithm.gaca.token_mode=action algorithm.gaca.action_weight=2.0" ;;      # probe-free: <action> span 2x, reasoning 1x
     commit_ds)  m=gaca; r=none; lr=3e-6; extra="algorithm.gaca.token_mode=probe env.seed=1 +env.val_seed=1000 algorithm.filter_groups.enable=True algorithm.filter_groups.max_num_gen_batches=3" ;;  # COMMIT at lr 3e-6 + DAPO dynamic sampling (drop all-same-reward groups, up to 3 rollout passes)
+    # learning-rate sweep (2026-11-10, DECISIONS.md): does token weighting let larger steps help?
+    gaca_actw_lr3) m=gaca; r=none; lr=3e-6; extra="algorithm.gaca.token_mode=action algorithm.gaca.action_weight=2.0" ;;
+    gaca_actw_lr6) m=gaca; r=none; lr=6e-6; extra="algorithm.gaca.token_mode=action algorithm.gaca.action_weight=2.0" ;;
+    gaca_lr6)      m=gaca; r=none; lr=6e-6 ;;
     *) echo "unknown arm $arm"; continue ;;
   esac
   if grep -q "Training Progress: 100%" $ROOT/src/runs/verl/$arm/train.log 2>/dev/null; then

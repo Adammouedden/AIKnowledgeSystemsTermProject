@@ -1011,3 +1011,23 @@ Queue, in order, each 34 iterations like every other arm:
    time for extra seeds), so it stacks on the best configuration so far.
 Caveat for reading these: one 128-game evaluation has a standard deviation of ~3.4 points near 18%, so
 a gain smaller than ~5 points from one seed is not distinguishable from noise.
+
+## Does token weighting let larger steps help? Learning-rate sweep + gradient SNR (2026-11-10)
+
+Evidence that motivated it (training logs, mean over iterations 17-34): at lr 3e-6 COMMIT drifts from
+the reference as far as GACA or farther (KL loss 0.113 vs 0.094) and clips more (1.1% vs 0.5%), yet
+gains 18.7 points to GACA's 8.6. So weighting does not shrink the step; the hypothesis is that it points
+a step of the same size in a less noisy direction. Continuing COMMIT past 34 iterations was rejected:
+68 iterations is comparable to neither our baselines nor the paper's 150.
+- Training (34 iterations each): `gaca_actw_lr3`, `gaca_lr6`, `gaca_actw_lr6`. With the existing arms
+  this gives success vs learning rate for uniform credit (GACA) and action-span weighting at 1e-6,
+  3e-6 and 6e-6. Prediction: the weighted-minus-uniform gap grows with the learning rate.
+- Measurement (`src/analysis/grad_snr.py`, queue item `grad_snr`, ~2.5 h): at two fixed policies
+  (base model, trained COMMIT), on the same rollout groups (16 groups with mixed wins, 8 rollouts,
+  30 steps), the policy gradient under uniform, action-span and COMMIT probe weights. Reports gradient
+  coherence across groups, the cosine between two 4-group batches (one training batch), and the
+  gradient noise scale (McCandlish et al., 2018), with jackknife intervals and paired differences.
+  Gradients are kept on a strided 1/128 coordinate subsample (12M of 1.54B parameters; inner products
+  unbiased up to scale). 30 steps instead of 50 to fit the time; the fixed policy makes it a
+  within-sample comparison either way. CPU smoke test passed (all coordinates nonzero; same-rollout
+  cosine uniform/action 0.95, uniform/probe 0.57).

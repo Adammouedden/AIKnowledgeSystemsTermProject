@@ -46,3 +46,5 @@ docs/paper/*.fdb_latexmk
 docs/paper/*.out
 docs/paper/build.log
 docs/paper/*.brf
+runs/grad_snr/
+src/runs/verl/grad_snr.log
