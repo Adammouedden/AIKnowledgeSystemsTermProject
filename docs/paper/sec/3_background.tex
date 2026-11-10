@@ -1,0 +1,52 @@
+\section{Background: Credit in Critic-Free Agent RL}
+\label{sec:background}
+
+\paragraph{Setting.}
+An agent interacts with an environment for up to $T$ steps. At step $t$ the policy $\pi_\theta$ reads
+a prompt built from the task, recent history and the admissible actions, and emits a response
+$a_t = (a_t^1,\dots,a_t^{|a_t|})$: reasoning inside \texttt{<think>} tags followed by a command inside
+\texttt{<action>} tags. The environment executes the command; the episode reward is sparse,
+$r_T \in \{0, 1\}$ for success, plus a small penalty for malformed responses~\cite{feng2025gigpo}.
+For each task a group of $G$ trajectories $\{\tau_i\}_{i=1}^{G}$ is sampled with the same initial state.
+
+\paragraph{Clipped surrogate.}
+All methods below share PPO's token-level objective~\cite{schulman2017ppo}
+\begin{equation}
+\begin{split}
+\mathcal{J}(\theta) = \mathbb{E}\Big[\tfrac{1}{|a_t|}\textstyle\sum_{j}
+  \min\big(&\rho_{t,j} A_{t,j},\, \mathrm{clip}(\rho_{t,j}, 1\!\pm\!\epsilon)\, A_{t,j}\big)\Big]\\
+  &- \beta\, \mathrm{KL}(\pi_\theta \,\|\, \pi_{\mathrm{ref}}),
+\end{split}
+\label{eq:ppo}
+\end{equation}
+with $\rho_{t,j}$ the token probability ratio to the sampling policy. They differ only in the
+advantage $A_{t,j}$, and until now $A_{t,j}$ has not depended on $j$.
+
+\paragraph{GRPO: episode credit.}
+GRPO~\cite{shao2024deepseekmath} standardizes each trajectory's return within its group,
+$\Aep_i = (R(\tau_i) - \mu_G)/(\sigma_G + \varepsilon)$, and broadcasts it to every token of every step.
+
+\paragraph{GiGPO: step credit from anchor states.}
+GiGPO~\cite{feng2025gigpo} collects every visit, across the group's rollouts, to the same environment
+state $z$ (identical observation), forming an anchor group $\mathcal{G}_z$ of size $m_z$. With the
+discounted step return $\hat g_t = \sum_{t' \geq t} \gamma^{t'-t} r_{t'}$, the step advantage
+standardizes $\hat g_t$ within the anchor group,
+$\Ast_t = (\hat g_t - \mu_{\mathcal{G}_z})/(\sigma_{\mathcal{G}_z} + \varepsilon)$
+(falling back to prompt-group statistics when $m_z = 1$~\cite{liang2026gaca}), and the two levels are
+summed, $A_t = \Aep + w\,\Ast_t$.
+
+\paragraph{GACA: state-adaptive mixing.}
+GACA~\cite{liang2026gaca} replaces the sum by a per-step convex mixture
+\begin{equation}
+A_t = \lambda_t\, w\, \Ast_t + (1 - \lambda_t)\, \Aep.
+\label{eq:gaca}
+\end{equation}
+The weight comes from a criticality score: the mean token NLL of the sampled response,
+$H_t = -\frac{1}{|a_t|}\sum_j \log \pi_{\theta_{\mathrm{old}}}(a_t^j \mid s_t, a_t^{<j})$, normalized by its
+trajectory mean, $c_t = H_t / \bar H$. A piecewise-linear gate maps it to the weight,
+$\lambda_t = \lambda_0(1 + \alpha(c_t - 1))$ for $c_t \geq 1$ and $\lambda_0(1 - \beta(1 - c_t))$
+otherwise, clamped to $[0, 1]$, with $\lambda_0 = 0.5$ and $\alpha = \beta = 0.5$. Uncertain steps
+lean on the step contrast, confident steps on the episode return. GACA's analysis gives the
+MSE-optimal weight as $\lambda^\star_z = M_E/(M_E + M_S)$, the ratio of the two estimators' errors, and
+shows it is non-decreasing in $m_z$; the NLL enters as a one-sided certificate of local decision
+criticality. In every case above, all $|a_t|$ tokens of a response share $A_t$.

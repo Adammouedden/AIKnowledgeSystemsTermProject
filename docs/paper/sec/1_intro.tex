@@ -1,0 +1,78 @@
+\section{Introduction}
+\label{sec:intro}
+
+Reinforcement learning from outcome rewards has become the standard recipe for training language
+models to reason~\cite{shao2024deepseekmath,guo2025deepseekr1} and, increasingly, to act as agents over
+many turns~\cite{feng2025gigpo,wang2025ragen,liang2026gaca}. The dominant algorithms are
+\emph{critic-free}: instead of learning a value function, GRPO~\cite{shao2024deepseekmath} samples a
+group of trajectories for the same prompt and standardizes each trajectory's return against the group.
+The price is coarse credit. In a fifty-step household task every token of every step receives the
+same advantage, whether it was the decisive choice of where to look or a routine move along the way.
+
+Two recent methods refine this to the level of an environment step. GiGPO~\cite{feng2025gigpo}
+regroups the visits that different rollouts make to the same environment state (an \emph{anchor
+state}) and contrasts their discounted returns, which yields a step-level advantage without a critic.
+GACA~\cite{liang2026gaca} observes that the right granularity depends on the state and mixes the
+episode- and step-level advantages with a per-step weight $\lambda_t$ set by the policy's uncertainty,
+the mean token negative log-likelihood (NLL) of the sampled action; it reports 96.9\% success on
+ALFWorld at 1.5B parameters, against 86.7\% for GiGPO and 72.8\% for GRPO.
+
+Both methods stop at the step. Yet a modern agent's ``action'' is not a short command: in the
+reasoning format these methods are trained with, the model writes roughly a hundred tokens of
+chain of thought inside \texttt{<think>} tags and then a ten-token command inside \texttt{<action>}
+tags, and every one of those tokens still receives its step's single advantage. If a step was good
+because of one sentence of planning, the policy gradient spends most of its credit reinforcing the
+boilerplate around it. This paper asks a direct question: \emph{where inside a response is the
+decision actually made, and can credit be sent there?}
+
+We answer it in two parts. First, \textbf{measurement}. We run a counterfactual flip test on real
+ALFWorld steps: cut the response after $j$ tokens, resample the remainder many times, and record how
+often the final action changes. The drop of that flip rate across a segment is the share of the
+decision settled inside it. This yields three findings. (i) The decision is made in the reasoning: 82\%
+of it is settled before the \texttt{<action>} tag. (ii) Token entropy, the signal behind recent
+token-level methods for single-turn reasoning~\cite{wang2025beyond}, does not locate it: the last tenth
+of a response carries 19\% of the decision but only 3\% of the entropy, and entropy weighting moves
+credit toward decisive segments by only 4\%. (iii) A cheap \emph{commitment probe} does: at each cut,
+force the reasoning closed and score the probability of the eventual action under the model. This is
+exactly the truncate-and-force measurement that Yu~\etal~\cite{yu2026cir} use to define Causal
+Importance of Reasoning (CIR) and that Lanham~\etal~\cite{lanham2023faithfulness} call early
+answering. Weighting each token by the probe's rise across its segment places $1.65\times$ more credit
+on decisive segments than uniform credit at our training configuration, with the effect consistent
+across all six task types, on held-out games, and on a trained policy. Along the way we find that
+GACA's own per-step score is about 85\% noise from which reasoning path happened to be sampled.
+
+Second, \textbf{training}. Yu~\etal~use CIR as a scalar bonus in the reward; every token of a response
+still shares one advantage. We instead use the probe's per-segment rise to \emph{redistribute} each
+step's GACA advantage over the tokens of its response, with weights that are clipped and average to
+one, so a step's total credit is unchanged and only where it lands moves
+(\cref{fig:method}). The probe costs a teacher-forced scoring pass and no generation. In a study on
+ALFWorld with full fine-tuning of Qwen2.5-1.5B-Instruct inside the authors' own training stack
+(verl-agent~\cite{feng2025gigpo,sheng2025hybridflow}), with every method evaluated on the same 128
+held-out games and compared game by game, probe-weighted credit reaches the highest final success of
+any arm. Our budget is about 6\% of GACA's, one seed per arm; at that budget no difference between
+methods is statistically resolved, and we report it as such.
+
+\paragraph{Contributions.}
+\begin{itemize}\itemsep0pt
+\item A counterfactual measurement of where decisions are made inside agent reasoning, and evidence
+  that the commitment probe tracks it while entropy and NLL do not and attention only weakly
+  does (\cref{sec:measure}).
+\item Probe-weighted token credit: a critic-free redistribution of step-level advantage over tokens,
+  compatible with GRPO, GiGPO and GACA (\cref{sec:method}).
+\item A budget-matched, game-paired comparison of GRPO, GACA and five treatments on ALFWorld, with
+  negative results reported (\cref{sec:results}), and a measurement that GACA's criticality score is
+  dominated by within-state noise.
+\end{itemize}
+
+\begin{figure*}[t]
+\centering
+\resizebox{\textwidth}{!}{\input{figs/method_tikz}}
+\caption{\textbf{Credit at three granularities.} GRPO (left) gives every token of a trajectory one
+episode-level advantage. GiGPO and GACA (middle) give each environment step its own advantage, mixing
+an anchor-state step contrast $\Ast_t$ with the episode advantage $\Aep$ by a weight $\lambda_t$. All
+tokens of the step's response still share it. Probe-weighted credit (right) keeps the step advantage
+and redistributes it over the response: the commitment probe $q(j)$ scores how likely the eventual
+action is after the first $j$ tokens, and each segment's credit is proportional to how much $q$ rises
+across it (weights clipped to $[0.25, 4]$ and renormalized to mean one).}
+\label{fig:method}
+\end{figure*}

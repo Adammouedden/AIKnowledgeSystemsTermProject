@@ -1,0 +1,15 @@
+\begin{tabular}{@{}lrrcc@{}}
+\toprule
+Method & Final & Best & vs.\ GRPO & vs.\ GACA \\
+\midrule
+Base model (no training) & 4.7 & -- & -- & -- \\
+GRPO~\cite{shao2024deepseekmath} & 14.1 & 14.1 & -- & 13/7 (0.26) \\
+GACA~\cite{liang2026gaca} & 18.8 & 18.8 & 7/13 (0.26) & -- \\
+\midrule
+GACA + $m_z$ gate & 12.5 & 12.5 & 13/11 (0.84) & 17/9 (0.17) \\
+GACA-LOO (App.~B.4 of~\cite{liang2026gaca}) & 11.7 & 11.7 & 11/8 (0.65) & 14/5 (0.064) \\
+\textbf{GACA + probe (ours)} & 20.3 & 20.3 & 8/16 (0.15) & 14/16 (0.86) \\
+\quad clip $[0.5, 2]$ & 14.1 & 14.1 & 13/13 (1.00) & 16/10 (0.33) \\
+\quad positive $A_t$ only & 5.5 & 6.2 & \textbf{16/5 (0.027)} & \textbf{20/3 (<0.001)} \\
+\bottomrule
+\end{tabular}

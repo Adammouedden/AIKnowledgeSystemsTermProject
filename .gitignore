@@ -37,3 +37,11 @@ src/runs/verl/*/ckpt/
 src/runs/verl/*/final/
 src/runs/verl/*.out
 src/runs/verl/hf_backup.log
+docs/paper/*.aux
+docs/paper/*.log
+docs/paper/*.bbl
+docs/paper/*.blg
+docs/paper/*.fls
+docs/paper/*.fdb_latexmk
+docs/paper/*.out
+docs/paper/build.log

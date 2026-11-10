@@ -1,0 +1,62 @@
+\section{Probe-Weighted Token Credit}
+\label{sec:method}
+
+\paragraph{The commitment probe.}
+Let $a^\star$ be the command the response eventually issued and $c$ a cut point in the response. The
+probe asks how strongly the reasoning written so far commits the model to $a^\star$:
+\begin{equation}
+q(c) = \pi_\theta\big(a^\star \,\big|\, s_t,\; a_t^{<c},\; \texttt{</think><action>}\big),
+\label{eq:probe}
+\end{equation}
+the probability of the original command's tokens when the reasoning is cut after $c$ tokens and
+closed by force. It needs one teacher-forced forward pass per cut and no sampling. This is the
+quantity $p_k$ of CIR~\cite{yu2026cir} and the early-answering test of~\cite{lanham2023faithfulness};
+$q(0)$ is the probability of the eventual action before any reasoning, and $q$ reaches one by
+construction once the command is written.
+
+\paragraph{From probe to token weights.}
+We place cuts $0 = c_0 < c_1 < \dots < c_K$ every 16 reasoning tokens and at the start of the
+\texttt{<action>} tag, and treat the response end $L$ as a final cut with $q = 1$. Segment $k$, the
+tokens $[c_k, c_{k+1})$, receives the rise of the probe across it, spread evenly over its tokens:
+\begin{equation}
+\tilde w_j = \frac{\max\big(q(c_{k+1}) - q(c_k),\, 0\big)}{c_{k+1} - c_k}, \qquad j \in [c_k, c_{k+1}).
+\label{eq:raw}
+\end{equation}
+The raw weights are normalized to mean one over the response, clipped to $[0.25, 4]$ and renormalized,
+iterating to a fixed point. The step's token advantages are then
+\begin{equation}
+A_{t,j} = A_t \cdot w_{t,j}, \qquad \tfrac{1}{|a_t|}\textstyle\sum_j w_{t,j} = 1,
+\label{eq:ours}
+\end{equation}
+with $A_t$ from GACA (\cref{eq:gaca}). Because the weights average one, the length-normalized
+contribution of each step in \cref{eq:ppo} is unchanged; only where the credit lands inside the response
+moves. A flat probe (the action was certain from the start) gives uniform weights, recovering GACA
+exactly, and malformed responses with no action keep uniform weights.
+
+\paragraph{What it does and does not change.}
+Rollouts, the importance ratio and the KL term are untouched, so training stays on-policy; the probe
+only decides how much each token's gradient counts, much as a fixed reward model would. It says
+\emph{where} a step's decision was made, not whether the decision was good, which remains the job of
+$A_t$. A good step therefore reinforces mostly the reasoning that produced its action, and a bad step
+penalizes mostly that reasoning rather than the surrounding boilerplate. Under the assumption that a
+step's value flows through its action, which holds in ALFWorld where only the command touches the
+environment, $A_t w_{t,j}$ approximates each token's causal contribution to the step's value. The
+method is orthogonal to the step estimator and applies to GRPO or GiGPO advantages unchanged.
+
+\paragraph{Cost.}
+With cuts every 16 tokens a $\sim$95-token response needs about seven scoring passes over prompts of
+$\sim$500 tokens, computed in the same batched routine that recomputes the old-policy log-probabilities.
+In our runs this added about 150\,s to a $\sim$390\,s iteration (\cref{sec:results}); generation is
+unaffected and inference uses no probe at all.
+
+\paragraph{Variants.}
+We test three ways of applying the probe, each motivated by a failure mode of concentrating credit:
+\emph{(i)} a tighter clip $[0.5, 2]$, in case large weights make updates too big;
+\emph{(ii)} probe weights only where $A_t > 0$, in case a wrong-signed advantage concentrated on the
+decisive reasoning is especially harmful at low success rates; and \emph{(iii)} scoring the probe with
+the frozen reference policy instead of the current one, to break a possible feedback loop in which the
+policy grades its own reasoning and credit for early commitment pushes the decision earlier, the
+pattern~\cite{yu2026cir} report for outcome rewards. We also evaluate two step-level changes to GACA
+that target its estimator's reliability rather than tokens: scaling the gate's odds by
+$1 - 1/m_z$ (GACA's own analysis says $\lambda^\star$ grows with $m_z$, but $m_z$ never enters its gate;
+a singleton anchor group gets $\lambda_t = 0$) and the leave-one-out score of GACA's Appendix B.4.

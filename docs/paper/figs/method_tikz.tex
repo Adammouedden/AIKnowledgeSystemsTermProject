@@ -1,0 +1,69 @@
+% Method overview: credit at three granularities. Colours follow the paper's palette:
+% blue = GRPO/episode, orange = GACA/step, pink = probe/token.
+\definecolor{cE}{HTML}{2A78D6}
+\definecolor{cS}{HTML}{EB6834}
+\definecolor{cP}{HTML}{E87BA4}
+\definecolor{cInk}{HTML}{0B0B0B}
+\definecolor{cMuted}{HTML}{52514E}
+\definecolor{cPanel}{HTML}{F6F6F3}
+\begin{tikzpicture}[
+  x=1cm, y=1cm,
+  tok/.style={minimum width=2.6mm, minimum height=5mm, inner sep=0, draw=white, line width=0.4pt},
+  ttl/.style={font=\footnotesize\bfseries, anchor=south west, text=cInk},
+  stepl/.style={font=\scriptsize, text=cMuted},
+  eq/.style={font=\scriptsize, text=cInk, anchor=north west, align=left},
+  panel/.style={fill=cPanel, draw=none, rounded corners=2pt},
+]
+% ---------------- panel backgrounds
+\fill[panel] (-0.15,-1.55) rectangle (5.35,1.55);
+\fill[panel] (5.75,-1.55) rectangle (11.25,1.55);
+\fill[panel] (11.65,-1.55) rectangle (17.3,1.55);
+
+% ---------------- panel 1: GRPO
+\node[ttl] at (0,1.1) {(a) GRPO: one advantage per trajectory};
+\foreach \s in {0,1,2} {
+  \pgfmathsetmacro{\x}{\s*1.75}
+  \foreach \k in {0,...,4} { \node[tok, fill=cE!60] at ({\x+0.13+\k*0.27}, 0.3) {}; }
+  \node[stepl] at ({\x+0.67}, -0.15) {step $\s$};
+}
+\node[eq] at (0,-0.45) {$A_{t,j} = \Aep$ for every step $t$ and token $j$\\
+  $\Aep$: trajectory return, standardized in its group};
+
+% ---------------- panel 2: GiGPO / GACA
+\begin{scope}[xshift=5.9cm]
+\node[ttl] at (0,1.1) {(b) GiGPO / GACA: one advantage per step};
+\foreach \s/\sh in {0/25,1/85,2/45} {
+  \pgfmathsetmacro{\x}{\s*1.75}
+  \foreach \k in {0,...,4} { \node[tok, fill=cS!\sh] at ({\x+0.13+\k*0.27}, 0.3) {}; }
+  \node[stepl] at ({\x+0.67}, -0.15) {step $\s$};
+}
+\node[eq] at (0,-0.45) {$A_t = \lambda_t\,\Ast_t + (1-\lambda_t)\,\Aep$\\
+  $\Ast_t$: contrast among visits to the same state\\
+  $\lambda_t$: GACA's gate on the response's NLL};
+\end{scope}
+
+% ---------------- panel 3: probe-weighted tokens
+\begin{scope}[xshift=11.8cm]
+\node[ttl] at (0,1.1) {(c) Ours: the step's advantage, spread by the probe};
+% one step's response: reasoning tokens then action tokens
+\foreach \k/\w in {0/15,1/15,2/18,3/35,4/90,5/95,6/30,7/15,8/15,9/15,10/40,11/40,12/40,13/40} {
+  \node[tok, fill=cP!\w] at ({0.13+\k*0.27}, 0.3) {};
+}
+\draw[cInk, line width=0.5pt] ({0.13+9.5*0.27},0.0) -- ({0.13+9.5*0.27},0.6);
+\node[stepl, anchor=north] at (1.35,0.0) {reasoning};
+\node[stepl, anchor=north] at (3.3,0.0) {action};
+% probe curve q(j), drawn in its own band to the right of the title line
+\begin{scope}[shift={(0.13,0.66)}]
+  \draw[cMuted, line width=0.3pt] (0,0) -- (3.6,0);
+  \draw[cP!80!black, line width=0.8pt] (0,0.04) -- (0.8,0.05) -- (1.1,0.09) -- (1.45,0.17) -- (1.62,0.19) -- (3.6,0.2);
+  \node[font=\scriptsize, text=cInk, anchor=west] at (3.62,0.12) {$q(j)$};
+\end{scope}
+\node[eq] at (0,-0.45) {$A_{t,j} = A_t\, w_{t,j}$,\quad mean$_j\, w_{t,j} = 1$, clipped to $[0.25,4]$\\
+  $w_{t,j} \propto q(c_{k+1}) - q(c_k)$ for $j \in [c_k, c_{k+1})$\\
+  $q(c) = \pi_\theta(a^\star \mid s_t,\, a_t^{<c},\, \texttt{</think><action>})$};
+\end{scope}
+
+% arrows between panels
+\draw[-{Stealth[length=2mm]}, cMuted, line width=0.6pt] (5.38,0.3) -- (5.72,0.3);
+\draw[-{Stealth[length=2mm]}, cMuted, line width=0.6pt] (11.28,0.3) -- (11.62,0.3);
+\end{tikzpicture}

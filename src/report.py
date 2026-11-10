@@ -85,7 +85,11 @@ def verl_load():
             if len(eps[t]) == 128:
                 curve.append((it, sum(e["won"] for e in eps[t].values()), eps[t]))
         tr = [r for r in rows if "timing_s/step" in r]
-        done = f"end {key}\n" in log_lines + "\n" or bool(re.search(rf"end {key}$", log_lines, re.M))
+        # finished = its last "end" line comes after its last "start" line (a crashed earlier
+        # attempt leaves an "end" that must not mark a later re-run as done)
+        starts = [m.start() for m in re.finditer(rf"start {key} ", log_lines)]
+        ends = [m.start() for m in re.finditer(rf"end {key}$", log_lines, re.M)]
+        done = bool(ends) and (not starts or ends[-1] > starts[-1])
         arms.append(dict(key=key, label=label, role=role, what=what, rows=tr, curve=curve, done=done,
                          iters=int(tr[-1]["step"]) if tr else 0))
     return arms

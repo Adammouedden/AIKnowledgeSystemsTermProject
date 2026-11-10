@@ -1,0 +1,49 @@
+\section{Discussion and Limitations}
+\label{sec:discussion}
+
+\paragraph{What the evidence supports.}
+The measurement results are the firm part of this paper. They are counterfactual, repeated on disjoint
+game sets and on a trained policy, and come with intervals. Inside an agent's reasoning the decision is
+made before the command is written; uncertainty signals (entropy, NLL) do not locate it; the commitment
+probe does. GACA's criticality score is dominated by within-state path noise. The training results are
+weaker. Probe-weighted credit had the highest final success, and the variants that changed how it is
+applied did worse, two of them significantly. With one seed per arm and about 6\% of the published
+training budget, no difference between the main methods is statistically resolved.
+
+\paragraph{Why a better measurement need not train better.}
+The probe changes where credit lands, not whether it is right. At 5--15\% training success most step
+advantages rest on one or two successful rollouts in a group of eight, so their sign is often wrong;
+concentrating a wrong-signed advantage on the reasoning that produced the decision does more damage than
+spreading it. Uniform credit is, in this sense, a hedge against a noisy step estimator, and the positive-
+only variant shows that asymmetric hedging is worse than none. We expect probe weighting to pay off more
+where step advantages are reliable: at higher success rates, with more rollouts per group, or combined
+with an estimator that scales concentration by its own confidence, for instance the number of successful
+rollouts in the group or whether the anchor group carries a real return contrast.
+
+\paragraph{Limitations.}
+\emph{Budget and seeds}: about 6\% of GACA's trajectories and one seed per method, so method
+differences of a few points are not interpretable on their own; the paired tests are the right lens,
+and they are mostly inconclusive. \emph{Training seed}: the probe arm drew its training games in a
+different order than the controls, with identical evaluation games. \emph{Benchmark}: ALFWorld only;
+WebShop, the paper's second benchmark, needs a product-search server we did not stand up.
+\emph{Oracle}: the flip test measures relevance for the next command only, not for the episode's
+outcome, and uses 8 resamples per cut; importance is a difference of two noisy rates. \emph{Probe}: as a
+likelihood ratio under teacher forcing, the probe can credit a segment that makes the eventual command
+\emph{expressible} rather than one that decides it. \emph{Cost}: the probe adds about 40\% to an iteration
+in our setup; computing it from a prefix-shared batch would reduce this.
+
+\paragraph{Outlook.}
+The cheapest next steps follow directly: multiple seeds of the probe and GACA at this budget, the
+paper's 16-task batch, and probe weights scaled by a confidence in the step advantage. More broadly, our
+results suggest a separation of concerns for critic-free agent RL: the step estimator decides
+\emph{how much} credit a step earns, and a counterfactual probe decides \emph{which tokens} earned it.
+The second is now cheap and measurable; the first is the bottleneck.
+
+\section{Conclusion}
+We asked where, inside an agent's reasoning, the decision is made. A counterfactual flip test answers
+that it is made in the reasoning, mostly not where the model is uncertain, and that a teacher-forced
+commitment probe, the measurement behind CIR, finds it reliably. We turned the probe into a
+mean-preserving redistribution of GACA's step advantage over tokens. In a budget-matched, game-paired
+study on ALFWorld it achieved the best final success of the methods we trained, but the margins are
+within single-seed noise, and ways of applying it that seemed safer did worse. Measuring where credit
+belongs has become easy; making the credit itself reliable is the open problem.

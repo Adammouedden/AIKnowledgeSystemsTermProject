@@ -1,0 +1,50 @@
+% Built from docs/paper/template.tex (CVPR 2026 author kit, https://github.com/cvpr-org/author-kit).
+% Build:  cd docs/paper && latexmk -pdf main.tex
+\documentclass[10pt,twocolumn,letterpaper]{article}
+
+%%%%%%%%% PAPER TYPE
+\usepackage[review]{cvpr}      % To produce the REVIEW version
+
+\input{preamble}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,fit,backgrounds}
+\usepackage{microtype}
+
+\definecolor{cvprblue}{rgb}{0.21,0.49,0.74}
+\usepackage[pagebackref,breaklinks,colorlinks,allcolors=cvprblue]{hyperref}
+
+\def\paperID{*****}
+\def\confName{CVPR}
+\def\confYear{2026}
+
+\newcommand{\Aep}{A^{\mathrm{E}}}
+\newcommand{\Ast}{A^{\mathrm{S}}}
+\newcommand{\gaca}{\textsc{GACA}}
+
+\title{Where Is the Decision Made? Probe-Weighted Token Credit\\for Critic-Free Agent Reinforcement Learning}
+
+\author{Adam Mouedden\\
+{\tt\small adam.mouedden@gmail.com}
+}
+
+\begin{document}
+\maketitle
+\input{sec/0_abstract}
+\input{sec/1_intro}
+\input{sec/2_related}
+\input{sec/3_background}
+\input{sec/4_method}
+\input{sec/5_setup}
+\input{sec/6_measurement}
+\input{sec/7_results}
+\input{sec/8_discussion}
+{
+    \small
+    \bibliographystyle{ieeenat_fullname}
+    \bibliography{main}
+}
+\end{document}

@@ -1,0 +1,49 @@
+\section{Related Work}
+\label{sec:related}
+
+\paragraph{Critic-free RL for language models and agents.}
+PPO~\cite{schulman2017ppo} with a learned value function~\cite{schulman2015gae} was the original
+workhorse of RL from human feedback~\cite{ouyang2022instructgpt}. GRPO~\cite{shao2024deepseekmath}
+removed the critic by standardizing each sampled response's reward against a group of responses to
+the same prompt, and with its successors (REINFORCE-style
+estimators~\cite{ahmadian2024back}, DAPO's clipping and sampling changes~\cite{yu2025dapo}) it became
+the default for reasoning models~\cite{guo2025deepseekr1}. Carrying it to multi-turn agents required
+new infrastructure (HybridFlow/verl~\cite{sheng2025hybridflow}, RAGEN~\cite{wang2025ragen}); an
+alternative line keeps a critic but makes it hierarchical across turns~\cite{zhou2024archer}.
+
+\paragraph{Step-level credit without a critic.}
+GiGPO~\cite{feng2025gigpo} is, to our knowledge, the first critic-free step-level advantage for LLM
+agents. It hashes environment states across the group's rollouts into \emph{anchor states} and
+standardizes the discounted return of each visit against the other visits to the same state, then
+adds this step advantage to the episode one. GACA~\cite{liang2026gaca} argues that the useful
+granularity is a property of the state and mixes the two levels with a per-step weight $\lambda_t$
+driven by a criticality score, the sampled action's mean token NLL normalized within its trajectory;
+it proves that a state-adaptive weight dominates any constant one and that the optimal weight grows
+with the anchor-group size. Its Appendix B.4 proposes, but does not train, a leave-one-out score that
+averages the NLL of the other visits to the same anchor. Both methods stop at the environment step: all
+tokens of a step's response share one advantage. Process reward models~\cite{lightman2024verify,
+wang2024mathshepherd} and Monte-Carlo value estimates from intermediate states~\cite{kazemnejad2024vineppo}
+offer finer credit at the cost of a learned verifier or many extra rollouts; reward redistribution
+methods such as RUDDER~\cite{arjona2019rudder} reshape returns, which reward-shaping theory
+constrains~\cite{ng1999shaping}. Our method adds no model and no rollouts.
+
+\paragraph{Token-level signals in RL for reasoning.}
+Wang~\etal~\cite{wang2025beyond} show that in single-turn reasoning a small minority of high-entropy
+``forking'' tokens drives most of the improvement, and that restricting the policy gradient to them
+helps; Cui~\etal~\cite{cui2025entropy} study how RL collapses policy entropy. GACA also scores steps by
+uncertainty. We test whether uncertainty locates the \emph{decision} inside an agent's reasoning and
+find that it largely does not (\cref{sec:measure}).
+
+\paragraph{Faithfulness and causal importance of reasoning.}
+Lanham~\etal~\cite{lanham2023faithfulness} test whether chain of thought is used by truncating it and
+forcing an early answer. Bogdan~\etal~\cite{bogdan2025anchors} locate ``thought anchors'', the
+sentences that shape a reasoning trace, by resampling the trace from each sentence and, as a white-box
+alternative, by inspecting attention between sentences. Yu~\etal~\cite{yu2026cir} formalize the
+truncate-and-force measurement as Causal Importance of Reasoning,
+$\mathrm{CIR} = \frac{1}{T}\sum_k \mathrm{JS}\big(\mathrm{Bern}(p_k)\,\|\,\mathrm{Bern}(p_T)\big)$
+with $p_k$ the probability of the final answer after the first $k$ reasoning tokens, show that outcome
+rewards lower it on many tasks, and restore it with a CIR bonus in the reward. Our commitment probe is
+this measurement. What we add is its use \emph{inside the advantage}: the probe's per-segment rise
+decides which tokens of a step receive that step's credit, in a multi-turn agent, instead of a scalar
+bonus shared by all tokens. We also check it against resampling and against attention, the two
+signals Bogdan~\etal~compare.
