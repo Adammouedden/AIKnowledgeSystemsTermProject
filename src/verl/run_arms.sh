@@ -39,6 +39,12 @@ for arm in $ARMS; do
     gaca_actw_lr6) m=gaca; r=none; lr=6e-6; extra="algorithm.gaca.token_mode=action algorithm.gaca.action_weight=2.0" ;;
     gaca_lr6)      m=gaca; r=none; lr=6e-6 ;;
     commit_lr3_s0) m=gaca; r=none; lr=3e-6; extra="algorithm.gaca.token_mode=probe env.seed=0 +env.val_seed=1000" ;;  # seed control: COMMIT lr 3e-6 on the seed every non-COMMIT arm uses
+    # COMMIT hill-climb (2026-11-11): lr 6e-6; then frozen-reference probe only if lr6 shows no gain; then probe every 8 tokens
+    commit_lr6_s0) m=gaca; r=none; lr=6e-6; extra="algorithm.gaca.token_mode=probe env.seed=0 +env.val_seed=1000" ;;
+    commit_ref_lr3_s0) m=gaca; r=none; lr=3e-6; extra="algorithm.gaca.token_mode=probe env.seed=0 +env.val_seed=1000 algorithm.gaca.probe_scorer=ref" ;;
+    commit_ref_lr6_s0) m=gaca; r=none; lr=6e-6; extra="algorithm.gaca.token_mode=probe env.seed=0 +env.val_seed=1000 algorithm.gaca.probe_scorer=ref" ;;
+    commit_e8_lr3_s0) m=gaca; r=none; lr=3e-6; extra="algorithm.gaca.token_mode=probe env.seed=0 +env.val_seed=1000 algorithm.gaca.probe_every=8" ;;
+    commit_e8_lr6_s0) m=gaca; r=none; lr=6e-6; extra="algorithm.gaca.token_mode=probe env.seed=0 +env.val_seed=1000 algorithm.gaca.probe_every=8" ;;
     *) echo "unknown arm $arm"; continue ;;
   esac
   if grep -q "Training Progress: 100%" $ROOT/src/runs/verl/$arm/train.log 2>/dev/null; then

@@ -1053,3 +1053,11 @@ to the seed. The probe-vs-action-span contrast at 3e-6 carries the same confound
 ## commit_lr3_s0 relaunch after disk-full crash (2026-11-11)
 
 The first launch (16:10 UTC) died at env reset: "No space left on device" copying libdownward.so to /tmp. grad_snr had left 4.6 GB of gradient samples (runs/grad_snr/*.npz) on the 32 GB root overlay. The report is committed and the samples can be regenerated, so they were deleted (9.1 GB free); the crashed log is kept as commit_lr3_s0_diskfull. Requeued unchanged.
+
+## COMMIT hill-climb plan: lr 6e-6, then (conditional) frozen-ref probe, then probe every 8 (2026-11-11)
+
+User decision. All on training seed 0 (+val seed 1000), 34 iterations, so each pairs with gaca_lr6 / gaca_lr3 / commit_lr3_s0.
+1. commit_lr6_s0: COMMIT at lr 6e-6 (GACA collapsed to 0.0 there).
+2. Frozen-reference probe (probe_scorer=ref) runs only if lr 6e-6 "doesn't yield gains". Operational rule: gain = commit_lr6_s0 final held-out success strictly above commit_lr3_s0 final, and no collapse. No gain → run commit_ref_lr3_s0. Gain → skip it.
+3. Probe every 8 tokens at the better of the two learning rates (commit_e8_lr3_s0 or commit_e8_lr6_s0, by the same rule).
+Arms 2 and 3 are queued by hand after commit_lr6_s0 finishes, because the choice depends on its result.
