@@ -1041,3 +1041,11 @@ weighting 6.2%), and GACA at 6e-6 (seed 0) collapsed to 0%. So "COMMIT tolerates
 already failed at 3e-6) and replaced by `commit_lr3_s0`: COMMIT at lr 3e-6 on seed 0, validation games
 pinned as before. Reaching ~20% would support the probe; stalling like the other seed-0 runs would point
 to the seed. The probe-vs-action-span contrast at 3e-6 carries the same confound until this run is in.
+
+## Gradient SNR result (2026-11-11)
+
+16 mixed-outcome groups per checkpoint (base Qwen2.5-1.5B-Instruct and trained COMMIT seed 1); per-group GACA policy gradients under uniform, action-span (×2) and probe token weights on identical rollouts; 1/128 coordinate subsample; jackknife 95% CIs.
+
+- Probe weighting gives the most coherent gradients on both checkpoints: 4-group batch cosine 0.077 vs 0.026 uniform (base), 0.049 vs -0.004 (COMMIT); noise scale B 46 vs 146 (base). Action-span sits in between.
+- Paired probe − uniform batch-cosine difference is +0.052 [-0.010, +0.113] (base) and +0.053 [-0.020, +0.125] (COMMIT): the same direction and size on both checkpoints, but the CIs include zero at 16 groups.
+- Reading: consistent with "probe weights point the step in a better direction" (and with probe at 3e-6 > uniform at 3e-6), not proof. Per-group gradients are nearly orthogonal under every scheme (coherence ≈ 0.01), so the absolute signal is small. More groups would tighten the CIs; not queued, given time.
