@@ -137,6 +137,9 @@ Paired differences on the same games:
 | C4 | Token weighting does not shrink steps | §2 stability table | supported (descriptive) |
 | C5 | Flatter or one-sided probe weights hurt | clip [0.5, 2]: 14.1; positive-only: 5.5 | supported for positive-only (p < 0.001); clip suggestive |
 | C6 | Dynamic sampling adds nothing on top | 22.7 vs 23.4, p = 1.0 | supported (no detectable gain) |
+| C7 | COMMIT approximates the exact token credit `A · rise share` (Lemma 2) | proof under proportional displacement | **proved** (conditional on the assumption) |
+| C8 | Concentrating credit raises gradient SNR by an effective `L/k` (Prop. 3) | `1 + Var(w)` = 2.2 vs measured noise-scale ratio 3.2× (wide CI) | consistent in magnitude |
+| C9 | Action-span weighting fails because the action is already decided | `q` at `<action>` is 0.55 | **refuted**; its collapse is unexplained |
 
 ---
 
@@ -165,3 +168,78 @@ Ideas not yet scheduled (from the 2026-11-11 discussion):
 - **No extra seeds by choice:** time budget (user decision, 2026-11-10). State it as a limitation.
 - **Final checkpoint only.** The "best" column in `RESULTS.md` is optimistic: it picks the best of five noisy evaluations.
 - **The gradient analysis subsamples parameters.** A 1/128 strided subsample gives unbiased cosines in expectation, but is not the full gradient.
+
+---
+
+## 7. Theory: why token-level credit helps
+
+Notation: response `y = (y_1, …, y_L)` at state `s`; parsed action `a(y)`; step advantage `A = Q(s, a*) − V(s)` for the chosen action `a*` (GACA estimates it); score `s_t = ∇ log π(y_t | s, y<t)`; probe `q_t = P(a* | s, y≤t)` (with `q_L = 1`).
+
+### Lemma 1 (exact credit is action-mediated)
+
+ALFWorld reads only `a(y)`, so `V(y≤t) = Σ_a P(a | y≤t) Q(s, a)`. Let `Δ_t = V(y≤t) − V(y<t)`. Then for every token `t`
+
+    E[ s_t · A ] = E[ s_t · Δ_t ],
+
+by the tower property: `E[A | y≤t] = V(y≤t) − V(s)`, and `E[s_t | y<t] = 0` removes `V(y<t)` and `V(s)`. So `Σ_t s_t Δ_t` is an unbiased, lower-variance replacement for `Σ_t s_t A`: reward-to-go applied inside one response. Tokens that do not move the action distribution have `Δ_t = 0`. Uniform credit still multiplies their score by the full `A`, which adds variance and no signal.
+
+### Lemma 2 (the probe supplies "how much", the advantage supplies "how good")
+
+    Δ_t = Σ_a [P(a | y≤t) − P(a | y<t)] · Q(s, a).
+
+Assume **proportional displacement**: probability mass gained or lost by `a*` comes from the other actions in proportion to their current probabilities, so their relative mix stays fixed. Then exactly:
+
+    Δ_t = A · (q_t − q_{t−1}) / (1 − q_0),
+
+and `Σ_t Δ_t = A`, because the rises in `q` telescope from `q_0` to 1. So the true token credit factorises as the step advantage times the token's share of the total rise in commitment. That is COMMIT's weight before clipping, up to its per-row scale:
+
+| | Exact (Lemma 2) | COMMIT |
+|---|---|---|
+| Sign and size of value | `A` | `A` (GACA advantage) |
+| Where it lands | rise share `(q_t − q_{t−1}) / (1 − q_0)` | `max(rise, 0)` share, spread over 16-token segments |
+| Tokens that *lower* `q` | negative share: credit opposite to `A` | floor weight 0.25, **same sign as `A`** |
+| Scale | sums to `A` per response | mean 1 per token (sums to `L·A`, like uniform) |
+| Extremes | none | clipped to [0.25, 4] × mean |
+
+So the probe does not ignore value. It factors value out, and the factorisation is exact under proportional displacement. The approximation errors are:
+1. displacement that is not proportional (reasoning moves mass between two *other* actions);
+2. negative rises floored instead of negated;
+3. 16-token resolution;
+4. clipping;
+5. `A` being an estimate.
+
+### Proposition 3 (signal-to-noise gain from concentration)
+
+Model: `k` of `L` tokens carry all the credit (`Δ_t ≠ 0`), per-token scores are uncorrelated with equal variance `σ²`, and the total signal is `S`.
+
+| Weighting | Signal | Noise variance | SNR² |
+|---|---|---|---|
+| Uniform | `S` | `A² L σ²` | `S² / (A² L σ²)` |
+| Mean-preserving, `L/k` on the credit tokens | `(L/k) S` | `A² (L²/k) σ²` | `S² / (A² k σ²)` |
+
+The squared SNR and the gradient noise scale `B_noise` improve by `L/k`. For general weights `w` (mean 1), the attainable gain is governed by `1 + Var(w)`, an effective `L/k`, and is realised only to the extent that `w` correlates with `Δ`. Misplaced concentration loses SNR.
+
+Like TD or GAE, the COMMIT estimator is biased (the weights depend on sampled tokens, and of the departures from Lemma 2 above, errors 2 and 4 are deliberate) in exchange for lower variance. The bias goes to zero as the probe approaches the exact rise share and negative rises get signed credit.
+
+### Measured against the theory (no new training)
+
+Computed from the trained COMMIT trace (`src/demo/trace.json`, 319 responses) and the training logs:
+
+| Quantity | Value |
+|---|---|
+| `q` at the start of `<action>` (trace; training logs `probe/qT_mean`) | 0.55 (training: 0.55 early → 0.68 late, `commit_lr3_s0`) |
+| Effective `L/k = 1 + Var(w)` | **2.2** |
+| Share of tokens in the action span / share of credit mass there | 15% / 31% |
+| Mean COMMIT weight on action-span tokens | 2.2 (action-span weighting gives 1.74) |
+| Reasoning tokens at the 0.25 floor | 36% (median 42%) |
+
+- **Proposition 3, magnitude: consistent.** The predicted ceiling on the noise-scale reduction is about 2.2× for probe weights and about 1.1× for action-span weights (`1 + Var(w)` with ×2 on 15% of tokens). The measured reductions on the base model are 3.2× (146 → 46) and 1.5× (146 → 97). The ordering matches; the magnitudes agree to within the very wide noise-scale CIs (§3).
+- **My earlier prediction, refuted.** I predicted the model is already committed by `<action>` (`q ≈ 1`), so action-span weighting upweights zero-credit tokens. It is not: `q ≈ 0.55` there, so the action tokens carry real credit, and COMMIT itself puts *more* weight on them (2.2) than action-span weighting does (1.74). What separates COMMIT from action-span weighting is the reasoning: COMMIT pushes about 40% of reasoning tokens to the floor and concentrates the rest on the segments where commitment rises. Action-span weighting keeps all reasoning at 0.87. The theory says action-span weighting should be mildly beneficial (about 1.1× SNR), so its collapse at lr 3e-6 is **not** explained by this account. It remains open (single run; training-seed spread is about 10 points).
+- **The learning-rate link: weaker than I first said.** The McCandlish et al. optimum `ε_opt = ε_max / (1 + B_noise / B)` with the measured `B_noise` (146 vs 46, `B` = 4) gives a 3× higher optimum for COMMIT, matching 1e-6 → 3e-6. But this ignores that COMMIT also rescales the expected gradient (by up to `L/k`, Proposition 3), which lowers `ε_max` by the same factor. We did not save the mean gradient norms needed to correct for it. Treat the 3× match as unconfirmed.
+
+### Experiments suggested by the theory
+
+1. **Signed credit** (closes the gap in Lemma 2's table): tokens where `q` falls get weight `−share` instead of the 0.25 floor. Exact under proportional displacement; removes bias 2.
+2. **Exact scale**: use the rise share (`Σ = 1`) times a tuned constant, instead of mean-1 plus clipping; removes bias 4.
+3. **Finer cuts** (already queued as `commit_e8_*`): 16 → 8 tokens tightens the placement and raises `corr(w, Δ)`.
+4. **Measurement, about 2 h, GPU:** rerun the gradient analysis saving `|μ|` per scheme, to test the learning-rate corollary properly.
