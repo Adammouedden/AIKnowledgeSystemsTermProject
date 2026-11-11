@@ -54,3 +54,6 @@
 [05:48:07] start gaca_actw_lr3 (gaca, rel=none)
 [05:48:07]   lr=3e-6 extra: algorithm.gaca.token_mode=action algorithm.gaca.action_weight=2.0
 [09:47:45] end gaca_actw_lr3
+[09:49:57] queue -> grad_snr
+[09:49:57] start grad_snr (gradient signal-to-noise analysis)
+[10:10:00] end grad_snr (exit 0)
