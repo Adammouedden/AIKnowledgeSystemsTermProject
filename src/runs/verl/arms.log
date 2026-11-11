@@ -68,3 +68,7 @@
 [16:10:52] start commit_lr3_s0 (gaca, rel=none)
 [16:10:52]   lr=3e-6 extra: algorithm.gaca.token_mode=probe env.seed=0 +env.val_seed=1000
 [16:17:45] end commit_lr3_s0
+[16:19:53] queue -> commit_lr3_s0
+[16:19:53] start commit_lr3_s0 (gaca, rel=none)
+[16:19:53]   lr=3e-6 extra: algorithm.gaca.token_mode=probe env.seed=0 +env.val_seed=1000
+[21:32:35] end commit_lr3_s0
