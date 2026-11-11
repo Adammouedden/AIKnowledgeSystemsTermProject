@@ -53,6 +53,7 @@ paper's best-checkpoint convention but is optimistic: it picks the maximum over 
 | GACA, lr 3e-6 | 4.7 | 3.1 | 6.2 | 7.0 | 13.3 (34) |
 | GACA + action-span weight | 4.7 | 7.8 | 14.8 | 14.1 | 20.3 (34) |
 | GACA + action-span weight, lr 3e-6 | 4.7 | 1.6 | 0.8 | 1.6 | 6.2 (34) |
+| GACA, lr 6e-6 |  |  |  |  |  |
 | COMMIT, lr 3e-6 + dynamic sampling | 4.7 | 4.7 | 9.4 | 11.7 | 22.7 (34) |
 
 ## Paired comparison of final checkpoints

@@ -1,2 +1,2 @@
-gaca_lr6
+grad_snr
 gaca_actw_lr6

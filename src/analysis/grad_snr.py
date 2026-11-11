@@ -71,12 +71,15 @@ def rollouts(args):
         tok = AutoTokenizer.from_pretrained(args.model)
         gen = None
     kept, tried, t0 = [], 0, time.time()
+    # One fixed pool, reloaded every wave. Each new TextWorld env copies fast-downward's 32 MB library into
+    # /tmp and keeps the deleted copy mapped until exit: fresh envs per wave filled the 32 GB disk.
+    pool = [E.AlfEnv(games[0]["gamefile"], args.max_steps) for _ in range(args.wave * args.group)]
     while len(kept) < args.target and tried < args.max_games:
         wave = games[tried: tried + args.wave]
         tried += len(wave)
-        envs = [(gi, k, E.AlfEnv(g["gamefile"], args.max_steps)) for gi, g in enumerate(wave) for k in range(args.group)]
-        for _, _, e in envs:
-            e.reset()
+        envs = [(gi, k, pool[gi * args.group + k]) for gi, g in enumerate(wave) for k in range(args.group)]
+        for gi, k, e in envs:
+            e.load(wave[gi]["gamefile"])
         hist = {(gi, k): [] for gi, k, _ in envs}
         steps = {(gi, k): [] for gi, k, _ in envs}
         won = {(gi, k): False for gi, k, _ in envs}
@@ -284,7 +287,7 @@ def main():
     a.add_argument("--device", default="cuda")
     a.add_argument("--group", type=int, default=8)
     a.add_argument("--max-steps", type=int, default=30)
-    a.add_argument("--wave", type=int, default=32)
+    a.add_argument("--wave", type=int, default=16)  # 16 games x 8 = 128 envs, ~4 GB of /tmp
     a.add_argument("--target", type=int, default=16)
     a.add_argument("--max-games", type=int, default=160)
     a.add_argument("--game-offset", type=int, default=0)

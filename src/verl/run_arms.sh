@@ -14,8 +14,8 @@ for arm in $ARMS; do
   while pgrep -f "verl.trainer.main_ppo" > /dev/null; do sleep 30; done
   if [ "$arm" = "grad_snr" ]; then
     echo "[$(date +%T)] start grad_snr (gradient signal-to-noise analysis)" | tee -a $ROOT/src/runs/verl/arms.log
-    $ROOT/src/analysis/grad_snr.sh > $ROOT/src/runs/verl/grad_snr.log 2>&1
-    echo "[$(date +%T)] end grad_snr (exit $?)" | tee -a $ROOT/src/runs/verl/arms.log
+    $ROOT/src/analysis/grad_snr.sh > $ROOT/src/runs/verl/grad_snr.log 2>&1; rc=$?
+    echo "[$(date +%T)] end grad_snr (exit $rc)" | tee -a $ROOT/src/runs/verl/arms.log
     continue
   fi
   extra=""; lr=1e-6
