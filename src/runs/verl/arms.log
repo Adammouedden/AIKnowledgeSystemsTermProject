@@ -46,3 +46,7 @@
 [16:57:44] start gaca_actw (gaca, rel=none)
 [16:57:44]   lr=1e-6 extra: algorithm.gaca.token_mode=action algorithm.gaca.action_weight=2.0
 [20:44:28] end gaca_actw
+[20:46:39] queue -> commit_ds
+[20:46:39] start commit_ds (gaca, rel=none)
+[20:46:39]   lr=3e-6 extra: algorithm.gaca.token_mode=probe env.seed=1 +env.val_seed=1000 algorithm.filter_groups.enable=True algorithm.filter_groups.max_num_gen_batches=3
+[05:45:55] end commit_ds
