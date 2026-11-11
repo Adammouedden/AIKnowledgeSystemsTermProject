@@ -61,3 +61,6 @@
 [10:12:08] start gaca_lr6 (gaca, rel=none)
 [10:12:08]   lr=6e-6 extra: 
 [14:04:50] end gaca_lr6
+[14:07:02] queue -> grad_snr
+[14:07:02] start grad_snr (gradient signal-to-noise analysis)
+[16:08:43] end grad_snr (exit 0)
