@@ -1049,3 +1049,7 @@ to the seed. The probe-vs-action-span contrast at 3e-6 carries the same confound
 - Probe weighting gives the most coherent gradients on both checkpoints: 4-group batch cosine 0.077 vs 0.026 uniform (base), 0.049 vs -0.004 (COMMIT); noise scale B 46 vs 146 (base). Action-span sits in between.
 - Paired probe − uniform batch-cosine difference is +0.052 [-0.010, +0.113] (base) and +0.053 [-0.020, +0.125] (COMMIT): the same direction and size on both checkpoints, but the CIs include zero at 16 groups.
 - Reading: consistent with "probe weights point the step in a better direction" (and with probe at 3e-6 > uniform at 3e-6), not proof. Per-group gradients are nearly orthogonal under every scheme (coherence ≈ 0.01), so the absolute signal is small. More groups would tighten the CIs; not queued, given time.
+
+## commit_lr3_s0 relaunch after disk-full crash (2026-11-11)
+
+The first launch (16:10 UTC) died at env reset: "No space left on device" copying libdownward.so to /tmp. grad_snr had left 4.6 GB of gradient samples (runs/grad_snr/*.npz) on the 32 GB root overlay. The report is committed and the samples can be regenerated, so they were deleted (9.1 GB free); the crashed log is kept as commit_lr3_s0_diskfull. Requeued unchanged.
