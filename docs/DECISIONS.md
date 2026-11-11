@@ -1061,3 +1061,10 @@ User decision. All on training seed 0 (+val seed 1000), 34 iterations, so each p
 2. Frozen-reference probe (probe_scorer=ref) runs only if lr 6e-6 "doesn't yield gains". Operational rule: gain = commit_lr6_s0 final held-out success strictly above commit_lr3_s0 final, and no collapse. No gain → run commit_ref_lr3_s0. Gain → skip it.
 3. Probe every 8 tokens at the better of the two learning rates (commit_e8_lr3_s0 or commit_e8_lr6_s0, by the same rule).
 Arms 2 and 3 are queued by hand after commit_lr6_s0 finishes, because the choice depends on its result.
+
+## commit_lr3_s0 result: seed confound resolved, seed variance large (2026-11-11)
+
+- COMMIT lr 3e-6 on seed 0: 33.6% (43/128). It beats GACA lr 3e-6 on the same seed, 43 vs 17 (p < 0.001), so the seed-1 lr 3e-6 advantage was not a seed artifact.
+- The same configuration on seed 1 scored 23.4%: 30 vs 43, p = 0.047. Training-seed variance is about 10 points, larger than most method contrasts. From now on, claim only contrasts that hold across seeds or exceed this spread (docs/improvements.md §2, §6).
+- The lr 6e-6 gain rule is unchanged (final strictly above 33.6%). Given the seed spread, that is a high bar, which biases toward running the frozen-reference arm. That is acceptable: it is the more informative next arm anyway.
+- Disk: free space fell to 0.8 GB at the end of the run, during the final-weights upload staging (3.5 GB). Ray session logs from earlier days (/tmp/ray, 1.6 GB) were deleted. 11 GB is free at the lr 6e-6 launch.

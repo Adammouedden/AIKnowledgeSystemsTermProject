@@ -13,11 +13,12 @@ A living record of what makes COMMIT better, and why. Every claim names the runs
 | Change to COMMIT | Final success | Reference | Paired p | Verdict |
 |---|---|---|---|---|
 | COMMIT, lr 1e-6 (original) | 20.3 | GACA 18.8 | 0.856 | on par with GACA |
-| **lr 3e-6** | **23.4** | COMMIT lr 1e-6, 20.3 | 0.523 | best so far; seed-confounded (§2) |
+| **lr 3e-6, seed 0** | **33.6** | GACA lr 3e-6 (seed 0), 13.3 | < 0.001 | **best; same-seed control confirms C1** |
+| lr 3e-6, seed 1 | 23.4 | COMMIT lr 1e-6 (seed 1), 20.3 | 0.523 | same configuration, 10 points lower: seed variance (§2) |
 | lr 3e-6 + dynamic sampling (DAPO) | 22.7 | COMMIT lr 3e-6, 23.4 | 1.0 (13/12 discordant) | no gain, 1.9× wall-clock |
 | narrower weight clip [0.5, 2] | 14.1 | COMMIT, 20.3 | 0.152 | worse: flatter weights hurt |
 | weights on positive advantages only | 5.5 | COMMIT, 20.3 | < 0.001 | collapses |
-| lr 6e-6 | queued | GACA lr 6e-6, 0.0 | | §5 |
+| lr 6e-6 | running | GACA lr 6e-6, 0.0 | | §5 |
 | frozen-reference probe | conditional | | | §5 |
 | probe every 8 tokens | queued | | | §5 |
 
@@ -39,13 +40,15 @@ Final held-out success by learning rate:
 | GACA (seed 0) | 18.8 | 13.3 | 0.0 |
 | GACA + action-span weighting (seed 0) | 20.3 | 6.2 | not run (dropped) |
 | COMMIT (seed 1) | 20.3 | **23.4** | |
-| COMMIT (seed 0) | | running (`commit_lr3_s0`) | queued (`commit_lr6_s0`) |
+| COMMIT (seed 0) | | **33.6** | running (`commit_lr6_s0`) |
 
 Paired tests:
 
-- **At lr 3e-6:**
-  - COMMIT vs GACA: 30 vs 17 wins, p = 0.007.
+- **At lr 3e-6, same seed (seed 0):**
+  - COMMIT vs GACA: 43 vs 17 games solved, p < 0.001.
+  - COMMIT vs action-span weighting: 43 vs 8, p < 0.001.
   - GACA vs action-span weighting: 17 vs 8, p = 0.035.
+- **At lr 3e-6, COMMIT on seed 1 vs GACA on seed 0:** 30 vs 17, p = 0.007.
 - **Raising lr from 1e-6 to 3e-6:**
   - GACA: 24 → 17, p = 0.143.
   - action-span weighting: 26 → 8, p < 0.001.
@@ -53,7 +56,12 @@ Paired tests:
 
 **Reading.** Uniform credit (GACA) and the fixed action-span heuristic both get worse as the step size grows; action-span weighting falls fastest. COMMIT is the only arm that improves at 3e-6. So the probe, not reweighting as such, is what tolerates the larger step: a wrong token weighting amplifies the damage that a large learning rate does.
 
-**Caveat: seed confound.** Every COMMIT run so far used training seed 1; every GACA and action-span run used seed 0. The validation games are the same. `commit_lr3_s0` removes the confound: COMMIT at lr 3e-6 on seed 0, finishing about 4:40 PM ET on 2026-11-11. Until it lands, the COMMIT row in this section is suggestive only.
+**Seed confound: resolved (2026-11-11).** The earlier COMMIT runs used training seed 1, while every GACA and action-span run used seed 0 (the validation games are the same). `commit_lr3_s0` reruns COMMIT at lr 3e-6 on seed 0. It reached 33.6% (43/128) and beats GACA lr 3e-6 on the same seed, 43 vs 17 (p < 0.001). The lr 3e-6 advantage holds on matched seeds.
+
+**But training-seed variance is large.** The identical COMMIT lr 3e-6 configuration scored 23.4% on seed 1 and 33.6% on seed 0: 30 vs 43 games, 12 vs 25 discordant, p = 0.047. Two runs of the same method differ about as much as some method contrasts. Practical consequences:
+- Treat single-run differences under about 10 points as unresolved, even when the paired p-value is small. McNemar tests the evaluation-game noise, not the training-seed noise.
+- The 33.6% is the upper end of a wide range. Report it with the seed-1 run beside it (mean of the two: 28.5%).
+- COMMIT at lr 3e-6 beats GACA at lr 3e-6 on both seeds (23.4 and 33.6 vs 13.3), which is robust to this concern.
 
 ### Step size and stability (iterations 17–34, lr 3e-6)
 
@@ -123,8 +131,8 @@ Paired differences on the same games:
 
 | # | Claim | Evidence | Status |
 |---|---|---|---|
-| C1 | COMMIT at lr 3e-6 beats GACA at lr 3e-6 | 23.4 vs 13.3, p = 0.007 | supported, but seed-confounded until `commit_lr3_s0` |
-| C2 | The probe, not reweighting as such, is what tolerates larger steps | action-span weighting drops 20.3 → 6.2 at 3e-6 while COMMIT rises | suggestive (seed confound) |
+| C1 | COMMIT at lr 3e-6 beats GACA at lr 3e-6 | same seed: 33.6 vs 13.3, p < 0.001; seed 1: 23.4 | **supported** (both COMMIT seeds beat GACA) |
+| C2 | The probe, not reweighting as such, is what tolerates larger steps | at lr 3e-6 on the same seed: COMMIT 33.6 vs action-span 6.2, p < 0.001 | **supported** (one run each) |
 | C3 | Probe weights give a more coherent gradient | §3: consistent +0.05 batch cosine on two checkpoints | suggestive (CIs include 0) |
 | C4 | Token weighting does not shrink steps | §2 stability table | supported (descriptive) |
 | C5 | Flatter or one-sided probe weights hurt | clip [0.5, 2]: 14.1; positive-only: 5.5 | supported for positive-only (p < 0.001); clip suggestive |
@@ -138,8 +146,8 @@ All on training seed 0 (validation seed 1000), so each pairs with the GACA arm a
 
 | Order | Arm | What it tests | Rule |
 |---|---|---|---|
-| now | `commit_lr3_s0` | removes the seed confound in C1 and C2 | |
-| 1 | `commit_lr6_s0` | does COMMIT survive lr 6e-6, where GACA collapses to 0.0? | gain = final strictly above `commit_lr3_s0`, and no collapse |
+| done | `commit_lr3_s0` | removes the seed confound in C1 and C2 | 33.6%: confound resolved |
+| now | `commit_lr6_s0` | does COMMIT survive lr 6e-6, where GACA collapses to 0.0? | gain = final strictly above `commit_lr3_s0`, and no collapse |
 | 2 | `commit_ref_lr3_s0` | probe scored by the frozen reference model, so the weights don't drift with the policy | runs **only if** lr 6e-6 shows no gain |
 | 3 | `commit_e8_lr{3,6}_s0` | probe every 8 tokens instead of 16 (finer placement of the commitment point) | at the better learning rate from step 1 |
 
@@ -153,7 +161,7 @@ Ideas not yet scheduled (from the 2026-11-11 discussion):
 
 ## 6. Caveats to carry into the paper
 
-- **One seed per configuration.** A 4-point difference (5 games) is within evaluation noise. Lean on the paired tests, not on gaps in the table.
+- **One seed per configuration, and the seeds disagree.** COMMIT lr 3e-6 scored 23.4 on seed 1 and 33.6 on seed 0 (p = 0.047). Paired tests capture evaluation noise, not training-seed noise. Claim only contrasts larger than that spread, or contrasts that hold on both seeds.
 - **No extra seeds by choice:** time budget (user decision, 2026-11-10). State it as a limitation.
 - **Final checkpoint only.** The "best" column in `RESULTS.md` is optimistic: it picks the best of five noisy evaluations.
 - **The gradient analysis subsamples parameters.** A 1/128 strided subsample gives unbiased cosines in expectation, but is not the full gradient.
