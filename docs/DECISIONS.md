@@ -1031,3 +1031,13 @@ a step of the same size in a less noisy direction. Continuing COMMIT past 34 ite
   unbiased up to scale). 30 steps instead of 50 to fit the time; the fixed policy makes it a
   within-sample comparison either way. CPU smoke test passed (all coordinates nonzero; same-rollout
   cosine uniform/action 0.95, uniform/probe 0.57).
+
+## Seed confound in the learning-rate sweep; seed-0 COMMIT control (2026-11-11)
+
+Every COMMIT arm trains on env.seed=1 (training-game order); every other arm on seed 0. At lr 3e-6 both
+seed-1 runs reached ~23% while both seed-0 runs stalled for 30 iterations (GACA 13.3% final, action-span
+weighting 6.2%), and GACA at 6e-6 (seed 0) collapsed to 0%. So "COMMIT tolerates a larger step" and
+"seed 1 suits a larger step" cannot be told apart. `gaca_actw_lr6` was dropped (action-span weighting
+already failed at 3e-6) and replaced by `commit_lr3_s0`: COMMIT at lr 3e-6 on seed 0, validation games
+pinned as before. Reaching ~20% would support the probe; stalling like the other seed-0 runs would point
+to the seed. The probe-vs-action-span contrast at 3e-6 carries the same confound until this run is in.

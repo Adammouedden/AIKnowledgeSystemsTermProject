@@ -38,6 +38,7 @@ for arm in $ARMS; do
     gaca_actw_lr3) m=gaca; r=none; lr=3e-6; extra="algorithm.gaca.token_mode=action algorithm.gaca.action_weight=2.0" ;;
     gaca_actw_lr6) m=gaca; r=none; lr=6e-6; extra="algorithm.gaca.token_mode=action algorithm.gaca.action_weight=2.0" ;;
     gaca_lr6)      m=gaca; r=none; lr=6e-6 ;;
+    commit_lr3_s0) m=gaca; r=none; lr=3e-6; extra="algorithm.gaca.token_mode=probe env.seed=0 +env.val_seed=1000" ;;  # seed control: COMMIT lr 3e-6 on the seed every non-COMMIT arm uses
     *) echo "unknown arm $arm"; continue ;;
   esac
   if grep -q "Training Progress: 100%" $ROOT/src/runs/verl/$arm/train.log 2>/dev/null; then

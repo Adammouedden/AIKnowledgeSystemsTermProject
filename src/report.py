@@ -44,17 +44,18 @@ VERL_ARMS = [  # (dir, label, role, what differs from GACA/GRPO)
     ("gaca_actw_lr3", "GACA + action-span weight, lr 3e-6", "lr sweep", "action-span weighting (2x) at learning rate 3e-6"),
     ("gaca_lr6", "GACA, lr 6e-6", "lr sweep", "GACA with learning rate 6e-6"),
     ("gaca_actw_lr6", "GACA + action-span weight, lr 6e-6", "lr sweep", "action-span weighting (2x) at learning rate 6e-6"),
+    ("commit_lr3_s0", "COMMIT, lr 3e-6, seed 0", "seed control", "COMMIT at lr 3e-6 on training seed 0 (all non-COMMIT arms' seed)"),
     ("commit_ds", "COMMIT, lr 3e-6 + dynamic sampling", "hill-climb", "COMMIT at lr 3e-6, groups with all-equal rewards dropped and refilled (DAPO), up to 3 passes"),
 ]
 VERL_COLORS = {"grpo": "#2a78d6", "gaca": "#eb6834", "gaca_msize": "#1baf7a", "gaca_loo": "#eda100",
                "commit_s1": "#e87ba4", "commit_c05": "#e87ba4", "commit_pos": "#e87ba4",
-               "commit_ref": "#e87ba4", "commit_lr3": "#e87ba4", "commit_ds": "#e87ba4",
+               "commit_ref": "#e87ba4", "commit_lr3": "#e87ba4", "commit_ds": "#e87ba4", "commit_lr3_s0": "#e87ba4",
                "gaca_lr3": "#eb6834", "gaca_actw": "#eb6834",
                "gaca_actw_lr3": "#eb6834", "gaca_lr6": "#eb6834", "gaca_actw_lr6": "#eb6834"}
 # validated categorical slots 1-5, fixed order; probe variants keep the probe's hue (colour follows the
 # method) and are told apart by line style + legend + direct labels
 VERL_STYLE = {"commit_c05": "--", "commit_pos": "-.", "commit_ref": (0, (1, 1, 4, 1)),
-              "commit_lr3": (0, (6, 2)), "commit_ds": ":", "gaca_lr3": (0, (6, 2)), "gaca_actw": ":",
+              "commit_lr3": (0, (6, 2)), "commit_ds": ":", "commit_lr3_s0": (0, (2, 1)), "gaca_lr3": (0, (6, 2)), "gaca_actw": ":",
               "gaca_actw_lr3": (0, (3, 1, 1, 1)), "gaca_lr6": (0, (1, 1)), "gaca_actw_lr6": (0, (5, 1, 1, 1, 1, 1))}
 
 
