@@ -1074,3 +1074,10 @@ Arms 2 and 3 are queued by hand after commit_lr6_s0 finishes, because the choice
 - COMMIT lr 6e-6 on seed 0: 1.6% final (2/128). Validation went 4.7 → 7.8 → 10.9 (step 20), then 0.0 at step 30. Training success fell to 0 from step 28; KL peaked at 0.34 around step 28; entropy fell steadily (1.56 → 1.12). Valid-action rate stayed high, so the policy collapsed on the task, not on the format.
 - So COMMIT does not make lr 6e-6 safe. It collapses like GACA (0.0), only a few steps later. The probe's advantage is a wider stable range up to 3e-6, not unlimited step size.
 - Gain rule not met, so per the user's plan: `commit_ref_lr3_s0` runs next, then `commit_e8_lr3_s0` (3e-6 is the better rate). Both were queued together, since the e8 lr choice no longer depends on the ref result.
+
+## 2026-11-12: commit_ref_lr3_s0 config crash, requeued after e8
+
+- The first launch of `commit_ref_lr3_s0` died at startup: Hydra error "Key 'probe_scorer' is not in struct" for `algorithm.gaca.probe_scorer`. The yaml declares `probe_scorer` one level up, at `algorithm`, but the trainer reads it from `algorithm.gaca`.
+- Fix: the run_arms.sh overrides now use `+algorithm.gaca.probe_scorer=ref`. I checked that this composes in the training venv: it gives gaca.probe_scorer = ref.
+- The runner's automatic "Results: commit_ref_lr3_s0 complete" commit (481c56f) and its HF upload contain only the crash output; the real run's results will overwrite them. The crashed dir was renamed to `commit_ref_lr3_s0_cfgerr`.
+- `commit_e8_lr3_s0` started straight after the crash, so the order is now e8 first, then ref. The two are independent, so the order doesn't matter.

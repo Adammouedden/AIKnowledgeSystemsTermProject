@@ -19,7 +19,7 @@ A living record of what makes COMMIT better, and why. Every claim names the runs
 | narrower weight clip [0.5, 2] | 14.1 | COMMIT, 20.3 | 0.152 | worse: flatter weights hurt |
 | weights on positive advantages only | 5.5 | COMMIT, 20.3 | < 0.001 | collapses |
 | lr 6e-6, seed 0 | 1.6 | COMMIT lr 3e-6 (seed 0), 33.6 | | collapses after step 25 (peak 10.9 at step 20), like GACA at lr 6e-6 |
-| frozen-reference probe | running | | | §5 |
+| frozen-reference probe | queued (relaunch after config fix) | | | §5 |
 | probe every 8 tokens | queued | | | §5 |
 
 Probe-free comparison point, action-span weighting (the `<action>` span ×2, reasoning ×1, mean 1):
@@ -151,8 +151,8 @@ All on training seed 0 (validation seed 1000), so each pairs with the GACA arm a
 |---|---|---|---|
 | done | `commit_lr3_s0` | removes the seed confound in C1 and C2 | 33.6%: confound resolved |
 | done | `commit_lr6_s0` | does COMMIT survive lr 6e-6, where GACA collapses to 0.0? | 1.6%, collapsed: no gain |
-| now | `commit_ref_lr3_s0` | probe scored by the frozen reference model, so the weights don't drift with the policy | triggered: lr 6e-6 showed no gain |
-| next | `commit_e8_lr3_s0` | probe every 8 tokens instead of 16 (finer placement of the commitment point) | lr 3e-6, the better rate |
+| next | `commit_ref_lr3_s0` | probe scored by the frozen reference model, so the weights don't drift with the policy | triggered: lr 6e-6 showed no gain; first launch died on a config error, requeued after e8 |
+| now | `commit_e8_lr3_s0` | probe every 8 tokens instead of 16 (finer placement of the commitment point) | lr 3e-6, the better rate |
 
 Ideas not yet scheduled (from the 2026-11-11 discussion):
 

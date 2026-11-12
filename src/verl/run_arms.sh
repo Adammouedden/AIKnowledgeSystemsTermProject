@@ -28,7 +28,7 @@ for arm in $ARMS; do
     commit_s1) m=gaca; r=none; extra="algorithm.gaca.token_mode=probe env.seed=1 +env.val_seed=1000" ;;  # treatment: probe-weighted token credit (IDEAS.md 1); val games pinned
     commit_c05) m=gaca; r=none; extra="algorithm.gaca.token_mode=probe algorithm.gaca.probe_clip_lo=0.5 algorithm.gaca.probe_clip_hi=2.0" ;;  # probe, clip [0.5, 2]
     commit_pos) m=gaca; r=none; extra="algorithm.gaca.token_mode=probe algorithm.gaca.probe_sign=pos" ;;  # probe weights on positive advantages only
-    commit_ref) m=gaca; r=none; extra="algorithm.gaca.token_mode=probe algorithm.gaca.probe_scorer=ref" ;;  # probe scored by the frozen reference model (IDEAS 1e.2)     # treatment: anchor-pooled score (App. B.4, never trained in the paper)
+    commit_ref) m=gaca; r=none; extra="algorithm.gaca.token_mode=probe +algorithm.gaca.probe_scorer=ref" ;;  # probe scored by the frozen reference model (IDEAS 1e.2)     # treatment: anchor-pooled score (App. B.4, never trained in the paper)
     # hill-climbing queue (2026-11-10): performance, not ablation rigor
     commit_lr3) m=gaca; r=none; lr=3e-6; extra="algorithm.gaca.token_mode=probe env.seed=1 +env.val_seed=1000" ;;  # COMMIT (as commit_s1) at lr 3e-6
     gaca_lr3)   m=gaca; r=none; lr=3e-6 ;;                                                                         # GACA at lr 3e-6
@@ -41,8 +41,8 @@ for arm in $ARMS; do
     commit_lr3_s0) m=gaca; r=none; lr=3e-6; extra="algorithm.gaca.token_mode=probe env.seed=0 +env.val_seed=1000" ;;  # seed control: COMMIT lr 3e-6 on the seed every non-COMMIT arm uses
     # COMMIT hill-climb (2026-11-11): lr 6e-6; then frozen-reference probe only if lr6 shows no gain; then probe every 8 tokens
     commit_lr6_s0) m=gaca; r=none; lr=6e-6; extra="algorithm.gaca.token_mode=probe env.seed=0 +env.val_seed=1000" ;;
-    commit_ref_lr3_s0) m=gaca; r=none; lr=3e-6; extra="algorithm.gaca.token_mode=probe env.seed=0 +env.val_seed=1000 algorithm.gaca.probe_scorer=ref" ;;
-    commit_ref_lr6_s0) m=gaca; r=none; lr=6e-6; extra="algorithm.gaca.token_mode=probe env.seed=0 +env.val_seed=1000 algorithm.gaca.probe_scorer=ref" ;;
+    commit_ref_lr3_s0) m=gaca; r=none; lr=3e-6; extra="algorithm.gaca.token_mode=probe env.seed=0 +env.val_seed=1000 +algorithm.gaca.probe_scorer=ref" ;;
+    commit_ref_lr6_s0) m=gaca; r=none; lr=6e-6; extra="algorithm.gaca.token_mode=probe env.seed=0 +env.val_seed=1000 +algorithm.gaca.probe_scorer=ref" ;;
     commit_e8_lr3_s0) m=gaca; r=none; lr=3e-6; extra="algorithm.gaca.token_mode=probe env.seed=0 +env.val_seed=1000 algorithm.gaca.probe_every=8" ;;
     commit_e8_lr6_s0) m=gaca; r=none; lr=6e-6; extra="algorithm.gaca.token_mode=probe env.seed=0 +env.val_seed=1000 algorithm.gaca.probe_every=8" ;;
     *) echo "unknown arm $arm"; continue ;;
