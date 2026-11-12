@@ -1,0 +1,7 @@
+Could not override 'algorithm.gaca.probe_scorer'.
+To append to your config use +algorithm.gaca.probe_scorer=ref
+Key 'probe_scorer' is not in struct
+    full_key: algorithm.gaca.probe_scorer
+    object_type=dict
+
+Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.

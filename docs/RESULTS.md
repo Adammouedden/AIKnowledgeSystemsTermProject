@@ -60,6 +60,7 @@ paper's best-checkpoint convention but is optimistic: it picks the maximum over 
 | COMMIT, lr 3e-6, seed 0 | 4.7 | 7.8 | 9.4 | 21.1 | 33.6 (34) |
 | COMMIT, lr 3e-6 + dynamic sampling | 4.7 | 4.7 | 9.4 | 11.7 | 22.7 (34) |
 | COMMIT, lr 6e-6, seed 0 | 4.7 | 7.8 | 10.9 | 0.0 | 1.6 (34) |
+| COMMIT, frozen-ref probe, lr 3e-6 |  |  |  |  |  |
 
 ## Paired comparison of final checkpoints
 
