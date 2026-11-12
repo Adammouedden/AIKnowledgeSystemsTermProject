@@ -175,12 +175,12 @@ footer { margin-top: 14px; font-size: 12px; color: var(--faint); max-width: 100c
     <button class="btn" id="lv-stop" hidden>Stop run</button>
   </div>
   <div class="live-row">
-    <label class="ctl" for="lv-cache">Saved run <select id="lv-cache"><option value="">Built-in recording</option></select></label>
+    <label class="ctl" for="lv-cache" hidden>Saved run <select id="lv-cache"><option value="">Built-in recording</option></select></label>
     <label class="ctl" for="lv-speed">Speed <select id="lv-speed"><option value="300">Fast</option><option value="800" selected>Normal</option><option value="1500">Slow</option></select></label>
-    <button class="btn" id="lv-replay">Replay saved run</button>
-    <span class="hint">No GPU needed: plays back a finished run step by step, then the scoring.</span>
+    <button class="btn" id="lv-replay">Replay original run</button>
+    <span class="hint">No GPU needed: plays back the original demo run (rollout 1 solves it, reward 10) step by step, then the scoring.</span>
   </div>
-  <div class="live-status"><span id="lv-status">Showing the recorded run. Press Run live to sample a new group on the GPU, or Replay saved run for a fast playback.</span><progress id="lv-prog" max="1" value="0" hidden></progress></div>
+  <div class="live-status"><span id="lv-status">Showing the recorded run. Press Run live to sample a new group on the GPU, or Replay original run for a fast playback.</span><progress id="lv-prog" max="1" value="0" hidden></progress></div>
 </div>
 
 <div class="layout">
@@ -614,7 +614,6 @@ function initLive() {
   $("lv-run").onclick = startLive;
   $("lv-stop").onclick = stopLive;
   $("lv-replay").onclick = startReplay;
-  refreshCached();
 }
 function lvStatus(msg, prog) {
   $("lv-status").textContent = msg;
@@ -654,7 +653,7 @@ function liveHandler(finish) {
       load(e.trace, true); S.follow = firstWin(); S.sel = null; S.prevWatch = {};
       S.pc = EVENTS.findIndex((x) => x.line === 6); renderHeader(); render();
       lvStatus(`Done in ${e.elapsed}s. Press Space to continue through returns, GRPO, GiGPO, GACA and COMMIT.`);
-      finish(); refreshCached();
+      finish();
     } else if (e.type === "stopped") {
       finish(); showRecorded();
       lvStatus(`Run stopped after ${e.elapsed}s. Showing the recorded run again.`);
