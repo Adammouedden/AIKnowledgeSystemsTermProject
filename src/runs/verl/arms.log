@@ -80,3 +80,7 @@
 [02:55:25] start commit_ref_lr3_s0 (gaca, rel=none)
 [02:55:25]   lr=3e-6 extra: algorithm.gaca.token_mode=probe env.seed=0 +env.val_seed=1000 algorithm.gaca.probe_scorer=ref
 [02:55:38] end commit_ref_lr3_s0
+[02:57:45] queue -> commit_e8_lr3_s0
+[02:57:45] start commit_e8_lr3_s0 (gaca, rel=none)
+[02:57:45]   lr=3e-6 extra: algorithm.gaca.token_mode=probe env.seed=0 +env.val_seed=1000 algorithm.gaca.probe_every=8
+[09:18:38] end commit_e8_lr3_s0
