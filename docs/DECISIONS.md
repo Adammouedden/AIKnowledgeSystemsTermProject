@@ -1112,3 +1112,7 @@ runner is now started with setsid/nohup so it no longer depends on the agent
 session. The partial run is kept as src/runs/verl/commit_ref_lr3_s0_killed
 (validation 4.7 -> 17.2 at step 10 -> 8.6 at step 20; KL 0.05-0.12, below
 every-8 at the same steps). Not citable as a result.
+
+## 2026-11-12 — Training stopped by the user
+
+No more training time. The restarted commit_ref_lr3_s0 was stopped before step 1; the frozen-probe result stays incomplete (partial run in commit_ref_lr3_s0_killed, not citable). The live demo now serves commit_lr3_s0 (33.6%), re-downloaded from HF.
