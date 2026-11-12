@@ -151,7 +151,6 @@ footer { margin-top: 14px; font-size: 12px; color: var(--faint); max-width: 100c
 <header>
   <div>
     <h1>Credit Debugger</h1>
-    <div class="sub" id="sub"></div>
   </div>
   <div class="legend" id="methods"></div>
 </header>
@@ -175,7 +174,13 @@ footer { margin-top: 14px; font-size: 12px; color: var(--faint); max-width: 100c
     <button class="btn primary" id="lv-run">Run live</button>
     <button class="btn" id="lv-stop" hidden>Stop run</button>
   </div>
-  <div class="live-status"><span id="lv-status">Showing the recorded run. Press Run live to sample a new group with the COMMIT checkpoint.</span><progress id="lv-prog" max="1" value="0" hidden></progress></div>
+  <div class="live-row">
+    <label class="ctl" for="lv-cache">Saved run <select id="lv-cache"><option value="">Built-in recording</option></select></label>
+    <label class="ctl" for="lv-speed">Speed <select id="lv-speed"><option value="300">Fast</option><option value="800" selected>Normal</option><option value="1500">Slow</option></select></label>
+    <button class="btn" id="lv-replay">Replay saved run</button>
+    <span class="hint">No GPU needed: plays back a finished run step by step, then the scoring.</span>
+  </div>
+  <div class="live-status"><span id="lv-status">Showing the recorded run. Press Run live to sample a new group on the GPU, or Replay saved run for a fast playback.</span><progress id="lv-prog" max="1" value="0" hidden></progress></div>
 </div>
 
 <div class="layout">
@@ -608,6 +613,8 @@ function initLive() {
   fetch("api/health").then((r) => r.json()).then((h) => { $("lv-health").textContent = `${h.model} loaded${h.busy ? " · busy" : " · ready"}`; }).catch(() => {});
   $("lv-run").onclick = startLive;
   $("lv-stop").onclick = stopLive;
+  $("lv-replay").onclick = startReplay;
+  refreshCached();
 }
 function lvStatus(msg, prog) {
   $("lv-status").textContent = msg;
@@ -618,23 +625,16 @@ function showRecorded() {
   S.sel = null; S.follow = firstWin(); S.prevWatch = {}; S.pc = 0; renderHeader(); render();
 }
 async function stopLive() {
+  if (S.replayStop) return S.replayStop();
   $("lv-stop").disabled = true; lvStatus("Stopping the run…");
   try { await fetch("api/stop", { method: "POST" }); } catch (e) { lvStatus("Cannot reach the live server."); }
   setTimeout(() => { if (!$("lv-stop").hidden && !S.liveES) { $("lv-stop").hidden = true; $("lv-stop").disabled = false; lvStatus("Stopped. The GPU is free; press Run live to start again."); } }, 1500);
 }
-async function startLive() {
-  stop();
-  try { const h = await (await fetch("api/health")).json(); if (h.busy) { $("lv-stop").hidden = false; $("lv-stop").disabled = false; return lvStatus("Another run is still using the GPU. Press Stop run to end it, then Run live."); } }
-  catch (e) { return lvStatus("Cannot reach the live server."); }
-  const q = new URLSearchParams({ game: $("lv-game").value, group: $("lv-g").value, max_steps: $("lv-steps").value, temperature: $("lv-temp").value });
-  $("lv-run").disabled = true;
-  const es = new EventSource("api/run?" + q);
-  S.liveES = es; $("lv-stop").hidden = false; $("lv-stop").disabled = false;
-  let live = null, total = 0;
-  const finish = () => { es.close(); S.liveES = null; $("lv-run").disabled = false; $("lv-stop").hidden = true; $("lv-stop").disabled = false; };
-  es.onmessage = (m) => {
-    const e = JSON.parse(m.data);
+function liveHandler(finish) {
+  let live = null, maxSteps = 30;
+  return (e) => {
     if (e.type === "start") {
+      maxSteps = e.max_steps || maxSteps;
       live = { meta: { model: e.model, task: "", gamefile: e.label, group: e.group, temperature: e.temperature, gamma: 0.95, penalty: 0.1,
                        win_reward: 10, lam0: 0.5, alpha: 0.5, beta: 0.5, probe_every: 16, clip: [0.25, 4] },
                trajs: Array.from({ length: e.group }, (_, i) => ({ traj: i, steps: [], won: false })) };
@@ -645,9 +645,8 @@ async function startLive() {
       for (const st of e.steps) { live.trajs[st.traj].steps.push(st); live.meta.task = st.task; if (st.done) live.trajs[st.traj].won = st.won; }
       load(live, false); S.pc = EVENTS.length - 1; renderHeader(); render();
       const running = live.trajs.filter((t) => !(t.steps.length && t.steps[t.steps.length - 1].done)).length;
-      lvStatus(`t = ${e.t} · ${running} of ${live.trajs.length} rollouts still running · ${live.trajs.filter((t) => t.won).length} solved · ${e.elapsed}s`, Math.min(1, (e.t + 1) / +$("lv-steps").value));
+      lvStatus(`t = ${e.t} · ${running} of ${live.trajs.length} rollouts still running · ${live.trajs.filter((t) => t.won).length} solved · ${e.elapsed}s`, Math.min(1, (e.t + 1) / maxSteps));
     } else if (e.type === "phase") {
-      total = e.steps;
       lvStatus(`Rollouts finished: ${e.wins}/${live.trajs.length} solved in ${e.elapsed}s. Scoring ${e.steps} steps (token NLL + commitment probe)…`, 0);
     } else if (e.type === "progress") {
       lvStatus(`Scoring step ${e.done} of ${e.total} (token NLL + commitment probe)…`, e.done / e.total);
@@ -655,22 +654,65 @@ async function startLive() {
       load(e.trace, true); S.follow = firstWin(); S.sel = null; S.prevWatch = {};
       S.pc = EVENTS.findIndex((x) => x.line === 6); renderHeader(); render();
       lvStatus(`Done in ${e.elapsed}s. Press Space to continue through returns, GRPO, GiGPO, GACA and COMMIT.`);
-      finish();
+      finish(); refreshCached();
     } else if (e.type === "stopped") {
       finish(); showRecorded();
-      lvStatus(`Run stopped after ${e.elapsed}s. Showing the recorded run again; press Run live to start a new one.`);
+      lvStatus(`Run stopped after ${e.elapsed}s. Showing the recorded run again.`);
     } else if (e.type === "error") { lvStatus(`The run failed: ${e.message}`); finish(); }
   };
+}
+function busyUI(on) {
+  $("lv-run").disabled = on; $("lv-replay").disabled = on;
+  $("lv-stop").hidden = !on; $("lv-stop").disabled = false;
+}
+async function startLive() {
+  stop();
+  try { const h = await (await fetch("api/health")).json(); if (h.busy) { $("lv-stop").hidden = false; $("lv-stop").disabled = false; return lvStatus("Another run is still using the GPU. Press Stop run to end it, then Run live."); } }
+  catch (e) { return lvStatus("Cannot reach the live server."); }
+  const q = new URLSearchParams({ game: $("lv-game").value, group: $("lv-g").value, max_steps: $("lv-steps").value, temperature: $("lv-temp").value });
+  const es = new EventSource("api/run?" + q);
+  S.liveES = es; busyUI(true);
+  const finish = () => { es.close(); S.liveES = null; busyUI(false); };
+  const handle = liveHandler(finish);
+  es.onmessage = (m) => handle(JSON.parse(m.data));
   es.onerror = () => { if (es.readyState !== EventSource.CLOSED) { lvStatus("Lost the connection to the live server."); finish(); } };
+}
+function refreshCached() {
+  fetch("api/cached").then((r) => r.json()).then((rs) => {
+    const sel = $("lv-cache"), keep = sel.value;
+    sel.innerHTML = `<option value="">Built-in recording</option>` +
+      rs.map((r) => `<option value="${esc(r.id)}">${esc(r.label)} · ${r.wins}/${r.group} solved · ${esc(r.id.slice(4, 8))} ${esc(r.id.slice(9, 11))}:${esc(r.id.slice(11, 13))}</option>`).join("");
+    if ([...sel.options].some((o) => o.value === keep)) sel.value = keep;
+  }).catch(() => {});
+}
+async function startReplay() {
+  stop();
+  let trace;
+  try { trace = $("lv-cache").value ? await (await fetch("api/cached/" + encodeURIComponent($("lv-cache").value))).json()
+                                     : JSON.parse(document.getElementById("trace").textContent); }
+  catch (e) { return lvStatus("Could not load that saved run."); }
+  if (!trace || !trace.trajs) return lvStatus("Could not load that saved run.");
+  const dt = +$("lv-speed").value, M0 = trace.meta, T = Math.max(...trace.trajs.map((t) => t.steps.length));
+  const timers = []; let ended = false;
+  const finish = () => { ended = true; timers.forEach(clearTimeout); S.replayStop = null; busyUI(false); };
+  const handle = liveHandler(finish);
+  S.replayStop = () => { finish(); handle({ type: "stopped", elapsed: 0 }); lvStatus("Replay stopped. Showing the recorded run again."); };
+  busyUI(true);
+  const at = (ms, fn) => timers.push(setTimeout(() => { if (!ended) fn(); }, ms));
+  const t0 = performance.now(), el = () => ((performance.now() - t0) / 1000).toFixed(1);
+  handle({ type: "start", label: M0.label || M0.task || M0.gamefile, group: trace.trajs.length, max_steps: T, temperature: M0.temperature, model: M0.model });
+  for (let t = 0; t < T; t++) at((t + 1) * dt, () => handle({ type: "step", t, elapsed: el(),
+    steps: trace.trajs.flatMap((tr, i) => tr.steps[t] ? [{ ...tr.steps[t], traj: i, won: tr.steps[t].reward > 0 }] : []) }));
+  const nSteps = trace.trajs.reduce((a, tr) => a + tr.steps.length, 0), tS = (T + 1) * dt;
+  at(tS, () => handle({ type: "phase", wins: trace.trajs.filter((t) => t.won).length, steps: nSteps, elapsed: el() }));
+  for (let k = 1; k <= 10; k++) at(tS + k * 150, () => handle({ type: "progress", done: Math.round(nSteps * k / 10), total: nSteps }));
+  at(tS + 1700, () => handle({ type: "done", trace, elapsed: el() }));
 }
 
 // ---------- header
 function renderHeader() {
 const wins = TR.filter((t) => t.won).length;
-if (!SCORED) { $("sub").innerHTML = `Live run of <b>${esc(M.model)}</b> on “${esc(M.task || M.gamefile)}”: sampling ${G} rollouts at temperature ${M.temperature}; ${wins} solved so far.`; return; }
-$("sub").innerHTML = `One training iteration of <b>${esc(M.model)}</b> (Qwen2.5-1.5B-Instruct trained with COMMIT, final weights) on ALFWorld: ` +
-  `<b>${G}</b> rollouts of the task “${esc(M.task)}”, sampled at temperature ${M.temperature}; <b>${wins}/${G}</b> solved it. ` +
-  `Every number below was computed by the project's own advantage code on these rollouts.`;
+if (!SCORED) return;
 $("methods").innerHTML = METHODS.map((m) => `<span><span class="dot" style="background:var(${m.color})"></span>${esc(m.name)}</span>`).join("");
 $("foot").textContent = `Advantages use group mean-and-std normalization over step rows, γ = ${M.gamma}, GACA gate λ0 = ${M.lam0}, α = β = ${M.alpha}; probe cuts every ${M.probe_every} tokens plus the <action> tag, weights clipped to [${M.clip}] and renormalized to mean 1. Model: ${M.model}.`;
 }

@@ -34,6 +34,7 @@ TYPES = {"pick_and_place_simple": "Put", "look_at_obj_in_light": "Examine in lig
 
 app = FastAPI()
 S = {}  # model state, filled in main()
+CACHE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "cache")  # finished live runs
 LOCK = threading.Lock()
 CUR = {"cancel": threading.Event()}  # current run's stop flag: /api/stop or a closed page sets it
 
@@ -102,7 +103,15 @@ def run_job(q, game, G, max_steps, temperature, cancel):
                 q.put({"type": "progress", "done": k, "total": n})
 
         MT.score(gen.tok, S["model"], "cuda", trajs, hf=S["hf"], progress=progress)
-        q.put({"type": "done", "trace": finalize(g, trajs, G, temperature, S["name"]), "elapsed": round(time.time() - t0, 1)})
+        trace = finalize(g, trajs, G, temperature, S["name"])
+        trace["meta"]["label"] = label(g)
+        try:  # keep every finished run so it can be replayed later without the GPU
+            os.makedirs(CACHE, exist_ok=True)
+            with open(os.path.join(CACHE, time.strftime("%Y%m%d-%H%M%S") + f"_g{game}.json"), "w") as f:
+                json.dump(trace, f)
+        except OSError:
+            traceback.print_exc()
+        q.put({"type": "done", "trace": trace, "elapsed": round(time.time() - t0, 1)})
     except Cancelled:
         q.put({"type": "stopped", "elapsed": round(time.time() - t0, 1)})
     except Exception as e:  # report to the page instead of dying silently
@@ -127,6 +136,30 @@ def games():
 @app.get("/api/health")
 def health():
     return {"ok": True, "busy": LOCK.locked(), "model": S.get("name")}
+
+
+@app.get("/api/cached")
+def cached():
+    out = []
+    for fn in sorted(os.listdir(CACHE), reverse=True) if os.path.isdir(CACHE) else []:
+        if not fn.endswith(".json"):
+            continue
+        try:
+            m = json.load(open(os.path.join(CACHE, fn)))
+        except (OSError, ValueError):
+            continue
+        tr = m["trajs"]
+        out.append({"id": fn[:-5], "label": m["meta"].get("label") or m["meta"].get("task", fn), "group": len(tr),
+                    "wins": sum(bool(t.get("won")) for t in tr), "model": m["meta"].get("model", "")})
+    return out
+
+
+@app.get("/api/cached/{rid}")
+def cached_one(rid: str):
+    fn = os.path.join(CACHE, os.path.basename(rid) + ".json")
+    if not os.path.isfile(fn):
+        return JSONResponse({"error": "No such cached run."}, status_code=404)
+    return JSONResponse(json.load(open(fn)))
 
 
 @app.post("/api/stop")
