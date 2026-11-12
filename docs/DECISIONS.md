@@ -1068,3 +1068,9 @@ Arms 2 and 3 are queued by hand after commit_lr6_s0 finishes, because the choice
 - The same configuration on seed 1 scored 23.4%: 30 vs 43, p = 0.047. Training-seed variance is about 10 points, larger than most method contrasts. From now on, claim only contrasts that hold across seeds or exceed this spread (docs/improvements.md §2, §6).
 - The lr 6e-6 gain rule is unchanged (final strictly above 33.6%). Given the seed spread, that is a high bar, which biases toward running the frozen-reference arm. That is acceptable: it is the more informative next arm anyway.
 - Disk: free space fell to 0.8 GB at the end of the run, during the final-weights upload staging (3.5 GB). Ray session logs from earlier days (/tmp/ray, 1.6 GB) were deleted. 11 GB is free at the lr 6e-6 launch.
+
+## 2026-11-12: commit_lr6_s0 result, queue the frozen-reference and every-8 arms
+
+- COMMIT lr 6e-6 on seed 0: 1.6% final (2/128). Validation went 4.7 → 7.8 → 10.9 (step 20), then 0.0 at step 30. Training success fell to 0 from step 28; KL peaked at 0.34 around step 28; entropy fell steadily (1.56 → 1.12). Valid-action rate stayed high, so the policy collapsed on the task, not on the format.
+- So COMMIT does not make lr 6e-6 safe. It collapses like GACA (0.0), only a few steps later. The probe's advantage is a wider stable range up to 3e-6, not unlimited step size.
+- Gain rule not met, so per the user's plan: `commit_ref_lr3_s0` runs next, then `commit_e8_lr3_s0` (3e-6 is the better rate). Both were queued together, since the e8 lr choice no longer depends on the ref result.

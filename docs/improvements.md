@@ -18,8 +18,8 @@ A living record of what makes COMMIT better, and why. Every claim names the runs
 | lr 3e-6 + dynamic sampling (DAPO) | 22.7 | COMMIT lr 3e-6, 23.4 | 1.0 (13/12 discordant) | no gain, 1.9× wall-clock |
 | narrower weight clip [0.5, 2] | 14.1 | COMMIT, 20.3 | 0.152 | worse: flatter weights hurt |
 | weights on positive advantages only | 5.5 | COMMIT, 20.3 | < 0.001 | collapses |
-| lr 6e-6 | running | GACA lr 6e-6, 0.0 | | §5 |
-| frozen-reference probe | conditional | | | §5 |
+| lr 6e-6, seed 0 | 1.6 | COMMIT lr 3e-6 (seed 0), 33.6 | | collapses after step 25 (peak 10.9 at step 20), like GACA at lr 6e-6 |
+| frozen-reference probe | running | | | §5 |
 | probe every 8 tokens | queued | | | §5 |
 
 Probe-free comparison point, action-span weighting (the `<action>` span ×2, reasoning ×1, mean 1):
@@ -40,7 +40,7 @@ Final held-out success by learning rate:
 | GACA (seed 0) | 18.8 | 13.3 | 0.0 |
 | GACA + action-span weighting (seed 0) | 20.3 | 6.2 | not run (dropped) |
 | COMMIT (seed 1) | 20.3 | **23.4** | |
-| COMMIT (seed 0) | | **33.6** | running (`commit_lr6_s0`) |
+| COMMIT (seed 0) | | **33.6** | 1.6 (collapsed) |
 
 Paired tests:
 
@@ -150,9 +150,9 @@ All on training seed 0 (validation seed 1000), so each pairs with the GACA arm a
 | Order | Arm | What it tests | Rule |
 |---|---|---|---|
 | done | `commit_lr3_s0` | removes the seed confound in C1 and C2 | 33.6%: confound resolved |
-| now | `commit_lr6_s0` | does COMMIT survive lr 6e-6, where GACA collapses to 0.0? | gain = final strictly above `commit_lr3_s0`, and no collapse |
-| 2 | `commit_ref_lr3_s0` | probe scored by the frozen reference model, so the weights don't drift with the policy | runs **only if** lr 6e-6 shows no gain |
-| 3 | `commit_e8_lr{3,6}_s0` | probe every 8 tokens instead of 16 (finer placement of the commitment point) | at the better learning rate from step 1 |
+| done | `commit_lr6_s0` | does COMMIT survive lr 6e-6, where GACA collapses to 0.0? | 1.6%, collapsed: no gain |
+| now | `commit_ref_lr3_s0` | probe scored by the frozen reference model, so the weights don't drift with the policy | triggered: lr 6e-6 showed no gain |
+| next | `commit_e8_lr3_s0` | probe every 8 tokens instead of 16 (finer placement of the commitment point) | lr 3e-6, the better rate |
 
 Ideas not yet scheduled (from the 2026-11-11 discussion):
 
