@@ -1082,3 +1082,14 @@ Arms 2 and 3 are queued by hand after commit_lr6_s0 finishes, because the choice
 - The runner's automatic "Results: commit_ref_lr3_s0 complete" commit (481c56f) and its HF upload contain only the crash output; the real run's results will overwrite them. The crashed dir was renamed to `commit_ref_lr3_s0_cfgerr`.
 - `commit_e8_lr3_s0` started straight after the crash, so the order is now e8 first, then ref. The two are independent, so the order doesn't matter.
 - Disk: free space was 6.3 GB during e8, below the ~8 GB margin needed for the end-of-run upload staging. I deleted the local `models/ckpt/commit_s1` (3.4 GB). It is the same checkpoint as HF `Adammouedden/gaca-term-checkpoints/gaca_probe_s1` (TRAINING_INFO matches). Re-download it to that path before running `src/demo/*` or `src/analysis/grad_snr.sh`.
+
+## 2026-11-12 — Correction: paper trains ALFWorld 1.5B for 300 updates, one model
+
+The user's current preprint of GACA (Sec. 4.1) says ALFWorld 1.5B trains for
+300 parameter updates (16 task groups x 8), reporting update-150, best, and
+final; one trained model per backbone, three stochastic evaluations per
+checkpoint, best = update 275. Our local `references/GACA.pdf` is an older
+version (150 epochs, 3 seeds, best at epoch 100). Scale numbers in RESULTS.md,
+the paper draft and the deck that use 150 / 19,200 / 3 seeds need updating:
+paper = 300 x 128 = 38,400 trajectories per run, ~35x ours (34 x 32 = 1,088).
+History window 2, rollout temp 1, val temp 0.4, eval every 5 already match.
