@@ -35,6 +35,16 @@ TYPES = {"pick_and_place_simple": "Put", "look_at_obj_in_light": "Examine in lig
 app = FastAPI()
 S = {}  # model state, filled in main()
 LOCK = threading.Lock()
+CUR = {"cancel": threading.Event()}  # current run's stop flag: /api/stop or a closed page sets it
+
+
+class Cancelled(Exception):
+    pass
+
+
+def check_cancel(ev):
+    if ev.is_set():
+        raise Cancelled()
 
 
 def label(gamefile):
@@ -64,7 +74,7 @@ def finalize(gamefile, trajs, G, temperature, model_name):
     return {"meta": meta, "trajs": trajs}
 
 
-def run_job(q, game, G, max_steps, temperature):
+def run_job(q, game, G, max_steps, temperature, cancel):
     gen = S["gen"]
     try:
         g = S["games"][game]["gamefile"]
@@ -75,21 +85,26 @@ def run_job(q, game, G, max_steps, temperature):
         t0 = time.time()
 
         def on_step(t, recs):
+            check_cancel(cancel)
             q.put({"type": "step", "t": t, "steps": [{"traj": i, **public(r), "won": bool(r["reward"] > 0)} for i, r in recs],
                    "elapsed": round(time.time() - t0, 1)})
 
         trajs = MT.rollout_group(gen, g, G, max_steps, on_step=on_step)
+        check_cancel(cancel)
         q.put({"type": "phase", "name": "score", "wins": sum(t["won"] for t in trajs),
                "steps": sum(len(t["steps"]) for t in trajs), "elapsed": round(time.time() - t0, 1)})
         last = [0.0]
 
         def progress(k, n):
+            check_cancel(cancel)
             if time.time() - last[0] > 0.5 or k == n:
                 last[0] = time.time()
                 q.put({"type": "progress", "done": k, "total": n})
 
         MT.score(gen.tok, S["model"], "cuda", trajs, hf=S["hf"], progress=progress)
         q.put({"type": "done", "trace": finalize(g, trajs, G, temperature, S["name"]), "elapsed": round(time.time() - t0, 1)})
+    except Cancelled:
+        q.put({"type": "stopped", "elapsed": round(time.time() - t0, 1)})
     except Exception as e:  # report to the page instead of dying silently
         traceback.print_exc()
         q.put({"type": "error", "message": f"{type(e).__name__}: {e}"})
@@ -114,24 +129,33 @@ def health():
     return {"ok": True, "busy": LOCK.locked(), "model": S.get("name")}
 
 
+@app.post("/api/stop")
+def stop_run():
+    CUR["cancel"].set()
+    return {"ok": True, "running": LOCK.locked()}
+
+
 @app.get("/api/run")
 def run(game: int = Query(-1), group: int = Query(8, ge=2, le=8), max_steps: int = Query(30, ge=5, le=50),
         temperature: float = Query(1.0, ge=0.1, le=1.5)):
     if not LOCK.acquire(blocking=False):
         return JSONResponse({"error": "A run is already in progress. Wait for it to finish."}, status_code=409)
+    cancel = threading.Event()
+    CUR["cancel"] = cancel
     if game < 0 or game >= len(S["games"]):
         game = random.randrange(60)
     q = queue.Queue()
 
     def work():
         try:
-            run_job(q, game, group, max_steps, temperature)
+            run_job(q, game, group, max_steps, temperature, cancel)
         finally:
             LOCK.release()
 
     threading.Thread(target=work, daemon=True).start()
 
     def stream():
+      try:
         while True:
             try:
                 ev = q.get(timeout=15)
@@ -141,6 +165,8 @@ def run(game: int = Query(-1), group: int = Query(8, ge=2, le=8), max_steps: int
             if ev is None:
                 return
             yield f"data: {json.dumps(ev)}\n\n"
+      finally:  # page closed or run ended: stop any work still going
+        cancel.set()
 
     return StreamingResponse(stream(), media_type="text/event-stream",
                              headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})

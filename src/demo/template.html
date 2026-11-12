@@ -173,6 +173,7 @@ footer { margin-top: 14px; font-size: 12px; color: var(--faint); max-width: 100c
     <label class="ctl" for="lv-steps">Max steps <select id="lv-steps"><option>15</option><option selected>30</option><option>50</option></select></label>
     <label class="ctl" for="lv-temp">Temperature <select id="lv-temp"><option>0.4</option><option selected>1.0</option></select></label>
     <button class="btn primary" id="lv-run">Run live</button>
+    <button class="btn" id="lv-stop" hidden>Stop run</button>
   </div>
   <div class="live-status"><span id="lv-status">Showing the recorded run. Press Run live to sample a new group with the COMMIT checkpoint.</span><progress id="lv-prog" max="1" value="0" hidden></progress></div>
 </div>
@@ -606,20 +607,31 @@ function initLive() {
   }).catch(() => {});
   fetch("api/health").then((r) => r.json()).then((h) => { $("lv-health").textContent = `${h.model} loaded${h.busy ? " · busy" : " · ready"}`; }).catch(() => {});
   $("lv-run").onclick = startLive;
+  $("lv-stop").onclick = stopLive;
 }
 function lvStatus(msg, prog) {
   $("lv-status").textContent = msg;
   const p = $("lv-prog"); p.hidden = prog === undefined; if (prog !== undefined) p.value = prog;
 }
+function showRecorded() {
+  load(JSON.parse(document.getElementById("trace").textContent), true);
+  S.sel = null; S.follow = firstWin(); S.prevWatch = {}; S.pc = 0; renderHeader(); render();
+}
+async function stopLive() {
+  $("lv-stop").disabled = true; lvStatus("Stopping the run…");
+  try { await fetch("api/stop", { method: "POST" }); } catch (e) { lvStatus("Cannot reach the live server."); }
+  setTimeout(() => { if (!$("lv-stop").hidden && !S.liveES) { $("lv-stop").hidden = true; $("lv-stop").disabled = false; lvStatus("Stopped. The GPU is free; press Run live to start again."); } }, 1500);
+}
 async function startLive() {
   stop();
-  try { const h = await (await fetch("api/health")).json(); if (h.busy) return lvStatus("The GPU is busy with another run. Try again when it finishes."); }
+  try { const h = await (await fetch("api/health")).json(); if (h.busy) { $("lv-stop").hidden = false; $("lv-stop").disabled = false; return lvStatus("Another run is still using the GPU. Press Stop run to end it, then Run live."); } }
   catch (e) { return lvStatus("Cannot reach the live server."); }
   const q = new URLSearchParams({ game: $("lv-game").value, group: $("lv-g").value, max_steps: $("lv-steps").value, temperature: $("lv-temp").value });
   $("lv-run").disabled = true;
   const es = new EventSource("api/run?" + q);
+  S.liveES = es; $("lv-stop").hidden = false; $("lv-stop").disabled = false;
   let live = null, total = 0;
-  const finish = () => { es.close(); $("lv-run").disabled = false; };
+  const finish = () => { es.close(); S.liveES = null; $("lv-run").disabled = false; $("lv-stop").hidden = true; $("lv-stop").disabled = false; };
   es.onmessage = (m) => {
     const e = JSON.parse(m.data);
     if (e.type === "start") {
@@ -644,6 +656,9 @@ async function startLive() {
       S.pc = EVENTS.findIndex((x) => x.line === 6); renderHeader(); render();
       lvStatus(`Done in ${e.elapsed}s. Press Space to continue through returns, GRPO, GiGPO, GACA and COMMIT.`);
       finish();
+    } else if (e.type === "stopped") {
+      finish(); showRecorded();
+      lvStatus(`Run stopped after ${e.elapsed}s. Showing the recorded run again; press Run live to start a new one.`);
     } else if (e.type === "error") { lvStatus(`The run failed: ${e.message}`); finish(); }
   };
   es.onerror = () => { if (es.readyState !== EventSource.CLOSED) { lvStatus("Lost the connection to the live server."); finish(); } };
