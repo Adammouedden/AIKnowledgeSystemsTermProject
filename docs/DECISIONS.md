@@ -1101,3 +1101,14 @@ Final 3.1% (4/128) vs 33.6% for every-16 on the same seed and lr. Validation
 ~2x the every-16 run, the same drift signature as lr 6e-6. One seed, so a
 warning rather than proof. Every-16 stays the default; the frozen-reference
 probe (commit_ref_lr3_s0, started 09:20 UTC) tests whether the drift is the cause.
+
+## 2026-11-12 — commit_ref_lr3_s0 killed at step 24, restarted from scratch
+
+At 13:15 UTC every training process (trainer, Ray, queue runner) stopped at
+once with no error in any log, at step 24/34. The queue runner had been
+started from the agent's shell, so it most likely went down with that
+session. No checkpoint (save_freq=-1), so the run restarts from step 0; the
+runner is now started with setsid/nohup so it no longer depends on the agent
+session. The partial run is kept as src/runs/verl/commit_ref_lr3_s0_killed
+(validation 4.7 -> 17.2 at step 10 -> 8.6 at step 20; KL 0.05-0.12, below
+every-8 at the same steps). Not citable as a result.

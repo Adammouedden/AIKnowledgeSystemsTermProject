@@ -1,0 +1,811 @@
+ray init kwargs: {'num_cpus': None, 'runtime_env': {'env_vars': {'NCCL_DEBUG': 'WARN', 'VLLM_LOGGING_LEVEL': 'WARN', 'VLLM_ALLOW_RUNTIME_LORA_UPDATING': 'true', 'VLLM_ALLREDUCE_USE_SYMM_MEM': '0', 'CUDA_DEVICE_MAX_CONNECTIONS': '1', 'NCCL_CUMEM_ENABLE': '0'}, 'working_dir': None}}
+2026-11-12 09:21:03,351	WARNING utils.py:458 -- Detecting docker specified CPUs. In previous versions of Ray, CPU detection in containers was incorrect. Please ensure that Ray has enough CPUs allocated. As a temporary workaround to revert to the prior behavior, set `RAY_USE_MULTIPROCESSING_CPU_COUNT=1` as an env var before starting Ray. Set the env var: `RAY_DISABLE_DOCKER_CPU_WARNING=1` to mute this warning.
+2026-11-12 09:21:03,351	WARNING utils.py:470 -- Ray currently does not support initializing Ray with fractional cpus. Your num_cpus will be truncated from 11.52 to 11.
+2026-11-12 09:21:03,579	INFO worker.py:2004 -- Started a local Ray instance. View the dashboard at [1m[32mhttp://127.0.0.1:8265 [39m[22m
+/workspace/verl-agent/.venv/lib/python3.12/site-packages/ray/_private/worker.py:2052: FutureWarning: Tip: In future versions of Ray, Ray will no longer override accelerator visible devices env var if num_gpus=0 or num_gpus=None (default). To enable this behavior and turn off this error message, set RAY_ACCEL_ENV_VAR_OVERRIDE_ON_ZERO=0
+  warnings.warn(
+[36m(TaskRunner pid=549966)[0m {'actor_rollout_ref': {'actor': {'checkpoint': {'contents': ['model',
+[36m(TaskRunner pid=549966)[0m                                                              'optimizer',
+[36m(TaskRunner pid=549966)[0m                                                              'extra']},
+[36m(TaskRunner pid=549966)[0m                                  'clip_ratio': 0.2,
+[36m(TaskRunner pid=549966)[0m                                  'clip_ratio_c': 3.0,
+[36m(TaskRunner pid=549966)[0m                                  'clip_ratio_high': 0.2,
+[36m(TaskRunner pid=549966)[0m                                  'clip_ratio_low': 0.2,
+[36m(TaskRunner pid=549966)[0m                                  'entropy_coeff': 0.001,
+[36m(TaskRunner pid=549966)[0m                                  'fsdp_config': {'fsdp_size': -1,
+[36m(TaskRunner pid=549966)[0m                                                  'offload_policy': False,
+[36m(TaskRunner pid=549966)[0m                                                  'optimizer_offload': True,
+[36m(TaskRunner pid=549966)[0m                                                  'param_offload': False,
+[36m(TaskRunner pid=549966)[0m                                                  'reshard_after_forward': True,
+[36m(TaskRunner pid=549966)[0m                                                  'wrap_policy': {'min_num_params': 0}},
+[36m(TaskRunner pid=549966)[0m                                  'grad_clip': 1.0,
+[36m(TaskRunner pid=549966)[0m                                  'invalid_action_penalty_coef': 0.1,
+[36m(TaskRunner pid=549966)[0m                                  'kl_loss_coef': 0.01,
+[36m(TaskRunner pid=549966)[0m                                  'kl_loss_type': 'low_var_kl',
+[36m(TaskRunner pid=549966)[0m                                  'loss_agg_mode': 'token-mean',
+[36m(TaskRunner pid=549966)[0m                                  'optim': {'lr': 3e-06,
+[36m(TaskRunner pid=549966)[0m                                            'lr_warmup_steps': -1,
+[36m(TaskRunner pid=549966)[0m                                            'lr_warmup_steps_ratio': 0.0,
+[36m(TaskRunner pid=549966)[0m                                            'min_lr_ratio': 0.0,
+[36m(TaskRunner pid=549966)[0m                                            'num_cycles': 0.5,
+[36m(TaskRunner pid=549966)[0m                                            'total_training_steps': -1,
+[36m(TaskRunner pid=549966)[0m                                            'warmup_style': 'constant',
+[36m(TaskRunner pid=549966)[0m                                            'weight_decay': 0.01},
+[36m(TaskRunner pid=549966)[0m                                  'policy_loss': {'loss_mode': 'vanilla'},
+[36m(TaskRunner pid=549966)[0m                                  'ppo_epochs': 1,
+[36m(TaskRunner pid=549966)[0m                                  'ppo_max_token_len_per_gpu': 16384,
+[36m(TaskRunner pid=549966)[0m                                  'ppo_micro_batch_size': None,
+[36m(TaskRunner pid=549966)[0m                                  'ppo_micro_batch_size_per_gpu': 4,
+[36m(TaskRunner pid=549966)[0m                                  'ppo_mini_batch_size': 256,
+[36m(TaskRunner pid=549966)[0m                                  'shuffle': False,
+[36m(TaskRunner pid=549966)[0m                                  'strategy': 'fsdp',
+[36m(TaskRunner pid=549966)[0m                                  'ulysses_sequence_parallel_size': 1,
+[36m(TaskRunner pid=549966)[0m                                  'use_dynamic_bsz': False,
+[36m(TaskRunner pid=549966)[0m                                  'use_invalid_action_penalty': True,
+[36m(TaskRunner pid=549966)[0m                                  'use_kl_loss': True,
+[36m(TaskRunner pid=549966)[0m                                  'use_torch_compile': True},
+[36m(TaskRunner pid=549966)[0m                        'hybrid_engine': True,
+[36m(TaskRunner pid=549966)[0m                        'model': {'enable_activation_offload': False,
+[36m(TaskRunner pid=549966)[0m                                  'enable_gradient_checkpointing': True,
+[36m(TaskRunner pid=549966)[0m                                  'external_lib': None,
+[36m(TaskRunner pid=549966)[0m                                  'lora_alpha': 16,
+[36m(TaskRunner pid=549966)[0m                                  'lora_rank': 0,
+[36m(TaskRunner pid=549966)[0m                                  'override_config': {},
+[36m(TaskRunner pid=549966)[0m                                  'path': 'Qwen/Qwen2.5-1.5B-Instruct',
+[36m(TaskRunner pid=549966)[0m                                  'target_modules': 'all-linear',
+[36m(TaskRunner pid=549966)[0m                                  'trust_remote_code': False,
+[36m(TaskRunner pid=549966)[0m                                  'use_fused_kernels': False,
+[36m(TaskRunner pid=549966)[0m                                  'use_liger': False,
+[36m(TaskRunner pid=549966)[0m                                  'use_remove_padding': True,
+[36m(TaskRunner pid=549966)[0m                                  'use_shm': False},
+[36m(TaskRunner pid=549966)[0m                        'ref': {'fsdp_config': {'param_offload': True,
+[36m(TaskRunner pid=549966)[0m                                                'reshard_after_forward': True,
+[36m(TaskRunner pid=549966)[0m                                                'wrap_policy': {'min_num_params': 0}},
+[36m(TaskRunner pid=549966)[0m                                'log_prob_max_token_len_per_gpu': 16384,
+[36m(TaskRunner pid=549966)[0m                                'log_prob_micro_batch_size': None,
+[36m(TaskRunner pid=549966)[0m                                'log_prob_micro_batch_size_per_gpu': 8,
+[36m(TaskRunner pid=549966)[0m                                'log_prob_use_dynamic_bsz': False,
+[36m(TaskRunner pid=549966)[0m                                'strategy': 'fsdp',
+[36m(TaskRunner pid=549966)[0m                                'ulysses_sequence_parallel_size': 1,
+[36m(TaskRunner pid=549966)[0m                                'use_torch_compile': True},
+[36m(TaskRunner pid=549966)[0m                        'rollout': {'chat_scheduler': None,
+[36m(TaskRunner pid=549966)[0m                                    'disable_log_stats': True,
+[36m(TaskRunner pid=549966)[0m                                    'do_sample': True,
+[36m(TaskRunner pid=549966)[0m                                    'dtype': 'bfloat16',
+[36m(TaskRunner pid=549966)[0m                                    'enable_chunked_prefill': False,
+[36m(TaskRunner pid=549966)[0m                                    'enforce_eager': False,
+[36m(TaskRunner pid=549966)[0m                                    'engine_kwargs': {'sglang': {'attention_backend': None},
+[36m(TaskRunner pid=549966)[0m                                                      'vllm': {'swap_space': None}},
+[36m(TaskRunner pid=549966)[0m                                    'free_cache_engine': False,
+[36m(TaskRunner pid=549966)[0m                                    'gpu_memory_utilization': 0.35,
+[36m(TaskRunner pid=549966)[0m                                    'ignore_eos': False,
+[36m(TaskRunner pid=549966)[0m                                    'layered_summon': False,
+[36m(TaskRunner pid=549966)[0m                                    'load_format': 'dummy_dtensor',
+[36m(TaskRunner pid=549966)[0m                                    'log_prob_max_token_len_per_gpu': 16384,
+[36m(TaskRunner pid=549966)[0m                                    'log_prob_micro_batch_size': None,
+[36m(TaskRunner pid=549966)[0m                                    'log_prob_micro_batch_size_per_gpu': 8,
+[36m(TaskRunner pid=549966)[0m                                    'log_prob_use_dynamic_bsz': False,
+[36m(TaskRunner pid=549966)[0m                                    'max_model_len': None,
+[36m(TaskRunner pid=549966)[0m                                    'max_num_batched_tokens': 8192,
+[36m(TaskRunner pid=549966)[0m                                    'max_num_seqs': 1024,
+[36m(TaskRunner pid=549966)[0m                                    'mode': 'sync',
+[36m(TaskRunner pid=549966)[0m                                    'multi_turn': {'enable': False,
+[36m(TaskRunner pid=549966)[0m                                                   'format': 'chatml',
+[36m(TaskRunner pid=549966)[0m                                                   'max_turns': None,
+[36m(TaskRunner pid=549966)[0m                                                   'tool_config_path': None},
+[36m(TaskRunner pid=549966)[0m                                    'n': 1,
+[36m(TaskRunner pid=549966)[0m                                    'name': 'vllm',
+[36m(TaskRunner pid=549966)[0m                                    'prompt_length': 2048,
+[36m(TaskRunner pid=549966)[0m                                    'response_length': 512,
+[36m(TaskRunner pid=549966)[0m                                    'temperature': 1.0,
+[36m(TaskRunner pid=549966)[0m                                    'tensor_model_parallel_size': 1,
+[36m(TaskRunner pid=549966)[0m                                    'top_k': -1,
+[36m(TaskRunner pid=549966)[0m                                    'top_p': 1,
+[36m(TaskRunner pid=549966)[0m                                    'use_fire_sampling': False,
+[36m(TaskRunner pid=549966)[0m                                    'val_kwargs': {'do_sample': True,
+[36m(TaskRunner pid=549966)[0m                                                   'n': 1,
+[36m(TaskRunner pid=549966)[0m                                                   'temperature': 0.4,
+[36m(TaskRunner pid=549966)[0m                                                   'top_k': -1,
+[36m(TaskRunner pid=549966)[0m                                                   'top_p': 1.0}}},
+[36m(TaskRunner pid=549966)[0m  'algorithm': {'adv_estimator': 'gaca',
+[36m(TaskRunner pid=549966)[0m                'filter_groups': {'enable': False, 'max_num_gen_batches': 10},
+[36m(TaskRunner pid=549966)[0m                'gaca': {'action_weight': 2.0,
+[36m(TaskRunner pid=549966)[0m                         'alpha_c': 1.0,
+[36m(TaskRunner pid=549966)[0m                         'alpha_lam': 0.5,
+[36m(TaskRunner pid=549966)[0m                         'beta_lam': 0.5,
+[36m(TaskRunner pid=549966)[0m                         'lam0': 0.5,
+[36m(TaskRunner pid=549966)[0m                         'method': 'gaca',
+[36m(TaskRunner pid=549966)[0m                         'norm': 'mean_std',
+[36m(TaskRunner pid=549966)[0m                         'probe_clip_hi': 4.0,
+[36m(TaskRunner pid=549966)[0m                         'probe_clip_lo': 0.25,
+[36m(TaskRunner pid=549966)[0m                         'probe_every': 16,
+[36m(TaskRunner pid=549966)[0m                         'probe_scorer': 'ref',
+[36m(TaskRunner pid=549966)[0m                         'probe_sign': 'both',
+[36m(TaskRunner pid=549966)[0m                         'rel': 'none',
+[36m(TaskRunner pid=549966)[0m                         'score_mode': 'entropy',
+[36m(TaskRunner pid=549966)[0m                         'token_mode': 'probe',
+[36m(TaskRunner pid=549966)[0m                         'w': 1.0},
+[36m(TaskRunner pid=549966)[0m                'gamma': 0.95,
+[36m(TaskRunner pid=549966)[0m                'gigpo': {'enable_similarity': False,
+[36m(TaskRunner pid=549966)[0m                          'mode': 'mean_norm',
+[36m(TaskRunner pid=549966)[0m                          'similarity_thresh': 0.95,
+[36m(TaskRunner pid=549966)[0m                          'step_advantage_w': 1.0},
+[36m(TaskRunner pid=549966)[0m                'kl_ctrl': {'horizon': 10000,
+[36m(TaskRunner pid=549966)[0m                            'kl_coef': 0.001,
+[36m(TaskRunner pid=549966)[0m                            'target_kl': 0.1,
+[36m(TaskRunner pid=549966)[0m                            'type': 'fixed'},
+[36m(TaskRunner pid=549966)[0m                'kl_penalty': 'kl',
+[36m(TaskRunner pid=549966)[0m                'lam': 1.0,
+[36m(TaskRunner pid=549966)[0m                'norm_adv_by_std_in_grpo': True,
+[36m(TaskRunner pid=549966)[0m                'pf_ppo': {'reweight_method': 'pow', 'weight_pow': 2.0},
+[36m(TaskRunner pid=549966)[0m                'probe_scorer': 'policy',
+[36m(TaskRunner pid=549966)[0m                'use_kl_in_reward': False,
+[36m(TaskRunner pid=549966)[0m                'use_pf_ppo': False},
+[36m(TaskRunner pid=549966)[0m  'critic': {'checkpoint': {'contents': ['model', 'optimizer', 'extra']},
+[36m(TaskRunner pid=549966)[0m             'cliprange_value': 0.5,
+[36m(TaskRunner pid=549966)[0m             'forward_max_token_len_per_gpu': 32768,
+[36m(TaskRunner pid=549966)[0m             'forward_micro_batch_size': None,
+[36m(TaskRunner pid=549966)[0m             'forward_micro_batch_size_per_gpu': None,
+[36m(TaskRunner pid=549966)[0m             'grad_clip': 1.0,
+[36m(TaskRunner pid=549966)[0m             'loss_agg_mode': 'token-mean',
+[36m(TaskRunner pid=549966)[0m             'model': {'enable_activation_offload': False,
+[36m(TaskRunner pid=549966)[0m                       'enable_gradient_checkpointing': True,
+[36m(TaskRunner pid=549966)[0m                       'external_lib': None,
+[36m(TaskRunner pid=549966)[0m                       'fsdp_config': {'fsdp_size': -1,
+[36m(TaskRunner pid=549966)[0m                                       'offload_policy': False,
+[36m(TaskRunner pid=549966)[0m                                       'optimizer_offload': False,
+[36m(TaskRunner pid=549966)[0m                                       'param_offload': False,
+[36m(TaskRunner pid=549966)[0m                                       'reshard_after_forward': True,
+[36m(TaskRunner pid=549966)[0m                                       'wrap_policy': {'min_num_params': 0}},
+[36m(TaskRunner pid=549966)[0m                       'lora_alpha': 16,
+[36m(TaskRunner pid=549966)[0m                       'lora_rank': 0,
+[36m(TaskRunner pid=549966)[0m                       'override_config': {},
+[36m(TaskRunner pid=549966)[0m                       'path': '~/models/deepseek-llm-7b-chat',
+[36m(TaskRunner pid=549966)[0m                       'target_modules': 'all-linear',
+[36m(TaskRunner pid=549966)[0m                       'tokenizer_path': 'Qwen/Qwen2.5-1.5B-Instruct',
+[36m(TaskRunner pid=549966)[0m                       'trust_remote_code': False,
+[36m(TaskRunner pid=549966)[0m                       'use_remove_padding': False,
+[36m(TaskRunner pid=549966)[0m                       'use_shm': False},
+[36m(TaskRunner pid=549966)[0m             'optim': {'lr': 1e-05,
+[36m(TaskRunner pid=549966)[0m                       'lr_warmup_steps_ratio': 0.0,
+[36m(TaskRunner pid=549966)[0m                       'min_lr_ratio': None,
+[36m(TaskRunner pid=549966)[0m                       'total_training_steps': -1,
+[36m(TaskRunner pid=549966)[0m                       'warmup_style': 'constant',
+[36m(TaskRunner pid=549966)[0m                       'weight_decay': 0.01},
+[36m(TaskRunner pid=549966)[0m             'ppo_epochs': 1,
+[36m(TaskRunner pid=549966)[0m             'ppo_max_token_len_per_gpu': 32768,
+[36m(TaskRunner pid=549966)[0m             'ppo_micro_batch_size': None,
+[36m(TaskRunner pid=549966)[0m             'ppo_micro_batch_size_per_gpu': None,
+[36m(TaskRunner pid=549966)[0m             'ppo_mini_batch_size': 256,
+[36m(TaskRunner pid=549966)[0m             'rollout_n': 1,
+[36m(TaskRunner pid=549966)[0m             'shuffle': False,
+[36m(TaskRunner pid=549966)[0m             'strategy': 'fsdp',
+[36m(TaskRunner pid=549966)[0m             'ulysses_sequence_parallel_size': 1,
+[36m(TaskRunner pid=549966)[0m             'use_dynamic_bsz': False},
+[36m(TaskRunner pid=549966)[0m  'custom_reward_function': {'name': 'compute_score', 'path': None},
+[36m(TaskRunner pid=549966)[0m  'data': {'apply_chat_template_kwargs': {},
+[36m(TaskRunner pid=549966)[0m           'custom_cls': {'name': None, 'path': None},
+[36m(TaskRunner pid=549966)[0m           'filter_overlong_prompts': True,
+[36m(TaskRunner pid=549966)[0m           'filter_overlong_prompts_workers': 1,
+[36m(TaskRunner pid=549966)[0m           'image_key': 'images',
+[36m(TaskRunner pid=549966)[0m           'max_prompt_length': 2048,
+[36m(TaskRunner pid=549966)[0m           'max_response_length': 512,
+[36m(TaskRunner pid=549966)[0m           'prompt_key': 'prompt',
+[36m(TaskRunner pid=549966)[0m           'return_full_prompt': False,
+[36m(TaskRunner pid=549966)[0m           'return_raw_chat': True,
+[36m(TaskRunner pid=549966)[0m           'return_raw_input_ids': False,
+[36m(TaskRunner pid=549966)[0m           'reward_fn_key': 'data_source',
+[36m(TaskRunner pid=549966)[0m           'shuffle': True,
+[36m(TaskRunner pid=549966)[0m           'tokenizer': None,
+[36m(TaskRunner pid=549966)[0m           'train_batch_size': 4,
+[36m(TaskRunner pid=549966)[0m           'train_files': '/root/data/verl-agent/text/train.parquet',
+[36m(TaskRunner pid=549966)[0m           'truncation': 'error',
+[36m(TaskRunner pid=549966)[0m           'trust_remote_code': False,
+[36m(TaskRunner pid=549966)[0m           'use_shm': False,
+[36m(TaskRunner pid=549966)[0m           'val_batch_size': 128,
+[36m(TaskRunner pid=549966)[0m           'val_files': '/root/data/verl-agent/text/test.parquet',
+[36m(TaskRunner pid=549966)[0m           'video_key': 'videos'},
+[36m(TaskRunner pid=549966)[0m  'env': {'alfworld': {'eval_dataset': 'eval_in_distribution'},
+[36m(TaskRunner pid=549966)[0m          'env_name': 'alfworld/AlfredTWEnv',
+[36m(TaskRunner pid=549966)[0m          'history_length': 2,
+[36m(TaskRunner pid=549966)[0m          'max_steps': 50,
+[36m(TaskRunner pid=549966)[0m          'resources_per_worker': {'num_cpus': 0.1, 'num_gpus': 0},
+[36m(TaskRunner pid=549966)[0m          'rollout': {'n': 8},
+[36m(TaskRunner pid=549966)[0m          'search': {'log_requests': False,
+[36m(TaskRunner pid=549966)[0m                     'search_url': 'http://127.0.0.1:8000/retrieve',
+[36m(TaskRunner pid=549966)[0m                     'timeout': 60,
+[36m(TaskRunner pid=549966)[0m                     'topk': 3},
+[36m(TaskRunner pid=549966)[0m          'seed': 0,
+[36m(TaskRunner pid=549966)[0m          'sokoban': {'dim_room': [6, 6],
+[36m(TaskRunner pid=549966)[0m                      'mode': 'tiny_rgb_array',
+[36m(TaskRunner pid=549966)[0m                      'num_boxes': 1,
+[36m(TaskRunner pid=549966)[0m                      'search_depth': 30},
+[36m(TaskRunner pid=549966)[0m          'val_seed': 1000,
+[36m(TaskRunner pid=549966)[0m          'webshop': {'human_goals': False, 'use_small': True}},
+[36m(TaskRunner pid=549966)[0m  'ray_init': {'num_cpus': None},
+[36m(TaskRunner pid=549966)[0m  'reward_model': {'enable': False,
+[36m(TaskRunner pid=549966)[0m                   'forward_max_token_len_per_gpu': 32768,
+[36m(TaskRunner pid=549966)[0m                   'launch_reward_fn_async': False,
+[36m(TaskRunner pid=549966)[0m                   'max_length': None,
+[36m(TaskRunner pid=549966)[0m                   'micro_batch_size': None,
+[36m(TaskRunner pid=549966)[0m                   'micro_batch_size_per_gpu': None,
+[36m(TaskRunner pid=549966)[0m                   'model': {'external_lib': None,
+[36m(TaskRunner pid=549966)[0m                             'fsdp_config': {'fsdp_size': -1,
+[36m(TaskRunner pid=549966)[0m                                             'param_offload': False,
+[36m(TaskRunner pid=549966)[0m                                             'reshard_after_forward': True,
+[36m(TaskRunner pid=549966)[0m                                             'wrap_policy': {'min_num_params': 0}},
+[36m(TaskRunner pid=549966)[0m                             'input_tokenizer': 'Qwen/Qwen2.5-1.5B-Instruct',
+[36m(TaskRunner pid=549966)[0m                             'path': '~/models/FsfairX-LLaMA3-RM-v0.1',
+[36m(TaskRunner pid=549966)[0m                             'trust_remote_code': False,
+[36m(TaskRunner pid=549966)[0m                             'use_fused_kernels': False,
+[36m(TaskRunner pid=549966)[0m                             'use_remove_padding': False,
+[36m(TaskRunner pid=549966)[0m                             'use_shm': False},
+[36m(TaskRunner pid=549966)[0m                   'reward_manager': 'episode',
+[36m(TaskRunner pid=549966)[0m                   'sandbox_fusion': {'max_concurrent': 64, 'url': None},
+[36m(TaskRunner pid=549966)[0m                   'strategy': 'fsdp',
+[36m(TaskRunner pid=549966)[0m                   'ulysses_sequence_parallel_size': 1,
+[36m(TaskRunner pid=549966)[0m                   'use_dynamic_bsz': False},
+[36m(TaskRunner pid=549966)[0m  'trainer': {'balance_batch': True,
+[36m(TaskRunner pid=549966)[0m              'critic_warmup': 0,
+[36m(TaskRunner pid=549966)[0m              'default_hdfs_dir': None,
+[36m(TaskRunner pid=549966)[0m              'default_local_dir': '/workspace/AIKnowledgeSystemsTermProject/src/runs/verl/commit_ref_lr3_s0/ckpt',
+[36m(TaskRunner pid=549966)[0m              'del_local_ckpt_after_load': False,
+[36m(TaskRunner pid=549966)[0m              'device': 'cuda',
+[36m(TaskRunner pid=549966)[0m              'experiment_name': 'commit_ref_lr3_s0',
+[36m(TaskRunner pid=549966)[0m              'log_val_generations': 0,
+[36m(TaskRunner pid=549966)[0m              'logger': ['console'],
+[36m(TaskRunner pid=549966)[0m              'max_actor_ckpt_to_keep': None,
+[36m(TaskRunner pid=549966)[0m              'max_critic_ckpt_to_keep': None,
+[36m(TaskRunner pid=549966)[0m              'n_gpus_per_node': 1,
+[36m(TaskRunner pid=549966)[0m              'nnodes': 1,
+[36m(TaskRunner pid=549966)[0m              'project_name': 'gaca_term',
+[36m(TaskRunner pid=549966)[0m              'ray_wait_register_center_timeout': 300,
+[36m(TaskRunner pid=549966)[0m              'resume_from_path': None,
+[36m(TaskRunner pid=549966)[0m              'resume_mode': 'auto',
+[36m(TaskRunner pid=549966)[0m              'rollout_data_dir': None,
+[36m(TaskRunner pid=549966)[0m              'save_freq': -1,
+[36m(TaskRunner pid=549966)[0m              'test_freq': 10,
+[36m(TaskRunner pid=549966)[0m              'total_epochs': 34,
+[36m(TaskRunner pid=549966)[0m              'total_training_steps': 34,
+[36m(TaskRunner pid=549966)[0m              'val_before_train': True,
+[36m(TaskRunner pid=549966)[0m              'val_only': False,
+[36m(TaskRunner pid=549966)[0m              'validation_data_dir': None}}
+[36m(TaskRunner pid=549966)[0m Initializing AlfredTWEnv...
+[36m(TaskRunner pid=549966)[0m   0%|          | 0/8810 [00:00<?, ?it/s]
+[36m(TaskRunner pid=549966)[0m   4%|▍         | 344/8810 [00:00<00:02, 3427.60it/s]
+[36m(TaskRunner pid=549966)[0m   8%|▊         | 687/8810 [00:00<00:03, 2679.36it/s]
+[36m(TaskRunner pid=549966)[0m  11%|█         | 965/8810 [00:00<00:02, 2639.57it/s]
+[36m(TaskRunner pid=549966)[0m  14%|█▍        | 1234/8810 [00:00<00:03, 2514.75it/s]
+[36m(TaskRunner pid=549966)[0m  17%|█▋        | 1489/8810 [00:00<00:02, 2503.93it/s]
+[36m(TaskRunner pid=549966)[0m  20%|█▉        | 1742/8810 [00:00<00:04, 1503.61it/s]
+[36m(TaskRunner pid=549966)[0m  23%|██▎       | 1994/8810 [00:00<00:03, 1715.06it/s]
+[36m(TaskRunner pid=549966)[0m  25%|██▌       | 2209/8810 [00:01<00:03, 1814.06it/s]
+[36m(TaskRunner pid=549966)[0m  28%|██▊       | 2445/8810 [00:01<00:03, 1947.30it/s]
+[36m(TaskRunner pid=549966)[0m  31%|███       | 2715/8810 [00:01<00:02, 2143.41it/s]
+[36m(TaskRunner pid=549966)[0m  34%|███▎      | 2958/8810 [00:01<00:02, 2220.24it/s]
+[36m(TaskRunner pid=549966)[0m  36%|███▋      | 3207/8810 [00:01<00:02, 2292.40it/s]
+[36m(TaskRunner pid=549966)[0m  39%|███▉      | 3448/8810 [00:01<00:03, 1539.75it/s]
+[36m(TaskRunner pid=549966)[0m  42%|████▏     | 3690/8810 [00:01<00:02, 1725.89it/s]
+[36m(TaskRunner pid=549966)[0m  45%|████▍     | 3940/8810 [00:01<00:02, 1904.23it/s]
+[36m(TaskRunner pid=549966)[0m  48%|████▊     | 4195/8810 [00:02<00:02, 2063.32it/s]
+[36m(TaskRunner pid=549966)[0m  51%|█████     | 4478/8810 [00:02<00:01, 2263.71it/s]
+[36m(TaskRunner pid=549966)[0m  54%|█████▍    | 4758/8810 [00:02<00:01, 2403.84it/s]
+[36m(TaskRunner pid=549966)[0m  57%|█████▋    | 5043/8810 [00:02<00:01, 2527.67it/s]
+[36m(TaskRunner pid=549966)[0m  60%|██████    | 5308/8810 [00:02<00:01, 2470.09it/s]
+[36m(TaskRunner pid=549966)[0m  63%|██████▎   | 5581/8810 [00:02<00:01, 2538.11it/s]
+[36m(TaskRunner pid=549966)[0m  66%|██████▋   | 5841/8810 [00:02<00:01, 1680.74it/s]
+[36m(TaskRunner pid=549966)[0m  69%|██████▉   | 6107/8810 [00:02<00:01, 1887.27it/s]
+[36m(TaskRunner pid=549966)[0m  73%|███████▎  | 6401/8810 [00:03<00:01, 2127.17it/s]
+[36m(TaskRunner pid=549966)[0m  76%|███████▌  | 6662/8810 [00:03<00:00, 2245.83it/s]
+[36m(TaskRunner pid=549966)[0m  78%|███████▊  | 6913/8810 [00:03<00:00, 2312.78it/s]
+[36m(TaskRunner pid=549966)[0m  81%|████████▏ | 7169/8810 [00:03<00:00, 2375.34it/s]
+[36m(TaskRunner pid=549966)[0m  84%|████████▍ | 7424/8810 [00:03<00:00, 2417.90it/s]
+[36m(TaskRunner pid=549966)[0m  87%|████████▋ | 7676/8810 [00:03<00:00, 1572.49it/s]
+[36m(TaskRunner pid=549966)[0m  90%|████████▉ | 7897/8810 [00:03<00:00, 1701.61it/s]
+[36m(TaskRunner pid=549966)[0m  92%|█████████▏| 8125/8810 [00:03<00:00, 1831.31it/s]
+[36m(TaskRunner pid=549966)[0m  95%|█████████▌| 8402/8810 [00:04<00:00, 2060.23it/s]
+[36m(TaskRunner pid=549966)[0m  98%|█████████▊| 8636/8810 [00:04<00:00, 2132.36it/s]
+[36m(TaskRunner pid=549966)[0m Overall we have 3553 games in split=train
+[36m(TaskRunner pid=549966)[0m Training with 3553 games
+[36m(TaskRunner pid=549966)[0m use_expert = False
+[36m(TaskRunner pid=549966)[0m Initializing AlfredTWEnv...
+[36m(TaskRunner pid=549966)[0m 100%|██████████| 8810/8810 [00:04<00:00, 2079.76it/s]
+[36m(TaskRunner pid=549966)[0m   0%|          | 0/494 [00:00<?, ?it/s]
+[36m(TaskRunner pid=549966)[0m Overall we have 140 games in split=eval_in_distribution
+[36m(TaskRunner pid=549966)[0m Evaluating with 140 games
+[36m(TaskRunner pid=549966)[0m use_expert = False
+[36m(TaskRunner pid=549966)[0m  72%|███████▏  | 354/494 [00:00<00:00, 3523.32it/s]100%|██████████| 494/494 [00:00<00:00, 3592.90it/s]
+[36m(TaskRunner pid=549966)[0m Using dataset class: RLHFDataset
+[36m(TaskRunner pid=549966)[0m dataset len: 4
+[36m(TaskRunner pid=549966)[0m Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 4 examples [00:00, 1375.63 examples/s]
+[36m(TaskRunner pid=549966)[0m Filtering prompts longer than 2048 tokens (num_proc=1):   0%|          | 0/4 [00:00<?, ? examples/s]
+[36m(TaskRunner pid=549966)[0m Filtering prompts longer than 2048 tokens (num_proc=1): 100%|██████████| 4/4 [00:00<00:00,  8.10 examples/s]
+[36m(TaskRunner pid=549966)[0m filter dataset len: 4
+[36m(TaskRunner pid=549966)[0m Using dataset class: RLHFDataset
+[36m(TaskRunner pid=549966)[0m dataset len: 128
+[36m(TaskRunner pid=549966)[0m Filtering prompts longer than 2048 tokens (num_proc=1): 100%|██████████| 4/4 [00:00<00:00,  6.50 examples/s]
+[36m(TaskRunner pid=549966)[0m Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 128 examples [00:00, 50448.31 examples/s]
+[36m(TaskRunner pid=549966)[0m Filtering prompts longer than 2048 tokens (num_proc=1):   0%|          | 0/128 [00:00<?, ? examples/s]
+[36m(TaskRunner pid=549966)[0m Filtering prompts longer than 2048 tokens (num_proc=1): 100%|██████████| 128/128 [00:00<00:00, 252.09 examples/s]
+[33m(raylet)[0m WARNING: 50 PYTHON worker processes have been started on node: e669001376161a59e5f6a562d3a036b5beaade46e5e917ed3c94aef2 with address: 172.17.0.2. This could be a result of using a large number of actors, or due to tasks blocked in ray.get() calls (see https://github.com/ray-project/ray/issues/3644 for some discussion of workarounds).
+[36m(TaskRunner pid=549966)[0m filter dataset len: 128
+[36m(TaskRunner pid=549966)[0m WARNING: val_batch_size is deprecated. Validation datasets are sent to inference engines as a whole batch, which will schedule the memory themselves.
+[36m(TaskRunner pid=549966)[0m [validate_config] All configuration checks passed successfully!
+[36m(TaskRunner pid=549966)[0m Size of train dataloader: 1, Size of val dataloader: 1
+[36m(TaskRunner pid=549966)[0m Total training steps: 34
+[36m(TaskRunner pid=549966)[0m colocated worker base class <class 'verl.single_controller.base.worker.Worker'>
+[36m(TaskRunner pid=549966)[0m Filtering prompts longer than 2048 tokens (num_proc=1): 100%|██████████| 128/128 [00:00<00:00, 202.64 examples/s]
+[36m(TaskRunner pid=549966)[0m DeprecationWarning: `ray.state.available_resources_per_node` is a private attribute and access will be removed in a future Ray version.
+[36m(TaskRunner pid=549966)[0m WARNING:2026-11-12 09:21:24,437:Waiting for register center actor W8Ll5Q_register_center to be ready. Elapsed time: 0 seconds out of 300 seconds.
+[36m(WorkerDict pid=551399)[0m [Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[36m(WorkerDict pid=551399)[0m Model config after override: Qwen2Config {
+[36m(WorkerDict pid=551399)[0m   "architectures": [
+[36m(WorkerDict pid=551399)[0m     "Qwen2ForCausalLM"
+[36m(WorkerDict pid=551399)[0m   ],
+[36m(WorkerDict pid=551399)[0m   "attention_dropout": 0.0,
+[36m(WorkerDict pid=551399)[0m   "dtype": "bfloat16",
+[36m(WorkerDict pid=551399)[0m   "eos_token_id": 151645,
+[36m(WorkerDict pid=551399)[0m   "hidden_act": "silu",
+[36m(WorkerDict pid=551399)[0m   "hidden_size": 1536,
+[36m(WorkerDict pid=551399)[0m   "initializer_range": 0.02,
+[36m(WorkerDict pid=551399)[0m   "intermediate_size": 8960,
+[36m(WorkerDict pid=551399)[0m   "layer_types": [
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention"
+[36m(WorkerDict pid=551399)[0m   ],
+[36m(WorkerDict pid=551399)[0m   "max_position_embeddings": 32768,
+[36m(WorkerDict pid=551399)[0m   "max_window_layers": 21,
+[36m(WorkerDict pid=551399)[0m   "model_type": "qwen2",
+[36m(WorkerDict pid=551399)[0m   "num_attention_heads": 12,
+[36m(WorkerDict pid=551399)[0m   "num_hidden_layers": 28,
+[36m(WorkerDict pid=551399)[0m   "num_key_value_heads": 2,
+[36m(WorkerDict pid=551399)[0m   "pad_token_id": 151643,
+[36m(WorkerDict pid=551399)[0m   "rms_norm_eps": 1e-06,
+[36m(WorkerDict pid=551399)[0m   "rope_scaling": null,
+[36m(WorkerDict pid=551399)[0m   "rope_theta": 1000000.0,
+[36m(WorkerDict pid=551399)[0m   "sliding_window": null,
+[36m(WorkerDict pid=551399)[0m   "tie_word_embeddings": true,
+[36m(WorkerDict pid=551399)[0m   "transformers_version": "4.57.3",
+[36m(WorkerDict pid=551399)[0m   "use_cache": true,
+[36m(WorkerDict pid=551399)[0m   "use_sliding_window": false,
+[36m(WorkerDict pid=551399)[0m   "vocab_size": 151936
+[36m(WorkerDict pid=551399)[0m }
+[36m(WorkerDict pid=551399)[0m 
+[36m(WorkerDict pid=551399)[0m `torch_dtype` is deprecated! Use `dtype` instead!
+[36m(WorkerDict pid=551399)[0m Monkey patch _flash_attention_forward in transformers.integrations.flash_attention
+[36m(WorkerDict pid=551399)[0m Skipping monkey patch for Qwen2ForCausalLM as use_fused_kernels is False or fused_kernels_backend is None
+[36m(WorkerDict pid=551399)[0m Qwen2ForCausalLM contains 1.54B parameters
+[36m(WorkerDict pid=551399)[0m wrap_policy: functools.partial(<function _or_policy at 0x7f5c703c49a0>, policies=[functools.partial(<function transformer_auto_wrap_policy at 0x7f5c703c4860>, transformer_layer_cls={<class 'transformers.models.qwen2.modeling_qwen2.Qwen2DecoderLayer'>})])
+[36m(WorkerDict pid=551399)[0m NCCL version 2.27.3+cuda12.9
+[36m(WorkerDict pid=551399)[0m /workspace/verl-agent/.venv/lib/python3.12/site-packages/torch/distributed/fsdp/_init_utils.py:430: UserWarning: FSDP is switching to use `NO_SHARD` instead of ShardingStrategy.FULL_SHARD since the world size is 1.
+[36m(WorkerDict pid=551399)[0m   warnings.warn(
+[36m(WorkerDict pid=551399)[0m Actor use_remove_padding=True
+[36m(WorkerDict pid=551399)[0m Actor use_fused_kernels=False
+[36m(WorkerDict pid=551399)[0m Model config after override: Qwen2Config {
+[36m(WorkerDict pid=551399)[0m   "architectures": [
+[36m(WorkerDict pid=551399)[0m     "Qwen2ForCausalLM"
+[36m(WorkerDict pid=551399)[0m   ],
+[36m(WorkerDict pid=551399)[0m   "attention_dropout": 0.0,
+[36m(WorkerDict pid=551399)[0m   "dtype": "bfloat16",
+[36m(WorkerDict pid=551399)[0m   "eos_token_id": 151645,
+[36m(WorkerDict pid=551399)[0m   "hidden_act": "silu",
+[36m(WorkerDict pid=551399)[0m   "hidden_size": 1536,
+[36m(WorkerDict pid=551399)[0m   "initializer_range": 0.02,
+[36m(WorkerDict pid=551399)[0m   "intermediate_size": 8960,
+[36m(WorkerDict pid=551399)[0m   "layer_types": [
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention",
+[36m(WorkerDict pid=551399)[0m     "full_attention"
+[36m(WorkerDict pid=551399)[0m   ],
+[36m(WorkerDict pid=551399)[0m   "max_position_embeddings": 32768,
+[36m(WorkerDict pid=551399)[0m   "max_window_layers": 21,
+[36m(WorkerDict pid=551399)[0m   "model_type": "qwen2",
+[36m(WorkerDict pid=551399)[0m   "num_attention_heads": 12,
+[36m(WorkerDict pid=551399)[0m   "num_hidden_layers": 28,
+[36m(WorkerDict pid=551399)[0m   "num_key_value_heads": 2,
+[36m(WorkerDict pid=551399)[0m   "pad_token_id": 151643,
+[36m(WorkerDict pid=551399)[0m   "rms_norm_eps": 1e-06,
+[36m(WorkerDict pid=551399)[0m   "rope_scaling": null,
+[36m(WorkerDict pid=551399)[0m   "rope_theta": 1000000.0,
+[36m(WorkerDict pid=551399)[0m   "sliding_window": null,
+[36m(WorkerDict pid=551399)[0m   "tie_word_embeddings": true,
+[36m(WorkerDict pid=551399)[0m   "transformers_version": "4.57.3",
+[36m(WorkerDict pid=551399)[0m   "use_cache": true,
+[36m(WorkerDict pid=551399)[0m   "use_sliding_window": false,
+[36m(WorkerDict pid=551399)[0m   "vocab_size": 151936
+[36m(WorkerDict pid=551399)[0m }
+[36m(WorkerDict pid=551399)[0m 
+[36m(WorkerDict pid=551399)[0m Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in Qwen2ForCausalLM is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
+[36m(WorkerDict pid=551399)[0m Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in Qwen2Model is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
+[36m(WorkerDict pid=551399)[0m Monkey patch _flash_attention_forward in transformers.integrations.flash_attention
+[36m(WorkerDict pid=551399)[0m Skipping monkey patch for Qwen2ForCausalLM as use_fused_kernels is False or fused_kernels_backend is None
+[36m(WorkerDict pid=551399)[0m Qwen2ForCausalLM contains 1.54B parameters
+[36m(WorkerDict pid=551399)[0m wrap_policy: functools.partial(<function _or_policy at 0x7f5c703c49a0>, policies=[functools.partial(<function transformer_auto_wrap_policy at 0x7f5c703c4860>, transformer_layer_cls={<class 'transformers.models.qwen2.modeling_qwen2.Qwen2DecoderLayer'>})])
+[36m(WorkerDict pid=551399)[0m /workspace/verl-agent/.venv/lib/python3.12/site-packages/torch/distributed/fsdp/_init_utils.py:430: UserWarning: FSDP is switching to use `NO_SHARD` instead of ShardingStrategy.FULL_SHARD since the world size is 1.
+[36m(WorkerDict pid=551399)[0m   warnings.warn(
+[36m(WorkerDict pid=551399)[0m Total steps: 34, num_warmup_steps: 0
+[36m(WorkerDict pid=551399)[0m Actor use_remove_padding=True
+[36m(WorkerDict pid=551399)[0m Actor use_fused_kernels=False
+[36m(WorkerDict pid=551399)[0m [Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[36m(WorkerDict pid=551399)[0m [Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[36m(WorkerDict pid=551399)[0m `torch_dtype` is deprecated! Use `dtype` instead!
+[36m(WorkerDict pid=551399)[0m [Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[36m(WorkerDict pid=551399)[0m [Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[36m(WorkerDict pid=551399)[0m [Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[36m(WorkerDict pid=551399)[0m [Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[36m(WorkerDict pid=551399)[0m [Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[36m(WorkerDict pid=551399)[0m [Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[36m(WorkerDict pid=551399)[0m WARNING 11-12 09:21:45 [topk_topp_sampler.py:66] FlashInfer is not available. Falling back to the PyTorch-native implementation of top-p & top-k sampling. For the best performance, please install FlashInfer.
+[36m(WorkerDict pid=551399)[0m Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   0%|          | 0/67 [00:00<?, ?it/s]
+[36m(WorkerDict pid=551399)[0m Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   6%|▌         | 4/67 [00:00<00:01, 32.36it/s]
+[36m(WorkerDict pid=551399)[0m Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  12%|█▏        | 8/67 [00:00<00:01, 31.32it/s]
+[36m(WorkerDict pid=551399)[0m Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  18%|█▊        | 12/67 [00:00<00:01, 32.03it/s]
+[36m(WorkerDict pid=551399)[0m Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  24%|██▍       | 16/67 [00:00<00:01, 32.34it/s]
+[36m(WorkerDict pid=551399)[0m Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  30%|██▉       | 20/67 [00:00<00:01, 32.36it/s]
+[36m(WorkerDict pid=551399)[0m Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  36%|███▌      | 24/67 [00:00<00:01, 32.22it/s]
+[36m(WorkerDict pid=551399)[0m Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  42%|████▏     | 28/67 [00:00<00:01, 31.80it/s]
+[36m(WorkerDict pid=551399)[0m Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  48%|████▊     | 32/67 [00:01<00:01, 31.67it/s]
+[36m(WorkerDict pid=551399)[0m Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  54%|█████▎    | 36/67 [00:01<00:00, 31.55it/s]
+[36m(WorkerDict pid=551399)[0m Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  60%|█████▉    | 40/67 [00:01<00:00, 31.49it/s]
+[36m(WorkerDict pid=551399)[0m Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  66%|██████▌   | 44/67 [00:01<00:00, 31.48it/s]
+[36m(WorkerDict pid=551399)[0m Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  72%|███████▏  | 48/67 [00:01<00:00, 31.43it/s]
+[36m(WorkerDict pid=551399)[0m Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  78%|███████▊  | 52/67 [00:01<00:00, 31.28it/s]
+[36m(WorkerDict pid=551399)[0m Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  84%|████████▎ | 56/67 [00:01<00:00, 31.28it/s]
+[36m(WorkerDict pid=551399)[0m Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  90%|████████▉ | 60/67 [00:01<00:00, 29.41it/s]
+[36m(WorkerDict pid=551399)[0m Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  96%|█████████▌| 64/67 [00:02<00:00, 29.77it/s]
+[36m(WorkerDict pid=551399)[0m Capturing CUDA graphs (mixed prefill-decode, PIECEWISE): 100%|██████████| 67/67 [00:02<00:00, 27.98it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE): 100%|██████████| 67/67 [00:02<00:00, 30.69it/s]
+[36m(WorkerDict pid=551399)[0m Capturing CUDA graphs (decode, FULL):   0%|          | 0/67 [00:00<?, ?it/s]
+[36m(WorkerDict pid=551399)[0m Capturing CUDA graphs (decode, FULL):   4%|▍         | 3/67 [00:00<00:02, 27.00it/s]
+[36m(WorkerDict pid=551399)[0m Capturing CUDA graphs (decode, FULL):   9%|▉         | 6/67 [00:00<00:02, 28.37it/s]
+[36m(WorkerDict pid=551399)[0m Capturing CUDA graphs (decode, FULL):  15%|█▍        | 10/67 [00:00<00:01, 29.32it/s]
+[36m(WorkerDict pid=551399)[0m Capturing CUDA graphs (decode, FULL):  21%|██        | 14/67 [00:00<00:01, 31.10it/s]
+[36m(WorkerDict pid=551399)[0m Capturing CUDA graphs (decode, FULL):  27%|██▋       | 18/67 [00:00<00:01, 32.10it/s]
+[36m(WorkerDict pid=551399)[0m Capturing CUDA graphs (decode, FULL):  33%|███▎      | 22/67 [00:00<00:01, 32.70it/s]
+[36m(WorkerDict pid=551399)[0m Capturing CUDA graphs (decode, FULL):  39%|███▉      | 26/67 [00:00<00:01, 32.64it/s]
+[36m(WorkerDict pid=551399)[0m Capturing CUDA graphs (decode, FULL):  45%|████▍     | 30/67 [00:00<00:01, 32.90it/s]
+[36m(WorkerDict pid=551399)[0m Capturing CUDA graphs (decode, FULL):  51%|█████     | 34/67 [00:01<00:01, 32.98it/s]
+[36m(WorkerDict pid=551399)[0m Capturing CUDA graphs (decode, FULL):  57%|█████▋    | 38/67 [00:01<00:00, 33.17it/s]
+[36m(WorkerDict pid=551399)[0m Capturing CUDA graphs (decode, FULL):  63%|██████▎   | 42/67 [00:01<00:00, 33.10it/s]
+[36m(WorkerDict pid=551399)[0m Capturing CUDA graphs (decode, FULL):  69%|██████▊   | 46/67 [00:01<00:00, 33.20it/s]
+[36m(WorkerDict pid=551399)[0m Capturing CUDA graphs (decode, FULL):  75%|███████▍  | 50/67 [00:01<00:00, 33.48it/s]
+[36m(WorkerDict pid=551399)[0m Capturing CUDA graphs (decode, FULL):  81%|████████  | 54/67 [00:01<00:00, 33.28it/s]
+[36m(WorkerDict pid=551399)[0m Capturing CUDA graphs (decode, FULL):  87%|████████▋ | 58/67 [00:01<00:00, 26.74it/s]
+[36m(WorkerDict pid=551399)[0m Capturing CUDA graphs (decode, FULL):  93%|█████████▎| 62/67 [00:02<00:00, 28.28it/s]
+[36m(WorkerDict pid=551399)[0m Capturing CUDA graphs (decode, FULL):  99%|█████████▊| 66/67 [00:02<00:00, 29.75it/s]
+[36m(WorkerDict pid=551399)[0m Capturing CUDA graphs (decode, FULL): 100%|██████████| 67/67 [00:02<00:00, 31.17it/s]
+[36m(TaskRunner pid=549966)[0m Using LocalLogger is deprecated. The constructor API will change 
+[36m(TaskRunner pid=549966)[0m Checkpoint tracker file does not exist: %s /workspace/AIKnowledgeSystemsTermProject/src/runs/verl/commit_ref_lr3_s0/ckpt/latest_checkpointed_iteration.txt
+[36m(TaskRunner pid=549966)[0m Training from scratch
+[36m(WorkerDict pid=551399)[0m kwargs: {'n': 1, 'logprobs': 0, 'max_tokens': 512, 'detokenize': False, 'temperature': 1.0, 'top_k': -1, 'top_p': 1, 'ignore_eos': False}
+[36m(WorkerDict pid=551399)[0m /workspace/verl-agent/.venv/lib/python3.12/site-packages/torch/distributed/fsdp/fully_sharded_data_parallel.py:678: FutureWarning: FSDP.state_dict_type() and FSDP.set_state_dict_type() are being deprecated. Please use APIs, get_state_dict() and set_state_dict(), which can support different parallelisms, FSDP1, FSDP2, DDP. API doc: https://pytorch.org/docs/stable/distributed.checkpoint.html#torch.distributed.checkpoint.state_dict.get_state_dict .Tutorial: https://pytorch.org/tutorials/recipes/distributed_checkpoint_recipe.html .
+[36m(WorkerDict pid=551399)[0m   warnings.warn(
+[36m(TaskRunner pid=549966)[0m test_gen_batch meta info: {'eos_token_id': 151645, 'pad_token_id': 151643, 'recompute_log_prob': False, 'do_sample': True, 'validate': True}
+[36m(TaskRunner pid=549966)[0m validation generation end
+[36m(TaskRunner pid=549966)[0m [text][prompt] <|im_start|>system
+[36m(TaskRunner pid=549966)[0m You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
+[36m(TaskRunner pid=549966)[0m <|im_start|>user
+[36m(TaskRunner pid=549966)[0m 
+[36m(TaskRunner pid=549966)[0m You are an expert agent operating in the ALFRED Embodied Environment. Your task is to: heat some tomato and put it in diningtable.
+[36m(TaskRunner pid=549966)[0m Prior to this step, you have already taken 17 step(s). Below are the most recent 2 observations and the corresponding actions you took: [Observation 16: 'You arrive at diningtable 1. On the diningtable 1, you see a bowl 2, a butterknife 2, a butterknife 1, a cup 2, a dishsponge 1, a glassbottle 2, a glassbottle 1, a knife 1, a mug 2, a mug 1, a peppershaker 3, a plate 1, a soapbottle 1, and a tomato 1.', Action 16: 'go to microwave 1']
+[36m(TaskRunner pid=549966)[0m [Observation 17: 'You arrive at microwave 1. The microwave 1 is open. In it, you see nothing.', Action 17: 'close microwave 1']
+[36m(TaskRunner pid=549966)[0m You are now at step 18 and your current observation is: You close the microwave 1.
+[36m(TaskRunner pid=549966)[0m Your admissible actions of the current situation are: ['examine microwave 1'
+[36m(TaskRunner pid=549966)[0m  'go to cabinet 1'
+[36m(TaskRunner pid=549966)[0m  'go to cabinet 10'
+[36m(TaskRunner pid=549966)[0m  'go to cabinet 11'
+[36m(TaskRunner pid=549966)[0m  'go to cabinet 12'
+[36m(TaskRunner pid=549966)[0m  'go to cabinet 13'
+[36m(TaskRunner pid=549966)[0m  'go to cabinet 14'
+[36m(TaskRunner pid=549966)[0m  'go to cabinet 15'
+[36m(TaskRunner pid=549966)[0m  'go to cabinet 16'
+[36m(TaskRunner pid=549966)[0m  'go to cabinet 17'
+[36m(TaskRunner pid=549966)[0m  'go to cabinet 18'
+[36m(TaskRunner pid=549966)[0m  'go to cabinet 19'
+[36m(TaskRunner pid=549966)[0m  'go to cabinet 2'
+[36m(TaskRunner pid=549966)[0m  'go to cabinet 20'
+[36m(TaskRunner pid=549966)[0m  'go to cabinet 21'
+[36m(TaskRunner pid=549966)[0m  'go to cabinet 22'
+[36m(TaskRunner pid=549966)[0m  'go to cabinet 23'
+[36m(TaskRunner pid=549966)[0m  'go to cabinet 24'
+[36m(TaskRunner pid=549966)[0m  'go to cabinet 25'
+[36m(TaskRunner pid=549966)[0m  'go to cabinet 26'
+[36m(TaskRunner pid=549966)[0m  'go to cabinet 27'
+[36m(TaskRunner pid=549966)[0m  'go to cabinet 3'
+[36m(TaskRunner pid=549966)[0m  'go to cabinet 4'
+[36m(TaskRunner pid=549966)[0m  'go to cabinet 5'
+[36m(TaskRunner pid=549966)[0m  'go to cabinet 6'
+[36m(TaskRunner pid=549966)[0m  'go to cabinet 7'
+[36m(TaskRunner pid=549966)[0m  'go to cabinet 8'
+[36m(TaskRunner pid=549966)[0m  'go to cabinet 9'
+[36m(TaskRunner pid=549966)[0m  'go to coffeemachine 1'
+[36m(TaskRunner pid=549966)[0m  'go to countertop 1'
+[36m(TaskRunner pid=549966)[0m  'go to countertop 2'
+[36m(TaskRunner pid=549966)[0m  'go to diningtable 1'
+[36m(TaskRunner pid=549966)[0m  'go to drawer 1'
+[36m(TaskRunner pid=549966)[0m  'go to drawer 10'
+[36m(TaskRunner pid=549966)[0m  'go to drawer 11'
+[36m(TaskRunner pid=549966)[0m  'go to drawer 12'
+[36m(TaskRunner pid=549966)[0m  'go to drawer 2'
+[36m(TaskRunner pid=549966)[0m  'go to drawer 3'
+[36m(TaskRunner pid=549966)[0m  'go to drawer 4'
+[36m(TaskRunner pid=549966)[0m  'go to drawer 5'
+[36m(TaskRunner pid=549966)[0m  'go to drawer 6'
+[36m(TaskRunner pid=549966)[0m  'go to drawer 7'
+[36m(TaskRunner pid=549966)[0m  'go to drawer 8'
+[36m(TaskRunner pid=549966)[0m  'go to drawer 9'
+[36m(TaskRunner pid=549966)[0m  'go to fridge 1'
+[36m(TaskRunner pid=549966)[0m  'go to garbagecan 1'
+[36m(TaskRunner pid=549966)[0m  'go to sinkbasin 1'
+[36m(TaskRunner pid=549966)[0m  'go to stoveburner 1'
+[36m(TaskRunner pid=549966)[0m  'go to stoveburner 2'
+[36m(TaskRunner pid=549966)[0m  'go to stoveburner 3'
+[36m(TaskRunner pid=549966)[0m  'go to stoveburner 4'
+[36m(TaskRunner pid=549966)[0m  'go to toaster 1'
+[36m(TaskRunner pid=549966)[0m  'inventory'
+[36m(TaskRunner pid=549966)[0m  'look'
+[36m(TaskRunner pid=549966)[0m  'open microwave 1'].
+[36m(TaskRunner pid=549966)[0m 
+[36m(TaskRunner pid=549966)[0m Now it's your turn to take an action.
+[36m(TaskRunner pid=549966)[0m You should first reason step-by-step about the current situation. This reasoning process MUST be enclosed within <think> </think> tags. 
+[36m(TaskRunner pid=549966)[0m Once you've finished your reasoning, you should choose an admissible action for current step and present it within <action> </action> tags.
+[36m(TaskRunner pid=549966)[0m <|im_end|>
+[36m(TaskRunner pid=549966)[0m <|im_start|>assistant
+[36m(TaskRunner pid=549966)[0m 
+[36m(TaskRunner pid=549966)[0m [text][response] <think>
+[36m(TaskRunner pid=549966)[0m To heat the tomato, I need to first heat the microwave. The microwave is already closed, so I will need to open it to start the heating process.
+[36m(TaskRunner pid=549966)[0m </think>
+[36m(TaskRunner pid=549966)[0m 
+[36m(TaskRunner pid=549966)[0m <action>open microwave 1</action><|im_end|>
+[36m(TaskRunner pid=549966)[0m [text][score] 0.0
+[36m(TaskRunner pid=549966)[0m ("Initial validation metrics: {'val/text/test_score': "
+[36m(TaskRunner pid=549966)[0m  "np.float64(0.2524768296580377), 'val/text/tool_call_count/mean': "
+[36m(TaskRunner pid=549966)[0m  "np.float64(0.0), 'val/success_rate': np.float64(0.046875), "
+[36m(TaskRunner pid=549966)[0m  "'val/pick_heat_then_place_in_recep_success_rate': np.float64(0.0), "
+[36m(TaskRunner pid=549966)[0m  "'val/pick_cool_then_place_in_recep_success_rate': "
+[36m(TaskRunner pid=549966)[0m  'np.float64(0.037037037037037035), '
+[36m(TaskRunner pid=549966)[0m  "'val/pick_clean_then_place_in_recep_success_rate': np.float64(0.04), "
+[36m(TaskRunner pid=549966)[0m  "'val/pick_two_obj_and_place_success_rate': np.float64(0.0), "
+[36m(TaskRunner pid=549966)[0m  "'val/pick_and_place_success_rate': np.float64(0.14285714285714285), "
+[36m(TaskRunner pid=549966)[0m  "'val/look_at_obj_in_light_success_rate': np.float64(0.0)}")
+[36m(TaskRunner pid=549966)[0m step:0 - val/text/test_score:0.252 - val/text/tool_call_count/mean:0.000 - val/success_rate:0.047 - val/pick_heat_then_place_in_recep_success_rate:0.000 - val/pick_cool_then_place_in_recep_success_rate:0.037 - val/pick_clean_then_place_in_recep_success_rate:0.040 - val/pick_two_obj_and_place_success_rate:0.000 - val/pick_and_place_success_rate:0.143 - val/look_at_obj_in_light_success_rate:0.000
+[36m(TaskRunner pid=549966)[0m Training Progress:   0%|          | 0/34 [00:00<?, ?it/s]
+[36m(TaskRunner pid=549966)[0m list(reward_extra_infos_dict.keys())=[]
+[36m(TaskRunner pid=549966)[0m step:1 - global_seqlen/min:1149554.000 - global_seqlen/max:1149554.000 - global_seqlen/minmax_diff:0.000 - global_seqlen/balanced_min:1149554.000 - global_seqlen/balanced_max:1149554.000 - global_seqlen/mean:1149554.000 - actor/entropy_loss:1.093 - training/rollout_probs_diff_max:0.149 - training/rollout_probs_diff_mean:0.006 - training/rollout_probs_diff_std:0.010 - episode/valid_action_ratio:0.827 - gaca/adv_episode_abs:0.729 - gaca/step_coverage:0.950 - gaca/adv_step_abs:0.643 - gaca/c_mean:1.000 - gaca/c_std:0.404 - gaca/lam_mean:0.500 - gaca/lam_std:0.101 - gaca/clamped:0.000 - gaca/adv_abs:0.675 - probe/rows:0.839 - probe/requests:8581.000 - probe/w_max_mean:3.153 - probe/w_std:1.005 - probe/q0_mean:0.200 - probe/cir_mean:0.111 - probe/qT_mean:0.520 - timing_s/probe:202.595 - actor/kl_loss:0.008 - actor/kl_coef:0.010 - actor/pg_loss:-0.020 - actor/pg_clipfrac:0.021 - actor/ppo_kl:0.012 - actor/pg_clipfrac_lower:0.000 - actor/grad_norm:2.130 - perf/mfu/actor:0.300 - perf/max_memory_allocated_gb:40.122 - perf/max_memory_reserved_gb:46.166 - perf/cpu_memory_used_gb:34.518 - actor/lr:0.000 - training/global_step:1.000 - training/epoch:0.000 - critic/score/mean:0.258 - critic/score/max:10.000 - critic/score/min:-0.100 - critic/rewards/mean:0.258 - critic/rewards/max:10.000 - critic/rewards/min:-0.100 - critic/advantages/mean:0.033 - critic/advantages/max:17.617 - critic/advantages/min:-10.853 - critic/returns/mean:0.033 - critic/returns/max:17.617 - critic/returns/min:-10.853 - response_length/mean:92.483 - response_length/max:512.000 - response_length/min:21.000 - response_length/clip_ratio:0.001 - prompt_length/mean:625.988 - prompt_length/max:1118.000 - prompt_length/min:450.000 - prompt_length/clip_ratio:0.000 - episode/reward/mean:0.312 - episode/reward/max:10.000 - episode/reward/min:0.000 - episode/length/mean:49.781 - episode/length/max:50.000 - episode/length/min:43.000 - episode/tool_call_count/mean:0.000 - episode/success_rate:0.031 - episode/pick_heat_then_place_in_recep_success_rate:0.062 - episode/pick_clean_then_place_in_recep_success_rate:0.000 - episode/pick_two_obj_and_place_success_rate:0.000 - timing_s/gen:228.970 - timing_s/reward:0.473 - timing_s/old_log_prob:32.375 - timing_s/ref:44.169 - timing_s/adv:202.859 - timing_s/update_actor:145.349 - timing_s/step:654.404 - timing_per_token_ms/gen:1.547 - timing_per_token_ms/adv:0.176 - timing_per_token_ms/ref:0.038 - timing_per_token_ms/update_actor:0.126 - perf/total_num_tokens:1149554.000 - perf/time_per_step:654.404 - perf/throughput:1756.644
+[36m(TaskRunner pid=549966)[0m Training Progress:   3%|▎         | 1/34 [10:54<6:00:03, 654.64s/it]
+[36m(TaskRunner pid=549966)[0m list(reward_extra_infos_dict.keys())=[]
+[36m(TaskRunner pid=549966)[0m step:2 - global_seqlen/min:837618.000 - global_seqlen/max:837618.000 - global_seqlen/minmax_diff:0.000 - global_seqlen/balanced_min:837618.000 - global_seqlen/balanced_max:837618.000 - global_seqlen/mean:837618.000 - actor/entropy_loss:0.986 - training/rollout_probs_diff_max:0.185 - training/rollout_probs_diff_mean:0.006 - training/rollout_probs_diff_std:0.010 - episode/valid_action_ratio:0.990 - gaca/adv_episode_abs:0.331 - gaca/step_coverage:0.962 - gaca/adv_step_abs:0.242 - gaca/c_mean:1.000 - gaca/c_std:0.349 - gaca/lam_mean:0.500 - gaca/lam_std:0.087 - gaca/clamped:0.001 - gaca/adv_abs:0.280 - probe/rows:0.805 - probe/requests:8096.000 - probe/w_max_mean:3.153 - probe/w_std:0.989 - probe/q0_mean:0.213 - probe/cir_mean:0.102 - probe/qT_mean:0.510 - timing_s/probe:178.615 - actor/kl_loss:0.011 - actor/kl_coef:0.010 - actor/pg_loss:0.010 - actor/pg_clipfrac:0.014 - actor/ppo_kl:0.001 - actor/pg_clipfrac_lower:0.000 - actor/grad_norm:1.166 - perf/mfu/actor:0.269 - perf/max_memory_allocated_gb:40.122 - perf/max_memory_reserved_gb:46.189 - perf/cpu_memory_used_gb:51.047 - actor/lr:0.000 - training/global_step:2.000 - training/epoch:1.000 - critic/score/mean:0.595 - critic/score/max:10.000 - critic/score/min:-0.100 - critic/rewards/mean:0.595 - critic/rewards/max:10.000 - critic/rewards/min:-0.100 - critic/advantages/mean:-0.040 - critic/advantages/max:10.267 - critic/advantages/min:-18.966 - critic/returns/mean:-0.040 - critic/returns/max:10.267 - critic/returns/min:-18.966 - response_length/mean:93.329 - response_length/max:511.000 - response_length/min:25.000 - response_length/clip_ratio:0.000 - prompt_length/mean:449.170 - prompt_length/max:758.000 - prompt_length/min:304.000 - prompt_length/clip_ratio:0.000 - episode/reward/mean:0.938 - episode/reward/max:10.000 - episode/reward/min:0.000 - episode/length/mean:48.188 - episode/length/max:50.000 - episode/length/min:19.000 - episode/tool_call_count/mean:0.000 - episode/success_rate:0.094 - episode/pick_and_place_success_rate:0.000 - episode/pick_clean_then_place_in_recep_success_rate:0.375 - episode/pick_two_obj_and_place_success_rate:0.000 - timing_s/gen:187.241 - timing_s/reward:0.395 - timing_s/old_log_prob:24.407 - timing_s/ref:33.774 - timing_s/adv:178.885 - timing_s/update_actor:110.147 - timing_s/step:535.102 - timing_per_token_ms/gen:1.299 - timing_per_token_ms/adv:0.214 - timing_per_token_ms/ref:0.040 - timing_per_token_ms/update_actor:0.131 - perf/total_num_tokens:837618.000 - perf/time_per_step:535.102 - perf/throughput:1565.343
+[36m(TaskRunner pid=549966)[0m Training Progress:   6%|▌         | 2/34 [19:50<5:11:43, 584.50s/it]
+[36m(TaskRunner pid=549966)[0m list(reward_extra_infos_dict.keys())=[]
+[36m(TaskRunner pid=549966)[0m step:3 - global_seqlen/min:876938.000 - global_seqlen/max:876938.000 - global_seqlen/minmax_diff:0.000 - global_seqlen/balanced_min:876938.000 - global_seqlen/balanced_max:876938.000 - global_seqlen/mean:876938.000 - actor/entropy_loss:0.914 - training/rollout_probs_diff_max:0.283 - training/rollout_probs_diff_mean:0.006 - training/rollout_probs_diff_std:0.010 - episode/valid_action_ratio:0.995 - gaca/adv_episode_abs:0.635 - gaca/step_coverage:0.951 - gaca/adv_step_abs:0.446 - gaca/c_mean:1.000 - gaca/c_std:0.386 - gaca/lam_mean:0.500 - gaca/lam_std:0.097 - gaca/clamped:0.000 - gaca/adv_abs:0.529 - probe/rows:0.949 - probe/requests:7201.000 - probe/w_max_mean:3.078 - probe/w_std:1.068 - probe/q0_mean:0.181 - probe/cir_mean:0.101 - probe/qT_mean:0.496 - timing_s/probe:167.387 - actor/kl_loss:0.014 - actor/kl_coef:0.010 - actor/pg_loss:0.018 - actor/pg_clipfrac:0.010 - actor/ppo_kl:0.001 - actor/pg_clipfrac_lower:0.000 - actor/grad_norm:1.436 - perf/mfu/actor:0.292 - perf/max_memory_allocated_gb:40.122 - perf/max_memory_reserved_gb:46.189 - perf/cpu_memory_used_gb:51.237 - actor/lr:0.000 - training/global_step:3.000 - training/epoch:2.000 - critic/score/mean:1.909 - critic/score/max:10.000 - critic/score/min:-0.100 - critic/rewards/mean:1.909 - critic/rewards/max:10.000 - critic/rewards/min:-0.100 - critic/advantages/mean:-0.052 - critic/advantages/max:10.111 - critic/advantages/min:-11.838 - critic/returns/mean:-0.052 - critic/returns/max:10.111 - critic/returns/min:-11.838 - response_length/mean:84.286 - response_length/max:512.000 - response_length/min:21.000 - response_length/clip_ratio:0.001 - prompt_length/mean:588.212 - prompt_length/max:1196.000 - prompt_length/min:359.000 - prompt_length/clip_ratio:0.000 - episode/reward/mean:3.438 - episode/reward/max:10.000 - episode/reward/min:0.000 - episode/length/mean:40.594 - episode/length/max:50.000 - episode/length/min:5.000 - episode/tool_call_count/mean:0.000 - episode/success_rate:0.344 - episode/pick_cool_then_place_in_recep_success_rate:0.500 - episode/pick_heat_then_place_in_recep_success_rate:0.125 - episode/pick_and_place_success_rate:0.625 - timing_s/gen:205.949 - timing_s/reward:0.346 - timing_s/old_log_prob:24.806 - timing_s/ref:29.997 - timing_s/adv:167.604 - timing_s/update_actor:106.716 - timing_s/step:535.628 - timing_per_token_ms/gen:1.874 - timing_per_token_ms/adv:0.191 - timing_per_token_ms/ref:0.034 - timing_per_token_ms/update_actor:0.122 - perf/total_num_tokens:876938.000 - perf/time_per_step:535.628 - perf/throughput:1637.215
+[36m(TaskRunner pid=549966)[0m Training Progress:   9%|▉         | 3/34 [28:45<4:50:32, 562.33s/it]
+[36m(TaskRunner pid=549966)[0m list(reward_extra_infos_dict.keys())=[]
+[36m(TaskRunner pid=549966)[0m step:4 - global_seqlen/min:1039274.000 - global_seqlen/max:1039274.000 - global_seqlen/minmax_diff:0.000 - global_seqlen/balanced_min:1039274.000 - global_seqlen/balanced_max:1039274.000 - global_seqlen/mean:1039274.000 - actor/entropy_loss:0.944 - training/rollout_probs_diff_max:0.123 - training/rollout_probs_diff_mean:0.006 - training/rollout_probs_diff_std:0.010 - episode/valid_action_ratio:0.997 - gaca/adv_episode_abs:0.095 - gaca/step_coverage:0.963 - gaca/adv_step_abs:0.069 - gaca/c_mean:1.000 - gaca/c_std:0.340 - gaca/lam_mean:0.500 - gaca/lam_std:0.085 - gaca/clamped:0.000 - gaca/adv_abs:0.082 - probe/rows:0.951 - probe/requests:8478.000 - probe/w_max_mean:3.042 - probe/w_std:1.045 - probe/q0_mean:0.171 - probe/cir_mean:0.092 - probe/qT_mean:0.452 - timing_s/probe:193.808 - actor/kl_loss:0.035 - actor/kl_coef:0.010 - actor/pg_loss:0.010 - actor/pg_clipfrac:0.011 - actor/ppo_kl:0.004 - actor/pg_clipfrac_lower:0.000 - actor/grad_norm:0.923 - perf/mfu/actor:0.288 - perf/max_memory_allocated_gb:40.122 - perf/max_memory_reserved_gb:46.221 - perf/cpu_memory_used_gb:51.074 - actor/lr:0.000 - training/global_step:4.000 - training/epoch:3.000 - critic/score/mean:-0.000 - critic/score/max:0.000 - critic/score/min:-0.100 - critic/rewards/mean:-0.000 - critic/rewards/max:0.000 - critic/rewards/min:-0.100 - critic/advantages/mean:-0.036 - critic/advantages/max:0.386 - critic/advantages/min:-16.753 - critic/returns/mean:-0.036 - critic/returns/max:0.386 - critic/returns/min:-16.753 - response_length/mean:83.391 - response_length/max:512.000 - response_length/min:29.000 - response_length/clip_ratio:0.002 - prompt_length/mean:566.155 - prompt_length/max:1058.000 - prompt_length/min:332.000 - prompt_length/clip_ratio:0.000 - episode/reward/mean:0.000 - episode/reward/max:0.000 - episode/reward/min:0.000 - episode/length/mean:50.000 - episode/length/max:50.000 - episode/length/min:50.000 - episode/tool_call_count/mean:0.000 - episode/success_rate:0.000 - episode/pick_clean_then_place_in_recep_success_rate:0.000 - episode/pick_cool_then_place_in_recep_success_rate:0.000 - episode/pick_two_obj_and_place_success_rate:0.000 - timing_s/gen:197.395 - timing_s/reward:0.436 - timing_s/old_log_prob:29.415 - timing_s/ref:36.367 - timing_s/adv:194.095 - timing_s/update_actor:127.878 - timing_s/step:585.751 - timing_per_token_ms/gen:1.479 - timing_per_token_ms/adv:0.187 - timing_per_token_ms/ref:0.035 - timing_per_token_ms/update_actor:0.123 - perf/total_num_tokens:1039274.000 - perf/time_per_step:585.751 - perf/throughput:1774.258
+[36m(TaskRunner pid=549966)[0m Training Progress:  12%|█▏        | 4/34 [38:32<4:45:51, 571.72s/it]
+[36m(TaskRunner pid=549966)[0m list(reward_extra_infos_dict.keys())=[]
+[36m(TaskRunner pid=549966)[0m step:5 - global_seqlen/min:944177.000 - global_seqlen/max:944177.000 - global_seqlen/minmax_diff:0.000 - global_seqlen/balanced_min:944177.000 - global_seqlen/balanced_max:944177.000 - global_seqlen/mean:944177.000 - actor/entropy_loss:1.039 - training/rollout_probs_diff_max:0.176 - training/rollout_probs_diff_mean:0.006 - training/rollout_probs_diff_std:0.009 - episode/valid_action_ratio:0.994 - gaca/adv_episode_abs:0.213 - gaca/step_coverage:0.965 - gaca/adv_step_abs:0.115 - gaca/c_mean:1.000 - gaca/c_std:0.313 - gaca/lam_mean:0.500 - gaca/lam_std:0.078 - gaca/clamped:0.000 - gaca/adv_abs:0.151 - probe/rows:0.953 - probe/requests:9322.000 - probe/w_max_mean:3.144 - probe/w_std:1.061 - probe/q0_mean:0.182 - probe/cir_mean:0.109 - probe/qT_mean:0.502 - timing_s/probe:209.764 - actor/kl_loss:0.060 - actor/kl_coef:0.010 - actor/pg_loss:0.016 - actor/pg_clipfrac:0.013 - actor/ppo_kl:0.002 - actor/pg_clipfrac_lower:0.000 - actor/grad_norm:1.143 - perf/mfu/actor:0.279 - perf/max_memory_allocated_gb:40.122 - perf/max_memory_reserved_gb:46.221 - perf/cpu_memory_used_gb:51.263 - actor/lr:0.000 - training/global_step:5.000 - training/epoch:4.000 - critic/score/mean:0.089 - critic/score/max:10.000 - critic/score/min:-0.100 - critic/rewards/mean:0.089 - critic/rewards/max:10.000 - critic/rewards/min:-0.100 - critic/advantages/mean:-0.019 - critic/advantages/max:22.031 - critic/advantages/min:-46.010 - critic/returns/mean:-0.019 - critic/returns/max:22.031 - critic/returns/min:-46.010 - response_length/mean:92.439 - response_length/max:356.000 - response_length/min:28.000 - response_length/clip_ratio:0.000 - prompt_length/mean:509.715 - prompt_length/max:912.000 - prompt_length/min:300.000 - prompt_length/clip_ratio:0.000 - episode/reward/mean:0.312 - episode/reward/max:10.000 - episode/reward/min:0.000 - episode/length/mean:48.875 - episode/length/max:50.000 - episode/length/min:14.000 - episode/tool_call_count/mean:0.000 - episode/success_rate:0.031 - episode/pick_cool_then_place_in_recep_success_rate:0.125 - episode/pick_clean_then_place_in_recep_success_rate:0.000 - episode/pick_heat_then_place_in_recep_success_rate:0.000 - episode/pick_two_obj_and_place_success_rate:0.000 - timing_s/gen:175.488 - timing_s/reward:0.423 - timing_s/old_log_prob:27.153 - timing_s/ref:35.124 - timing_s/adv:210.054 - timing_s/update_actor:119.922 - timing_s/step:568.427 - timing_per_token_ms/gen:1.211 - timing_per_token_ms/adv:0.222 - timing_per_token_ms/ref:0.037 - timing_per_token_ms/update_actor:0.127 - perf/total_num_tokens:944177.000 - perf/time_per_step:568.427 - perf/throughput:1661.036
+[36m(TaskRunner pid=549966)[0m Training Progress:  15%|█▍        | 5/34 [48:00<4:35:48, 570.65s/it]
+[36m(TaskRunner pid=549966)[0m list(reward_extra_infos_dict.keys())=[]
+[36m(TaskRunner pid=549966)[0m step:6 - global_seqlen/min:807228.000 - global_seqlen/max:807228.000 - global_seqlen/minmax_diff:0.000 - global_seqlen/balanced_min:807228.000 - global_seqlen/balanced_max:807228.000 - global_seqlen/mean:807228.000 - actor/entropy_loss:0.990 - training/rollout_probs_diff_max:0.111 - training/rollout_probs_diff_mean:0.005 - training/rollout_probs_diff_std:0.009 - episode/valid_action_ratio:0.997 - gaca/adv_episode_abs:0.294 - gaca/step_coverage:0.971 - gaca/adv_step_abs:0.203 - gaca/c_mean:1.000 - gaca/c_std:0.311 - gaca/lam_mean:0.500 - gaca/lam_std:0.078 - gaca/clamped:0.000 - gaca/adv_abs:0.243 - probe/rows:0.959 - probe/requests:8570.000 - probe/w_max_mean:3.097 - probe/w_std:1.051 - probe/q0_mean:0.194 - probe/cir_mean:0.103 - probe/qT_mean:0.487 - timing_s/probe:187.299 - actor/kl_loss:0.031 - actor/kl_coef:0.010 - actor/pg_loss:0.010 - actor/pg_clipfrac:0.007 - actor/ppo_kl:0.002 - actor/pg_clipfrac_lower:0.000 - actor/grad_norm:1.064 - perf/mfu/actor:0.262 - perf/max_memory_allocated_gb:40.122 - perf/max_memory_reserved_gb:46.221 - perf/cpu_memory_used_gb:51.357 - actor/lr:0.000 - training/global_step:6.000 - training/epoch:5.000 - critic/score/mean:0.872 - critic/score/max:10.000 - critic/score/min:-0.100 - critic/rewards/mean:0.872 - critic/rewards/max:10.000 - critic/rewards/min:-0.100 - critic/advantages/mean:-0.022 - critic/advantages/max:9.682 - critic/advantages/min:-31.141 - critic/returns/mean:-0.022 - critic/returns/max:9.682 - critic/returns/min:-31.141 - response_length/mean:88.767 - response_length/max:512.000 - response_length/min:28.000 - response_length/clip_ratio:0.002 - prompt_length/mean:436.772 - prompt_length/max:848.000 - prompt_length/min:301.000 - prompt_length/clip_ratio:0.000 - episode/reward/mean:1.250 - episode/reward/max:10.000 - episode/reward/min:0.000 - episode/length/mean:47.938 - episode/length/max:50.000 - episode/length/min:19.000 - episode/tool_call_count/mean:0.000 - episode/success_rate:0.125 - episode/pick_two_obj_and_place_success_rate:0.000 - episode/pick_heat_then_place_in_recep_success_rate:0.000 - episode/pick_and_place_success_rate:0.500 - timing_s/gen:182.018 - timing_s/reward:0.380 - timing_s/old_log_prob:23.613 - timing_s/ref:33.421 - timing_s/adv:187.569 - timing_s/update_actor:108.529 - timing_s/step:535.767 - timing_per_token_ms/gen:1.335 - timing_per_token_ms/adv:0.232 - timing_per_token_ms/ref:0.041 - timing_per_token_ms/update_actor:0.134 - perf/total_num_tokens:807228.000 - perf/time_per_step:535.767 - perf/throughput:1506.678
+[36m(TaskRunner pid=549966)[0m Training Progress:  18%|█▊        | 6/34 [56:56<4:20:49, 558.91s/it]
+[36m(TaskRunner pid=549966)[0m list(reward_extra_infos_dict.keys())=[]
+[36m(TaskRunner pid=549966)[0m step:7 - global_seqlen/min:999870.000 - global_seqlen/max:999870.000 - global_seqlen/minmax_diff:0.000 - global_seqlen/balanced_min:999870.000 - global_seqlen/balanced_max:999870.000 - global_seqlen/mean:999870.000 - actor/entropy_loss:1.001 - training/rollout_probs_diff_max:0.180 - training/rollout_probs_diff_mean:0.005 - training/rollout_probs_diff_std:0.009 - episode/valid_action_ratio:0.998 - gaca/adv_episode_abs:0.335 - gaca/step_coverage:0.936 - gaca/adv_step_abs:0.239 - gaca/c_mean:1.000 - gaca/c_std:0.332 - gaca/lam_mean:0.500 - gaca/lam_std:0.083 - gaca/clamped:0.000 - gaca/adv_abs:0.285 - probe/rows:0.954 - probe/requests:8276.000 - probe/w_max_mean:3.047 - probe/w_std:1.060 - probe/q0_mean:0.175 - probe/cir_mean:0.104 - probe/qT_mean:0.495 - timing_s/probe:189.495 - actor/kl_loss:0.044 - actor/kl_coef:0.010 - actor/pg_loss:-0.003 - actor/pg_clipfrac:0.005 - actor/ppo_kl:0.001 - actor/pg_clipfrac_lower:0.000 - actor/grad_norm:1.102 - perf/mfu/actor:0.288 - perf/max_memory_allocated_gb:40.122 - perf/max_memory_reserved_gb:46.223 - perf/cpu_memory_used_gb:51.237 - actor/lr:0.000 - training/global_step:7.000 - training/epoch:6.000 - critic/score/mean:0.589 - critic/score/max:10.000 - critic/score/min:-0.100 - critic/rewards/mean:0.589 - critic/rewards/max:10.000 - critic/rewards/min:-0.100 - critic/advantages/mean:-0.004 - critic/advantages/max:16.105 - critic/advantages/min:-40.972 - critic/returns/mean:-0.004 - critic/returns/max:16.105 - critic/returns/min:-40.972 - response_length/mean:81.573 - response_length/max:348.000 - response_length/min:26.000 - response_length/clip_ratio:0.000 - prompt_length/mean:566.012 - prompt_length/max:1100.000 - prompt_length/min:455.000 - prompt_length/clip_ratio:0.000 - episode/reward/mean:0.938 - episode/reward/max:10.000 - episode/reward/min:0.000 - episode/length/mean:48.156 - episode/length/max:50.000 - episode/length/min:20.000 - episode/tool_call_count/mean:0.000 - episode/success_rate:0.094 - episode/pick_heat_then_place_in_recep_success_rate:0.125 - episode/pick_and_place_success_rate:0.125 - episode/pick_clean_then_place_in_recep_success_rate:0.000 - timing_s/gen:178.753 - timing_s/reward:0.423 - timing_s/old_log_prob:28.542 - timing_s/ref:35.140 - timing_s/adv:189.758 - timing_s/update_actor:123.036 - timing_s/step:555.908 - timing_per_token_ms/gen:1.419 - timing_per_token_ms/adv:0.190 - timing_per_token_ms/ref:0.035 - timing_per_token_ms/update_actor:0.123 - perf/total_num_tokens:999870.000 - perf/time_per_step:555.908 - perf/throughput:1798.625
+[36m(TaskRunner pid=549966)[0m Training Progress:  21%|██        | 7/34 [1:06:13<4:11:07, 558.04s/it]
+[36m(TaskRunner pid=549966)[0m list(reward_extra_infos_dict.keys())=[]
+[36m(TaskRunner pid=549966)[0m step:8 - global_seqlen/min:780788.000 - global_seqlen/max:780788.000 - global_seqlen/minmax_diff:0.000 - global_seqlen/balanced_min:780788.000 - global_seqlen/balanced_max:780788.000 - global_seqlen/mean:780788.000 - actor/entropy_loss:1.070 - training/rollout_probs_diff_max:0.121 - training/rollout_probs_diff_mean:0.005 - training/rollout_probs_diff_std:0.009 - episode/valid_action_ratio:0.995 - gaca/adv_episode_abs:0.311 - gaca/step_coverage:0.953 - gaca/adv_step_abs:0.185 - gaca/c_mean:1.000 - gaca/c_std:0.318 - gaca/lam_mean:0.500 - gaca/lam_std:0.079 - gaca/clamped:0.000 - gaca/adv_abs:0.236 - probe/rows:0.950 - probe/requests:8466.000 - probe/w_max_mean:3.137 - probe/w_std:1.053 - probe/q0_mean:0.205 - probe/cir_mean:0.105 - probe/qT_mean:0.514 - timing_s/probe:184.671 - actor/kl_loss:0.045 - actor/kl_coef:0.010 - actor/pg_loss:0.016 - actor/pg_clipfrac:0.008 - actor/ppo_kl:0.001 - actor/pg_clipfrac_lower:0.000 - actor/grad_norm:1.090 - perf/mfu/actor:0.262 - perf/max_memory_allocated_gb:40.122 - perf/max_memory_reserved_gb:46.223 - perf/cpu_memory_used_gb:51.205 - actor/lr:0.000 - training/global_step:8.000 - training/epoch:7.000 - critic/score/mean:0.684 - critic/score/max:10.000 - critic/score/min:-0.100 - critic/rewards/mean:0.684 - critic/rewards/max:10.000 - critic/rewards/min:-0.100 - critic/advantages/mean:-0.030 - critic/advantages/max:8.322 - critic/advantages/min:-12.394 - critic/returns/mean:-0.030 - critic/returns/max:8.322 - critic/returns/min:-12.394 - response_length/mean:87.641 - response_length/max:512.000 - response_length/min:34.000 - response_length/clip_ratio:0.001 - prompt_length/mean:431.500 - prompt_length/max:1004.000 - prompt_length/min:303.000 - prompt_length/clip_ratio:0.000 - episode/reward/mean:1.250 - episode/reward/max:10.000 - episode/reward/min:0.000 - episode/length/mean:46.969 - episode/length/max:50.000 - episode/length/min:15.000 - episode/tool_call_count/mean:0.000 - episode/success_rate:0.125 - episode/pick_and_place_success_rate:0.250 - episode/pick_two_obj_and_place_success_rate:0.000 - episode/pick_clean_then_place_in_recep_success_rate:0.000 - timing_s/gen:178.807 - timing_s/reward:0.367 - timing_s/old_log_prob:22.966 - timing_s/ref:32.661 - timing_s/adv:184.925 - timing_s/update_actor:105.038 - timing_s/step:524.999 - timing_per_token_ms/gen:1.357 - timing_per_token_ms/adv:0.237 - timing_per_token_ms/ref:0.042 - timing_per_token_ms/update_actor:0.135 - perf/total_num_tokens:780788.000 - perf/time_per_step:524.999 - perf/throughput:1487.217
+[36m(TaskRunner pid=549966)[0m Training Progress:  24%|██▎       | 8/34 [1:14:58<3:57:18, 547.63s/it]
+[36m(TaskRunner pid=549966)[0m list(reward_extra_infos_dict.keys())=[]
+[36m(TaskRunner pid=549966)[0m step:9 - global_seqlen/min:688895.000 - global_seqlen/max:688895.000 - global_seqlen/minmax_diff:0.000 - global_seqlen/balanced_min:688895.000 - global_seqlen/balanced_max:688895.000 - global_seqlen/mean:688895.000 - actor/entropy_loss:1.015 - training/rollout_probs_diff_max:0.117 - training/rollout_probs_diff_mean:0.005 - training/rollout_probs_diff_std:0.009 - episode/valid_action_ratio:0.999 - gaca/adv_episode_abs:0.340 - gaca/step_coverage:0.973 - gaca/adv_step_abs:0.241 - gaca/c_mean:1.000 - gaca/c_std:0.323 - gaca/lam_mean:0.500 - gaca/lam_std:0.081 - gaca/clamped:0.000 - gaca/adv_abs:0.287 - probe/rows:0.951 - probe/requests:7804.000 - probe/w_max_mean:3.038 - probe/w_std:1.023 - probe/q0_mean:0.193 - probe/cir_mean:0.089 - probe/qT_mean:0.443 - timing_s/probe:166.071 - actor/kl_loss:0.051 - actor/kl_coef:0.010 - actor/pg_loss:-0.007 - actor/pg_clipfrac:0.008 - actor/ppo_kl:0.002 - actor/pg_clipfrac_lower:0.000 - actor/grad_norm:0.958 - perf/mfu/actor:0.248 - perf/max_memory_allocated_gb:40.122 - perf/max_memory_reserved_gb:46.223 - perf/cpu_memory_used_gb:51.217 - actor/lr:0.000 - training/global_step:9.000 - training/epoch:8.000 - critic/score/mean:0.838 - critic/score/max:10.000 - critic/score/min:-0.100 - critic/rewards/mean:0.838 - critic/rewards/max:10.000 - critic/rewards/min:-0.100 - critic/advantages/mean:-0.005 - critic/advantages/max:17.767 - critic/advantages/min:-10.472 - critic/returns/mean:-0.005 - critic/returns/max:17.767 - critic/returns/min:-10.472 - response_length/mean:86.889 - response_length/max:512.000 - response_length/min:28.000 - response_length/clip_ratio:0.002 - prompt_length/mean:378.580 - prompt_length/max:608.000 - prompt_length/min:279.000 - prompt_length/clip_ratio:0.000 - episode/reward/mean:1.562 - episode/reward/max:10.000 - episode/reward/min:0.000 - episode/length/mean:46.062 - episode/length/max:50.000 - episode/length/min:12.000 - episode/tool_call_count/mean:0.000 - episode/success_rate:0.156 - episode/pick_and_place_success_rate:0.312 - episode/pick_two_obj_and_place_success_rate:0.000 - timing_s/gen:151.219 - timing_s/reward:0.347 - timing_s/old_log_prob:20.724 - timing_s/ref:31.599 - timing_s/adv:166.328 - timing_s/update_actor:97.726 - timing_s/step:468.177 - timing_per_token_ms/gen:1.176 - timing_per_token_ms/adv:0.241 - timing_per_token_ms/ref:0.046 - timing_per_token_ms/update_actor:0.142 - perf/total_num_tokens:688895.000 - perf/time_per_step:468.177 - perf/throughput:1471.442
+[36m(TaskRunner pid=549966)[0m Training Progress:  26%|██▋       | 9/34 [1:22:47<3:37:52, 522.90s/it]
+[36m(TaskRunner pid=549966)[0m list(reward_extra_infos_dict.keys())=[]
+[36m(TaskRunner pid=549966)[0m test_gen_batch meta info: {'eos_token_id': 151645, 'pad_token_id': 151643, 'recompute_log_prob': False, 'do_sample': True, 'validate': True}
+[36m(TaskRunner pid=549966)[0m validation generation end
+[36m(TaskRunner pid=549966)[0m [text][prompt] <|im_start|>system
+[36m(TaskRunner pid=549966)[0m You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
+[36m(TaskRunner pid=549966)[0m <|im_start|>user
+[36m(TaskRunner pid=549966)[0m 
+[36m(TaskRunner pid=549966)[0m You are an expert agent operating in the ALFRED Embodied Environment. Your task is to: examine the pillow with the desklamp.
+[36m(TaskRunner pid=549966)[0m Prior to this step, you have already taken 9 step(s). Below are the most recent 2 observations and the corresponding actions you took: [Observation 8: 'On the desk 1, you see a bowl 1, a cellphone 1, a desklamp 1, a keychain 2, a mug 2, a mug 1, and a pencil 1.', Action 8: 'examine desk 1']
+[36m(TaskRunner pid=549966)[0m [Observation 9: 'On the desk 1, you see a bowl 1, a cellphone 1, a desklamp 1, a keychain 2, a mug 2, a mug 1, and a pencil 1.', Action 9: 'examine desklamp 1']
+[36m(TaskRunner pid=549966)[0m You are now at step 10 and your current observation is: Nothing happens.
+[36m(TaskRunner pid=549966)[0m Your admissible actions of the current situation are: ['examine desk 1'
+[36m(TaskRunner pid=549966)[0m  'go to bed 1'
+[36m(TaskRunner pid=549966)[0m  'go to bed 2'
+[36m(TaskRunner pid=549966)[0m  'go to drawer 1'
+[36m(TaskRunner pid=549966)[0m  'go to drawer 10'
+[36m(TaskRunner pid=549966)[0m  'go to drawer 11'
+[36m(TaskRunner pid=549966)[0m  'go to drawer 2'
+[36m(TaskRunner pid=549966)[0m  'go to drawer 3'
+[36m(TaskRunner pid=549966)[0m  'go to drawer 4'
+[36m(TaskRunner pid=549966)[0m  'go to drawer 5'
+[36m(TaskRunner pid=549966)[0m  'go to drawer 6'
+[36m(TaskRunner pid=549966)[0m  'go to drawer 7'
+[36m(TaskRunner pid=549966)[0m  'go to drawer 8'
+[36m(TaskRunner pid=549966)[0m  'go to drawer 9'
+[36m(TaskRunner pid=549966)[0m  'go to dresser 1'
+[36m(TaskRunner pid=549966)[0m  'go to garbagecan 1'
+[36m(TaskRunner pid=549966)[0m  'go to safe 1'
+[36m(TaskRunner pid=549966)[0m  'go to sidetable 1'
+[36m(TaskRunner pid=549966)[0m  'go to sidetable 2'
+[36m(TaskRunner pid=549966)[0m  'inventory'
+[36m(TaskRunner pid=549966)[0m  'look'
+[36m(TaskRunner pid=549966)[0m  'take bowl 1 from desk 1'
+[36m(TaskRunner pid=549966)[0m  'take cellphone 1 from desk 1'
+[36m(TaskRunner pid=549966)[0m  'take keychain 2 from desk 1'
+[36m(TaskRunner pid=549966)[0m  'take mug 1 from desk 1'
+[36m(TaskRunner pid=549966)[0m  'take mug 2 from desk 1'
+[36m(TaskRunner pid=549966)[0m  'take pencil 1 from desk 1'
+[36m(TaskRunner pid=549966)[0m  'use desklamp 1'].
+[36m(TaskRunner pid=549966)[0m 
+[36m(TaskRunner pid=549966)[0m Now it's your turn to take an action.
+[36m(TaskRunner pid=549966)[0m You should first reason step-by-step about the current situation. This reasoning process MUST be enclosed within <think> </think> tags. 
+[36m(TaskRunner pid=549966)[0m Once you've finished your reasoning, you should choose an admissible action for current step and present it within <action> </action> tags.
+[36m(TaskRunner pid=549966)[0m <|im_end|>
+[36m(TaskRunner pid=549966)[0m <|im_start|>assistant
+[36m(TaskRunner pid=549966)[0m 
+[36m(TaskRunner pid=549966)[0m [text][response] <think>
+[36m(TaskRunner pid=549966)[0m The current situation is that I am examining the desk 1, which contains a bowl, a cellphone, a desklamp, a keychain, a mug (2), and a pencil. The desklamp is the object I need to examine.
+[36m(TaskRunner pid=549966)[0m </think>
+[36m(TaskRunner pid=549966)[0m 
+[36m(TaskRunner pid=549966)[0m <action>examine desklamp 1</action><|im_end|>
+[36m(TaskRunner pid=549966)[0m [text][score] 0.0
+[36m(TaskRunner pid=549966)[0m step:10 - global_seqlen/min:834995.000 - global_seqlen/max:834995.000 - global_seqlen/minmax_diff:0.000 - global_seqlen/balanced_min:834995.000 - global_seqlen/balanced_max:834995.000 - global_seqlen/mean:834995.000 - actor/entropy_loss:0.949 - training/rollout_probs_diff_max:0.203 - training/rollout_probs_diff_mean:0.005 - training/rollout_probs_diff_std:0.009 - episode/valid_action_ratio:0.998 - gaca/adv_episode_abs:0.252 - gaca/step_coverage:0.953 - gaca/adv_step_abs:0.314 - gaca/c_mean:1.000 - gaca/c_std:0.343 - gaca/lam_mean:0.500 - gaca/lam_std:0.086 - gaca/clamped:0.001 - gaca/adv_abs:0.276 - probe/rows:0.954 - probe/requests:7007.000 - probe/w_max_mean:2.813 - probe/w_std:0.955 - probe/q0_mean:0.134 - probe/cir_mean:0.089 - probe/qT_mean:0.397 - timing_s/probe:155.613 - actor/kl_loss:0.066 - actor/kl_coef:0.010 - actor/pg_loss:-0.010 - actor/pg_clipfrac:0.014 - actor/ppo_kl:0.003 - actor/pg_clipfrac_lower:0.000 - actor/grad_norm:1.040 - perf/mfu/actor:0.274 - perf/max_memory_allocated_gb:40.122 - perf/max_memory_reserved_gb:46.223 - perf/cpu_memory_used_gb:51.383 - actor/lr:0.000 - val/text/test_score:0.818 - val/text/tool_call_count/mean:0.000 - val/success_rate:0.172 - val/look_at_obj_in_light_success_rate:0.231 - val/pick_and_place_success_rate:0.289 - val/pick_heat_then_place_in_recep_success_rate:0.062 - val/pick_clean_then_place_in_recep_success_rate:0.158 - val/pick_cool_then_place_in_recep_success_rate:0.154 - val/pick_two_obj_and_place_success_rate:0.000 - training/global_step:10.000 - training/epoch:9.000 - critic/score/mean:2.375 - critic/score/max:10.000 - critic/score/min:-0.100 - critic/rewards/mean:2.375 - critic/rewards/max:10.000 - critic/rewards/min:-0.100 - critic/advantages/mean:0.014 - critic/advantages/max:11.385 - critic/advantages/min:-25.879 - critic/returns/mean:0.014 - critic/returns/max:11.385 - critic/returns/min:-25.879 - response_length/mean:86.492 - response_length/max:512.000 - response_length/min:30.000 - response_length/clip_ratio:0.006 - prompt_length/mean:490.162 - prompt_length/max:1018.000 - prompt_length/min:351.000 - prompt_length/clip_ratio:0.000 - episode/reward/mean:3.125 - episode/reward/max:10.000 - episode/reward/min:0.000 - episode/length/mean:45.125 - episode/length/max:50.000 - episode/length/min:23.000 - episode/tool_call_count/mean:0.000 - episode/success_rate:0.312 - episode/pick_cool_then_place_in_recep_success_rate:1.000 - episode/pick_two_obj_and_place_success_rate:0.000 - episode/pick_clean_then_place_in_recep_success_rate:0.125 - timing_s/gen:199.582 - timing_s/reward:0.375 - timing_s/old_log_prob:24.089 - timing_s/ref:32.099 - timing_s/adv:155.868 - timing_s/update_actor:107.802 - timing_s/testing:312.583 - timing_s/step:832.654 - timing_per_token_ms/gen:1.594 - timing_per_token_ms/adv:0.187 - timing_per_token_ms/ref:0.038 - timing_per_token_ms/update_actor:0.129 - perf/total_num_tokens:834995.000 - perf/time_per_step:832.654 - perf/throughput:1002.811
+[36m(TaskRunner pid=549966)[0m Training Progress:  29%|██▉       | 10/34 [1:36:40<4:07:27, 618.63s/it]
+[36m(TaskRunner pid=549966)[0m list(reward_extra_infos_dict.keys())=[]
+[36m(TaskRunner pid=549966)[0m step:11 - global_seqlen/min:958171.000 - global_seqlen/max:958171.000 - global_seqlen/minmax_diff:0.000 - global_seqlen/balanced_min:958171.000 - global_seqlen/balanced_max:958171.000 - global_seqlen/mean:958171.000 - actor/entropy_loss:0.997 - training/rollout_probs_diff_max:0.184 - training/rollout_probs_diff_mean:0.005 - training/rollout_probs_diff_std:0.008 - episode/valid_action_ratio:0.998 - gaca/adv_episode_abs:0.419 - gaca/step_coverage:0.970 - gaca/adv_step_abs:0.339 - gaca/c_mean:1.000 - gaca/c_std:0.330 - gaca/lam_mean:0.500 - gaca/lam_std:0.082 - gaca/clamped:0.000 - gaca/adv_abs:0.375 - probe/rows:0.990 - probe/requests:7804.000 - probe/w_max_mean:2.962 - probe/w_std:1.047 - probe/q0_mean:0.185 - probe/cir_mean:0.109 - probe/qT_mean:0.514 - timing_s/probe:177.431 - actor/kl_loss:0.055 - actor/kl_coef:0.010 - actor/pg_loss:-0.000 - actor/pg_clipfrac:0.007 - actor/ppo_kl:0.001 - actor/pg_clipfrac_lower:0.000 - actor/grad_norm:1.330 - perf/mfu/actor:0.285 - perf/max_memory_allocated_gb:40.122 - perf/max_memory_reserved_gb:46.223 - perf/cpu_memory_used_gb:51.750 - actor/lr:0.000 - training/global_step:11.000 - training/epoch:10.000 - critic/score/mean:1.045 - critic/score/max:10.000 - critic/score/min:-0.100 - critic/rewards/mean:1.045 - critic/rewards/max:10.000 - critic/rewards/min:-0.100 - critic/advantages/mean:-0.001 - critic/advantages/max:11.409 - critic/advantages/min:-42.934 - critic/returns/mean:-0.001 - critic/returns/max:11.409 - critic/returns/min:-42.934 - response_length/mean:76.479 - response_length/max:512.000 - response_length/min:29.000 - response_length/clip_ratio:0.001 - prompt_length/mean:557.232 - prompt_length/max:1014.000 - prompt_length/min:411.000 - prompt_length/clip_ratio:0.000 - episode/reward/mean:1.562 - episode/reward/max:10.000 - episode/reward/min:0.000 - episode/length/mean:47.125 - episode/length/max:50.000 - episode/length/min:18.000 - episode/tool_call_count/mean:0.000 - episode/success_rate:0.156 - episode/pick_cool_then_place_in_recep_success_rate:0.083 - episode/pick_and_place_success_rate:0.375 - timing_s/gen:180.350 - timing_s/reward:0.416 - timing_s/old_log_prob:27.337 - timing_s/ref:34.282 - timing_s/adv:177.687 - timing_s/update_actor:119.015 - timing_s/step:539.330 - timing_per_token_ms/gen:1.560 - timing_per_token_ms/adv:0.185 - timing_per_token_ms/ref:0.036 - timing_per_token_ms/update_actor:0.124 - perf/total_num_tokens:958171.000 - perf/time_per_step:539.330 - perf/throughput:1776.594
+[36m(TaskRunner pid=549966)[0m Training Progress:  32%|███▏      | 11/34 [1:45:39<3:47:53, 594.48s/it]
+[36m(TaskRunner pid=549966)[0m list(reward_extra_infos_dict.keys())=[]
+[36m(TaskRunner pid=549966)[0m step:12 - global_seqlen/min:840440.000 - global_seqlen/max:840440.000 - global_seqlen/minmax_diff:0.000 - global_seqlen/balanced_min:840440.000 - global_seqlen/balanced_max:840440.000 - global_seqlen/mean:840440.000 - actor/entropy_loss:1.064 - training/rollout_probs_diff_max:0.092 - training/rollout_probs_diff_mean:0.005 - training/rollout_probs_diff_std:0.008 - episode/valid_action_ratio:0.999 - gaca/adv_episode_abs:0.195 - gaca/step_coverage:0.973 - gaca/adv_step_abs:0.135 - gaca/c_mean:1.000 - gaca/c_std:0.323 - gaca/lam_mean:0.500 - gaca/lam_std:0.081 - gaca/clamped:0.000 - gaca/adv_abs:0.162 - probe/rows:0.997 - probe/requests:8610.000 - probe/w_max_mean:3.141 - probe/w_std:1.091 - probe/q0_mean:0.216 - probe/cir_mean:0.083 - probe/qT_mean:0.481 - timing_s/probe:189.130 - actor/kl_loss:0.096 - actor/kl_coef:0.010 - actor/pg_loss:0.002 - actor/pg_clipfrac:0.002 - actor/ppo_kl:0.001 - actor/pg_clipfrac_lower:0.000 - actor/grad_norm:0.572 - perf/mfu/actor:0.266 - perf/max_memory_allocated_gb:40.122 - perf/max_memory_reserved_gb:46.223 - perf/cpu_memory_used_gb:51.977 - actor/lr:0.000 - training/global_step:12.000 - training/epoch:11.000 - critic/score/mean:0.372 - critic/score/max:10.000 - critic/score/min:-0.100 - critic/rewards/mean:0.372 - critic/rewards/max:10.000 - critic/rewards/min:-0.100 - critic/advantages/mean:-0.002 - critic/advantages/max:13.038 - critic/advantages/min:-37.752 - critic/returns/mean:-0.002 - critic/returns/max:13.038 - critic/returns/min:-37.752 - response_length/mean:78.888 - response_length/max:264.000 - response_length/min:31.000 - response_length/clip_ratio:0.000 - prompt_length/mean:459.856 - prompt_length/max:918.000 - prompt_length/min:345.000 - prompt_length/clip_ratio:0.000 - episode/reward/mean:0.625 - episode/reward/max:10.000 - episode/reward/min:0.000 - episode/length/mean:48.688 - episode/length/max:50.000 - episode/length/min:25.000 - episode/tool_call_count/mean:0.000 - episode/success_rate:0.062 - episode/pick_heat_then_place_in_recep_success_rate:0.250 - episode/pick_two_obj_and_place_success_rate:0.000 - episode/look_at_obj_in_light_success_rate:0.000 - timing_s/gen:163.435 - timing_s/reward:0.397 - timing_s/old_log_prob:24.463 - timing_s/ref:34.111 - timing_s/adv:189.389 - timing_s/update_actor:111.500 - timing_s/step:523.564 - timing_per_token_ms/gen:1.328 - timing_per_token_ms/adv:0.225 - timing_per_token_ms/ref:0.041 - timing_per_token_ms/update_actor:0.133 - perf/total_num_tokens:840440.000 - perf/time_per_step:523.564 - perf/throughput:1605.229
+[36m(TaskRunner pid=549966)[0m Training Progress:  35%|███▌      | 12/34 [1:54:23<3:30:06, 573.01s/it]
+[36m(TaskRunner pid=549966)[0m list(reward_extra_infos_dict.keys())=[]
+[36m(TaskRunner pid=549966)[0m step:13 - global_seqlen/min:867687.000 - global_seqlen/max:867687.000 - global_seqlen/minmax_diff:0.000 - global_seqlen/balanced_min:867687.000 - global_seqlen/balanced_max:867687.000 - global_seqlen/mean:867687.000 - actor/entropy_loss:1.057 - training/rollout_probs_diff_max:0.105 - training/rollout_probs_diff_mean:0.005 - training/rollout_probs_diff_std:0.008 - episode/valid_action_ratio:0.999 - gaca/adv_episode_abs:0.050 - gaca/step_coverage:0.959 - gaca/adv_step_abs:0.011 - gaca/c_mean:1.000 - gaca/c_std:0.321 - gaca/lam_mean:0.500 - gaca/lam_std:0.080 - gaca/clamped:0.000 - gaca/adv_abs:0.030 - probe/rows:0.999 - probe/requests:9028.000 - probe/w_max_mean:3.157 - probe/w_std:1.096 - probe/q0_mean:0.167 - probe/cir_mean:0.086 - probe/qT_mean:0.408 - timing_s/probe:197.936 - actor/kl_loss:0.069 - actor/kl_coef:0.010 - actor/pg_loss:0.000 - actor/pg_clipfrac:0.001 - actor/ppo_kl:0.001 - actor/pg_clipfrac_lower:0.000 - actor/grad_norm:0.382 - perf/mfu/actor:0.268 - perf/max_memory_allocated_gb:40.122 - perf/max_memory_reserved_gb:46.223 - perf/cpu_memory_used_gb:51.645 - actor/lr:0.000 - training/global_step:13.000 - training/epoch:12.000 - critic/score/mean:-0.000 - critic/score/max:0.000 - critic/score/min:-0.100 - critic/rewards/mean:-0.000 - critic/rewards/max:0.000 - critic/rewards/min:-0.100 - critic/advantages/mean:0.001 - critic/advantages/max:0.867 - critic/advantages/min:-20.791 - critic/returns/mean:0.001 - critic/returns/max:0.867 - critic/returns/min:-20.791 - response_length/mean:83.961 - response_length/max:494.000 - response_length/min:30.000 - response_length/clip_ratio:0.000 - prompt_length/mean:458.343 - prompt_length/max:854.000 - prompt_length/min:336.000 - prompt_length/clip_ratio:0.000 - episode/reward/mean:0.000 - episode/reward/max:0.000 - episode/reward/min:0.000 - episode/length/mean:50.000 - episode/length/max:50.000 - episode/length/min:50.000 - episode/tool_call_count/mean:0.000 - episode/success_rate:0.000 - episode/pick_cool_then_place_in_recep_success_rate:0.000 - episode/pick_two_obj_and_place_success_rate:0.000 - episode/pick_heat_then_place_in_recep_success_rate:0.000 - episode/pick_and_place_success_rate:0.000 - timing_s/gen:157.157 - timing_s/reward:0.433 - timing_s/old_log_prob:25.265 - timing_s/ref:35.034 - timing_s/adv:198.209 - timing_s/update_actor:114.400 - timing_s/step:530.667 - timing_per_token_ms/gen:1.170 - timing_per_token_ms/adv:0.228 - timing_per_token_ms/ref:0.040 - timing_per_token_ms/update_actor:0.132 - perf/total_num_tokens:867687.000 - perf/time_per_step:530.667 - perf/throughput:1635.089
+[36m(TaskRunner pid=549966)[0m Training Progress:  38%|███▊      | 13/34 [2:03:14<3:16:06, 560.30s/it]
+[36m(TaskRunner pid=549966)[0m list(reward_extra_infos_dict.keys())=[]
+[36m(TaskRunner pid=549966)[0m step:14 - global_seqlen/min:935434.000 - global_seqlen/max:935434.000 - global_seqlen/minmax_diff:0.000 - global_seqlen/balanced_min:935434.000 - global_seqlen/balanced_max:935434.000 - global_seqlen/mean:935434.000 - actor/entropy_loss:1.061 - training/rollout_probs_diff_max:0.114 - training/rollout_probs_diff_mean:0.005 - training/rollout_probs_diff_std:0.008 - episode/valid_action_ratio:0.998 - gaca/adv_episode_abs:0.188 - gaca/step_coverage:0.969 - gaca/adv_step_abs:0.120 - gaca/c_mean:1.000 - gaca/c_std:0.332 - gaca/lam_mean:0.500 - gaca/lam_std:0.083 - gaca/clamped:0.000 - gaca/adv_abs:0.151 - probe/rows:0.999 - probe/requests:8637.000 - probe/w_max_mean:3.156 - probe/w_std:1.098 - probe/q0_mean:0.185 - probe/cir_mean:0.085 - probe/qT_mean:0.415 - timing_s/probe:193.402 - actor/kl_loss:0.086 - actor/kl_coef:0.010 - actor/pg_loss:0.000 - actor/pg_clipfrac:0.008 - actor/ppo_kl:0.001 - actor/pg_clipfrac_lower:0.000 - actor/grad_norm:0.792 - perf/mfu/actor:0.278 - perf/max_memory_allocated_gb:40.122 - perf/max_memory_reserved_gb:46.223 - perf/cpu_memory_used_gb:51.651 - actor/lr:0.000 - training/global_step:14.000 - training/epoch:13.000 - critic/score/mean:0.183 - critic/score/max:10.000 - critic/score/min:-0.100 - critic/rewards/mean:0.183 - critic/rewards/max:10.000 - critic/rewards/min:-0.100 - critic/advantages/mean:0.006 - critic/advantages/max:16.543 - critic/advantages/min:-25.978 - critic/returns/mean:0.006 - critic/returns/max:16.543 - critic/returns/min:-25.978 - response_length/mean:80.043 - response_length/max:512.000 - response_length/min:31.000 - response_length/clip_ratio:0.001 - prompt_length/mean:510.509 - prompt_length/max:993.000 - prompt_length/min:321.000 - prompt_length/clip_ratio:0.000 - episode/reward/mean:0.312 - episode/reward/max:10.000 - episode/reward/min:0.000 - episode/length/mean:49.344 - episode/length/max:50.000 - episode/length/min:29.000 - episode/tool_call_count/mean:0.000 - episode/success_rate:0.031 - episode/pick_cool_then_place_in_recep_success_rate:0.000 - episode/pick_and_place_success_rate:0.062 - episode/pick_clean_then_place_in_recep_success_rate:0.000 - timing_s/gen:189.041 - timing_s/reward:0.409 - timing_s/old_log_prob:26.871 - timing_s/ref:35.334 - timing_s/adv:193.681 - timing_s/update_actor:119.253 - timing_s/step:564.860 - timing_per_token_ms/gen:1.491 - timing_per_token_ms/adv:0.207 - timing_per_token_ms/ref:0.038 - timing_per_token_ms/update_actor:0.127 - perf/total_num_tokens:935434.000 - perf/time_per_step:564.860 - perf/throughput:1656.046
+[36m(TaskRunner pid=549966)[0m Training Progress:  41%|████      | 14/34 [2:12:39<3:07:15, 561.78s/it]
+[36m(TaskRunner pid=549966)[0m list(reward_extra_infos_dict.keys())=[]
+[36m(TaskRunner pid=549966)[0m step:15 - global_seqlen/min:935561.000 - global_seqlen/max:935561.000 - global_seqlen/minmax_diff:0.000 - global_seqlen/balanced_min:935561.000 - global_seqlen/balanced_max:935561.000 - global_seqlen/mean:935561.000 - actor/entropy_loss:1.084 - training/rollout_probs_diff_max:0.116 - training/rollout_probs_diff_mean:0.005 - training/rollout_probs_diff_std:0.008 - episode/valid_action_ratio:0.999 - gaca/adv_episode_abs:0.191 - gaca/step_coverage:0.970 - gaca/adv_step_abs:0.142 - gaca/c_mean:1.000 - gaca/c_std:0.326 - gaca/lam_mean:0.500 - gaca/lam_std:0.082 - gaca/clamped:0.000 - gaca/adv_abs:0.165 - probe/rows:1.000 - probe/requests:8582.000 - probe/w_max_mean:3.115 - probe/w_std:1.086 - probe/q0_mean:0.198 - probe/cir_mean:0.077 - probe/qT_mean:0.398 - timing_s/probe:192.209 - actor/kl_loss:0.069 - actor/kl_coef:0.010 - actor/pg_loss:-0.003 - actor/pg_clipfrac:0.005 - actor/ppo_kl:0.002 - actor/pg_clipfrac_lower:0.000 - actor/grad_norm:0.698 - perf/mfu/actor:0.281 - perf/max_memory_allocated_gb:40.122 - perf/max_memory_reserved_gb:46.223 - perf/cpu_memory_used_gb:51.771 - actor/lr:0.000 - training/global_step:15.000 - training/epoch:14.000 - critic/score/mean:0.353 - critic/score/max:10.000 - critic/score/min:-0.100 - critic/rewards/mean:0.353 - critic/rewards/max:10.000 - critic/rewards/min:-0.100 - critic/advantages/mean:0.002 - critic/advantages/max:11.299 - critic/advantages/min:-58.043 - critic/returns/mean:0.002 - critic/returns/max:11.299 - critic/returns/min:-58.043 - response_length/mean:81.887 - response_length/max:512.000 - response_length/min:31.000 - response_length/clip_ratio:0.001 - prompt_length/mean:517.832 - prompt_length/max:914.000 - prompt_length/min:286.000 - prompt_length/clip_ratio:0.000 - episode/reward/mean:0.625 - episode/reward/max:10.000 - episode/reward/min:0.000 - episode/length/mean:48.594 - episode/length/max:50.000 - episode/length/min:12.000 - episode/tool_call_count/mean:0.000 - episode/success_rate:0.062 - episode/pick_two_obj_and_place_success_rate:0.000 - episode/pick_cool_then_place_in_recep_success_rate:0.000 - episode/pick_heat_then_place_in_recep_success_rate:0.000 - episode/pick_and_place_success_rate:0.250 - timing_s/gen:189.992 - timing_s/reward:0.405 - timing_s/old_log_prob:26.915 - timing_s/ref:34.850 - timing_s/adv:192.470 - timing_s/update_actor:117.701 - timing_s/step:562.596 - timing_per_token_ms/gen:1.487 - timing_per_token_ms/adv:0.206 - timing_per_token_ms/ref:0.037 - timing_per_token_ms/update_actor:0.126 - perf/total_num_tokens:935561.000 - perf/time_per_step:562.596 - perf/throughput:1662.935
+[36m(TaskRunner pid=549966)[0m Training Progress:  44%|████▍     | 15/34 [2:22:02<2:58:00, 562.13s/it]
+[36m(TaskRunner pid=549966)[0m list(reward_extra_infos_dict.keys())=[]
+[36m(TaskRunner pid=549966)[0m step:16 - global_seqlen/min:925572.000 - global_seqlen/max:925572.000 - global_seqlen/minmax_diff:0.000 - global_seqlen/balanced_min:925572.000 - global_seqlen/balanced_max:925572.000 - global_seqlen/mean:925572.000 - actor/entropy_loss:1.100 - training/rollout_probs_diff_max:0.089 - training/rollout_probs_diff_mean:0.005 - training/rollout_probs_diff_std:0.008 - episode/valid_action_ratio:1.000 - gaca/adv_episode_abs:0.000 - gaca/step_coverage:0.962 - gaca/adv_step_abs:0.000 - gaca/c_mean:1.000 - gaca/c_std:0.348 - gaca/lam_mean:0.500 - gaca/lam_std:0.087 - gaca/clamped:0.000 - gaca/adv_abs:0.000 - probe/rows:1.000 - probe/requests:8768.000 - probe/w_max_mean:3.016 - probe/w_std:1.036 - probe/q0_mean:0.208 - probe/cir_mean:0.074 - probe/qT_mean:0.423 - timing_s/probe:194.662 - actor/kl_loss:0.082 - actor/kl_coef:0.010 - actor/pg_loss:0.000 - actor/pg_clipfrac:0.000 - actor/ppo_kl:0.002 - actor/pg_clipfrac_lower:0.000 - actor/grad_norm:0.036 - perf/mfu/actor:0.275 - perf/max_memory_allocated_gb:40.122 - perf/max_memory_reserved_gb:46.223 - perf/cpu_memory_used_gb:51.944 - actor/lr:0.000 - training/global_step:16.000 - training/epoch:15.000 - critic/score/mean:0.000 - critic/score/max:0.000 - critic/score/min:0.000 - critic/rewards/mean:0.000 - critic/rewards/max:0.000 - critic/rewards/min:0.000 - critic/advantages/mean:0.000 - critic/advantages/max:0.000 - critic/advantages/min:0.000 - critic/returns/mean:0.000 - critic/returns/max:0.000 - critic/returns/min:0.000 - response_length/mean:85.466 - response_length/max:512.000 - response_length/min:28.000 - response_length/clip_ratio:0.004 - prompt_length/mean:493.016 - prompt_length/max:869.000 - prompt_length/min:315.000 - prompt_length/clip_ratio:0.000 - episode/reward/mean:0.000 - episode/reward/max:0.000 - episode/reward/min:0.000 - episode/length/mean:50.000 - episode/length/max:50.000 - episode/length/min:50.000 - episode/tool_call_count/mean:0.000 - episode/success_rate:0.000 - episode/pick_two_obj_and_place_success_rate:0.000 - episode/look_at_obj_in_light_success_rate:0.000 - episode/pick_heat_then_place_in_recep_success_rate:0.000 - timing_s/gen:205.649 - timing_s/reward:0.411 - timing_s/old_log_prob:26.763 - timing_s/ref:35.515 - timing_s/adv:194.948 - timing_s/update_actor:119.188 - timing_s/step:582.627 - timing_per_token_ms/gen:1.504 - timing_per_token_ms/adv:0.211 - timing_per_token_ms/ref:0.038 - timing_per_token_ms/update_actor:0.129 - perf/total_num_tokens:925572.000 - perf/time_per_step:582.627 - perf/throughput:1588.619
+[36m(TaskRunner pid=549966)[0m Training Progress:  47%|████▋     | 16/34 [2:31:45<2:50:31, 568.41s/it]
+[36m(TaskRunner pid=549966)[0m list(reward_extra_infos_dict.keys())=[]
+[36m(TaskRunner pid=549966)[0m step:17 - global_seqlen/min:830660.000 - global_seqlen/max:830660.000 - global_seqlen/minmax_diff:0.000 - global_seqlen/balanced_min:830660.000 - global_seqlen/balanced_max:830660.000 - global_seqlen/mean:830660.000 - actor/entropy_loss:1.056 - training/rollout_probs_diff_max:0.122 - training/rollout_probs_diff_mean:0.005 - training/rollout_probs_diff_std:0.008 - episode/valid_action_ratio:0.997 - gaca/adv_episode_abs:0.458 - gaca/step_coverage:0.976 - gaca/adv_step_abs:0.281 - gaca/c_mean:1.000 - gaca/c_std:0.360 - gaca/lam_mean:0.500 - gaca/lam_std:0.090 - gaca/clamped:0.001 - gaca/adv_abs:0.364 - probe/rows:1.000 - probe/requests:8056.000 - probe/w_max_mean:2.882 - probe/w_std:0.997 - probe/q0_mean:0.260 - probe/cir_mean:0.071 - probe/qT_mean:0.415 - timing_s/probe:177.066 - actor/kl_loss:0.072 - actor/kl_coef:0.010 - actor/pg_loss:0.006 - actor/pg_clipfrac:0.007 - actor/ppo_kl:0.001 - actor/pg_clipfrac_lower:0.000 - actor/grad_norm:1.317 - perf/mfu/actor:0.269 - perf/max_memory_allocated_gb:40.122 - perf/max_memory_reserved_gb:46.223 - perf/cpu_memory_used_gb:51.744 - actor/lr:0.000 - training/global_step:17.000 - training/epoch:16.000 - critic/score/mean:1.079 - critic/score/max:10.000 - critic/score/min:-0.100 - critic/rewards/mean:1.079 - critic/rewards/max:10.000 - critic/rewards/min:-0.100 - critic/advantages/mean:-0.010 - critic/advantages/max:10.367 - critic/advantages/min:-30.295 - critic/returns/mean:-0.010 - critic/returns/max:10.367 - critic/returns/min:-30.295 - response_length/mean:87.787 - response_length/max:512.000 - response_length/min:21.000 - response_length/clip_ratio:0.005 - prompt_length/mean:458.700 - prompt_length/max:990.000 - prompt_length/min:350.000 - prompt_length/clip_ratio:0.000 - episode/reward/mean:1.562 - episode/reward/max:10.000 - episode/reward/min:0.000 - episode/length/mean:47.281 - episode/length/max:50.000 - episode/length/min:26.000 - episode/tool_call_count/mean:0.000 - episode/success_rate:0.156 - episode/pick_two_obj_and_place_success_rate:0.000 - episode/pick_and_place_success_rate:0.312 - episode/pick_heat_then_place_in_recep_success_rate:0.000 - timing_s/gen:192.883 - timing_s/reward:0.378 - timing_s/old_log_prob:24.173 - timing_s/ref:33.393 - timing_s/adv:177.319 - timing_s/update_actor:109.022 - timing_s/step:537.444 - timing_per_token_ms/gen:1.446 - timing_per_token_ms/adv:0.213 - timing_per_token_ms/ref:0.040 - timing_per_token_ms/update_actor:0.131 - perf/total_num_tokens:830660.000 - perf/time_per_step:537.444 - perf/throughput:1545.575
+[36m(TaskRunner pid=549966)[0m Training Progress:  50%|█████     | 17/34 [2:40:43<2:38:26, 559.21s/it]
+[36m(TaskRunner pid=549966)[0m list(reward_extra_infos_dict.keys())=[]
+[36m(TaskRunner pid=549966)[0m step:18 - global_seqlen/min:916716.000 - global_seqlen/max:916716.000 - global_seqlen/minmax_diff:0.000 - global_seqlen/balanced_min:916716.000 - global_seqlen/balanced_max:916716.000 - global_seqlen/mean:916716.000 - actor/entropy_loss:1.103 - training/rollout_probs_diff_max:0.123 - training/rollout_probs_diff_mean:0.005 - training/rollout_probs_diff_std:0.008 - episode/valid_action_ratio:0.998 - gaca/adv_episode_abs:0.085 - gaca/step_coverage:0.967 - gaca/adv_step_abs:0.023 - gaca/c_mean:1.000 - gaca/c_std:0.368 - gaca/lam_mean:0.500 - gaca/lam_std:0.092 - gaca/clamped:0.000 - gaca/adv_abs:0.044 - probe/rows:1.000 - probe/requests:8790.000 - probe/w_max_mean:3.026 - probe/w_std:1.043 - probe/q0_mean:0.231 - probe/cir_mean:0.074 - probe/qT_mean:0.407 - timing_s/probe:194.361 - actor/kl_loss:0.085 - actor/kl_coef:0.010 - actor/pg_loss:-0.004 - actor/pg_clipfrac:0.007 - actor/ppo_kl:0.002 - actor/pg_clipfrac_lower:0.000 - actor/grad_norm:0.470 - perf/mfu/actor:0.274 - perf/max_memory_allocated_gb:40.122 - perf/max_memory_reserved_gb:46.223 - perf/cpu_memory_used_gb:51.657 - actor/lr:0.000 - training/global_step:18.000 - training/epoch:17.000 - critic/score/mean:-0.000 - critic/score/max:0.000 - critic/score/min:-0.100 - critic/rewards/mean:-0.000 - critic/rewards/max:0.000 - critic/rewards/min:-0.100 - critic/advantages/mean:0.004 - critic/advantages/max:0.804 - critic/advantages/min:-33.916 - critic/returns/mean:0.004 - critic/returns/max:0.804 - critic/returns/min:-33.916 - response_length/mean:86.074 - response_length/max:512.000 - response_length/min:30.000 - response_length/clip_ratio:0.003 - prompt_length/mean:486.873 - prompt_length/max:841.000 - prompt_length/min:337.000 - prompt_length/clip_ratio:0.000 - episode/reward/mean:0.000 - episode/reward/max:0.000 - episode/reward/min:0.000 - episode/length/mean:50.000 - episode/length/max:50.000 - episode/length/min:50.000 - episode/tool_call_count/mean:0.000 - episode/success_rate:0.000 - episode/pick_and_place_success_rate:0.000 - episode/pick_two_obj_and_place_success_rate:0.000 - episode/pick_cool_then_place_in_recep_success_rate:0.000 - timing_s/gen:193.168 - timing_s/reward:0.412 - timing_s/old_log_prob:26.588 - timing_s/ref:35.482 - timing_s/adv:194.635 - timing_s/update_actor:118.319 - timing_s/step:568.756 - timing_per_token_ms/gen:1.403 - timing_per_token_ms/adv:0.212 - timing_per_token_ms/ref:0.039 - timing_per_token_ms/update_actor:0.129 - perf/total_num_tokens:916716.000 - perf/time_per_step:568.756 - perf/throughput:1611.792
+[36m(TaskRunner pid=549966)[0m Training Progress:  53%|█████▎    | 18/34 [2:50:12<2:29:54, 562.18s/it]
+[36m(TaskRunner pid=549966)[0m list(reward_extra_infos_dict.keys())=[]
+[36m(TaskRunner pid=549966)[0m step:19 - global_seqlen/min:911877.000 - global_seqlen/max:911877.000 - global_seqlen/minmax_diff:0.000 - global_seqlen/balanced_min:911877.000 - global_seqlen/balanced_max:911877.000 - global_seqlen/mean:911877.000 - actor/entropy_loss:0.992 - training/rollout_probs_diff_max:0.118 - training/rollout_probs_diff_mean:0.005 - training/rollout_probs_diff_std:0.008 - episode/valid_action_ratio:0.999 - gaca/adv_episode_abs:0.127 - gaca/step_coverage:0.967 - gaca/adv_step_abs:0.082 - gaca/c_mean:1.000 - gaca/c_std:0.381 - gaca/lam_mean:0.500 - gaca/lam_std:0.095 - gaca/clamped:0.001 - gaca/adv_abs:0.102 - probe/rows:0.999 - probe/requests:7935.000 - probe/w_max_mean:2.960 - probe/w_std:1.081 - probe/q0_mean:0.260 - probe/cir_mean:0.084 - probe/qT_mean:0.475 - timing_s/probe:178.689 - actor/kl_loss:0.055 - actor/kl_coef:0.010 - actor/pg_loss:0.028 - actor/pg_clipfrac:0.003 - actor/ppo_kl:0.001 - actor/pg_clipfrac_lower:0.000 - actor/grad_norm:0.441 - perf/mfu/actor:0.272 - perf/max_memory_allocated_gb:40.122 - perf/max_memory_reserved_gb:46.223 - perf/cpu_memory_used_gb:51.851 - actor/lr:0.000 - training/global_step:19.000 - training/epoch:18.000 - critic/score/mean:0.115 - critic/score/max:10.000 - critic/score/min:-0.100 - critic/rewards/mean:0.115 - critic/rewards/max:10.000 - critic/rewards/min:-0.100 - critic/advantages/mean:-0.092 - critic/advantages/max:24.267 - critic/advantages/min:-15.129 - critic/returns/mean:-0.092 - critic/returns/max:24.267 - critic/returns/min:-15.129 - response_length/mean:71.032 - response_length/max:512.000 - response_length/min:27.000 - response_length/clip_ratio:0.001 - prompt_length/mean:510.522 - prompt_length/max:1180.000 - prompt_length/min:301.000 - prompt_length/clip_ratio:0.000 - episode/reward/mean:0.312 - episode/reward/max:10.000 - episode/reward/min:0.000 - episode/length/mean:49.000 - episode/length/max:50.000 - episode/length/min:18.000 - episode/tool_call_count/mean:0.000 - episode/success_rate:0.031 - episode/pick_and_place_success_rate:0.000 - episode/pick_clean_then_place_in_recep_success_rate:0.000 - episode/pick_two_obj_and_place_success_rate:0.000 - episode/pick_cool_then_place_in_recep_success_rate:0.125 - timing_s/gen:197.055 - timing_s/reward:0.415 - timing_s/old_log_prob:26.347 - timing_s/ref:34.986 - timing_s/adv:178.954 - timing_s/update_actor:118.500 - timing_s/step:556.416 - timing_per_token_ms/gen:1.769 - timing_per_token_ms/adv:0.196 - timing_per_token_ms/ref:0.038 - timing_per_token_ms/update_actor:0.130 - perf/total_num_tokens:911877.000 - perf/time_per_step:556.416 - perf/throughput:1638.841
+[36m(TaskRunner pid=549966)[0m Training Progress:  56%|█████▌    | 19/34 [2:59:29<2:20:08, 560.56s/it]
+[36m(TaskRunner pid=549966)[0m list(reward_extra_infos_dict.keys())=[]
+[36m(TaskRunner pid=549966)[0m test_gen_batch meta info: {'eos_token_id': 151645, 'pad_token_id': 151643, 'recompute_log_prob': False, 'do_sample': True, 'validate': True}
+[36m(TaskRunner pid=549966)[0m validation generation end
+[36m(TaskRunner pid=549966)[0m [text][prompt] <|im_start|>system
+[36m(TaskRunner pid=549966)[0m You are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>
+[36m(TaskRunner pid=549966)[0m <|im_start|>user
+[36m(TaskRunner pid=549966)[0m 
+[36m(TaskRunner pid=549966)[0m You are an expert agent operating in the ALFRED Embodied Environment. Your task is to: heat some egg and put it in countertop.
+[36m(TaskRunner pid=549966)[0m Prior to this step, you have already taken 17 step(s). Below are the most recent 2 observations and the corresponding actions you took: [Observation 16: 'Nothing happens.', Action 16: 'go to fridge 1']
+[36m(TaskRunner pid=549966)[0m [Observation 17: 'Nothing happens.', Action 17: 'go to fridge 1']
+[36m(TaskRunner pid=549966)[0m You are now at step 18 and your current observation is: Nothing happens.
+[36m(TaskRunner pid=549966)[0m Your admissible actions of the current situation are: ['close fridge 1'
+[36m(TaskRunner pid=549966)[0m  'examine fridge 1'
+[36m(TaskRunner pid=549966)[0m  'go to cabinet 1'
+[36m(TaskRunner pid=549966)[0m  'go to cabinet 2'
+[36m(TaskRunner pid=549966)[0m  'go to cabinet 3'
+[36m(TaskRunner pid=549966)[0m  'go to cabinet 4'
+[36m(TaskRunner pid=549966)[0m  'go to cabinet 5'
+[36m(TaskRunner pid=549966)[0m  'go to cabinet 6'
+[36m(TaskRunner pid=549966)[0m  'go to cabinet 7'
+[36m(TaskRunner pid=549966)[0m  'go to cabinet 8'
+[36m(TaskRunner pid=549966)[0m  'go to cabinet 9'
+[36m(TaskRunner pid=549966)[0m  'go to coffeemachine 1'
+[36m(TaskRunner pid=549966)[0m  'go to countertop 1'
+[36m(TaskRunner pid=549966)[0m  'go to countertop 2'
+[36m(TaskRunner pid=549966)[0m  'go to drawer 1'
+[36m(TaskRunner pid=549966)[0m  'go to drawer 10'
+[36m(TaskRunner pid=549966)[0m  'go to drawer 11'
+[36m(TaskRunner pid=549966)[0m  'go to drawer 12'
+[36m(TaskRunner pid=549966)[0m  'go to drawer 13'
+[36m(TaskRunner pid=549966)[0m  'go to drawer 2'
+[36m(TaskRunner pid=549966)[0m  'go to drawer 3'
+[36m(TaskRunner pid=549966)[0m  'go to drawer 4'
+[36m(TaskRunner pid=549966)[0m  'go to drawer 5'
+[36m(TaskRunner pid=549966)[0m  'go to drawer 6'
+[36m(TaskRunner pid=549966)[0m  'go to drawer 7'
+[36m(TaskRunner pid=549966)[0m  'go to drawer 8'
+[36m(TaskRunner pid=549966)[0m  'go to drawer 9'
+[36m(TaskRunner pid=549966)[0m  'go to garbagecan 1'
+[36m(TaskRunner pid=549966)[0m  'go to microwave 1'
+[36m(TaskRunner pid=549966)[0m  'go to sinkbasin 1'
+[36m(TaskRunner pid=549966)[0m  'go to stoveburner 1'
+[36m(TaskRunner pid=549966)[0m  'go to stoveburner 2'
+[36m(TaskRunner pid=549966)[0m  'go to stoveburner 3'
+[36m(TaskRunner pid=549966)[0m  'go to stoveburner 4'
+[36m(TaskRunner pid=549966)[0m  'go to stoveburner 5'
+[36m(TaskRunner pid=549966)[0m  'go to stoveburner 6'
+[36m(TaskRunner pid=549966)[0m  'go to toaster 1'
+[36m(TaskRunner pid=549966)[0m  'inventory'
+[36m(TaskRunner pid=549966)[0m  'look'
+[36m(TaskRunner pid=549966)[0m  'take bowl 1 from fridge 1'
+[36m(TaskRunner pid=549966)[0m  'take pan 1 from fridge 1'
+[36m(TaskRunner pid=549966)[0m  'take plate 2 from fridge 1'
+[36m(TaskRunner pid=549966)[0m  'take potato 1 from fridge 1'].
+[36m(TaskRunner pid=549966)[0m 
+[36m(TaskRunner pid=549966)[0m Now it's your turn to take an action.
+[36m(TaskRunner pid=549966)[0m You should first reason step-by-step about the current situation. This reasoning process MUST be enclosed within <think> </think> tags. 
+[36m(TaskRunner pid=549966)[0m Once you've finished your reasoning, you should choose an admissible action for current step and present it within <action> </action> tags.
+[36m(TaskRunner pid=549966)[0m <|im_end|>
+[36m(TaskRunner pid=549966)[0m <|im_start|>assistant
+[36m(TaskRunner pid=549966)[0m 
+[36m(TaskRunner pid=549966)[0m [text][response] <think>
+[36m(TaskRunner pid=549966)[0m The agent has already visited the fridge, but nothing happened. The agent should check the fridge to see if the egg is inside and if it is, whether it is properly placed.
+[36m(TaskRunner pid=549966)[0m </think>
+[36m(TaskRunner pid=549966)[0m 
+[36m(TaskRunner pid=549966)[0m <action>go to fridge 1</action><|im_end|>
+[36m(TaskRunner pid=549966)[0m [text][score] 0.0
+[36m(TaskRunner pid=549966)[0m step:20 - global_seqlen/min:801450.000 - global_seqlen/max:801450.000 - global_seqlen/minmax_diff:0.000 - global_seqlen/balanced_min:801450.000 - global_seqlen/balanced_max:801450.000 - global_seqlen/mean:801450.000 - actor/entropy_loss:0.996 - training/rollout_probs_diff_max:0.184 - training/rollout_probs_diff_mean:0.005 - training/rollout_probs_diff_std:0.008 - episode/valid_action_ratio:0.999 - gaca/adv_episode_abs:0.167 - gaca/step_coverage:0.973 - gaca/adv_step_abs:0.128 - gaca/c_mean:1.000 - gaca/c_std:0.382 - gaca/lam_mean:0.500 - gaca/lam_std:0.096 - gaca/clamped:0.000 - gaca/adv_abs:0.147 - probe/rows:1.000 - probe/requests:8068.000 - probe/w_max_mean:2.963 - probe/w_std:1.077 - probe/q0_mean:0.260 - probe/cir_mean:0.073 - probe/qT_mean:0.468 - timing_s/probe:175.203 - actor/kl_loss:0.090 - actor/kl_coef:0.010 - actor/pg_loss:-0.002 - actor/pg_clipfrac:0.001 - actor/ppo_kl:0.002 - actor/pg_clipfrac_lower:0.000 - actor/grad_norm:0.352 - perf/mfu/actor:0.262 - perf/max_memory_allocated_gb:40.122 - perf/max_memory_reserved_gb:46.223 - perf/cpu_memory_used_gb:51.691 - actor/lr:0.000 - val/text/test_score:0.370 - val/text/tool_call_count/mean:0.000 - val/success_rate:0.086 - val/pick_heat_then_place_in_recep_success_rate:0.000 - val/pick_cool_then_place_in_recep_success_rate:0.091 - val/pick_two_obj_and_place_success_rate:0.048 - val/pick_and_place_success_rate:0.222 - val/pick_clean_then_place_in_recep_success_rate:0.067 - val/look_at_obj_in_light_success_rate:0.000 - training/global_step:20.000 - training/epoch:19.000 - critic/score/mean:0.365 - critic/score/max:10.000 - critic/score/min:-0.100 - critic/rewards/mean:0.365 - critic/rewards/max:10.000 - critic/rewards/min:-0.100 - critic/advantages/mean:-0.002 - critic/advantages/max:11.486 - critic/advantages/min:-2.959 - critic/returns/mean:-0.002 - critic/returns/max:11.486 - critic/returns/min:-2.959 - response_length/mean:72.540 - response_length/max:251.000 - response_length/min:27.000 - response_length/clip_ratio:0.000 - prompt_length/mean:441.210 - prompt_length/max:812.000 - prompt_length/min:262.000 - prompt_length/clip_ratio:0.000 - episode/reward/mean:0.625 - episode/reward/max:10.000 - episode/reward/min:0.000 - episode/length/mean:48.625 - episode/length/max:50.000 - episode/length/min:6.000 - episode/tool_call_count/mean:0.000 - episode/success_rate:0.062 - episode/pick_heat_then_place_in_recep_success_rate:0.000 - episode/pick_and_place_success_rate:0.125 - episode/pick_two_obj_and_place_success_rate:0.000 - timing_s/gen:145.915 - timing_s/reward:0.380 - timing_s/old_log_prob:23.468 - timing_s/ref:33.918 - timing_s/adv:175.467 - timing_s/update_actor:107.896 - timing_s/testing:295.173 - timing_s/step:782.445 - timing_per_token_ms/gen:1.289 - timing_per_token_ms/adv:0.219 - timing_per_token_ms/ref:0.042 - timing_per_token_ms/update_actor:0.135 - perf/total_num_tokens:801450.000 - perf/time_per_step:782.445 - perf/throughput:1024.289
+[36m(TaskRunner pid=549966)[0m Training Progress:  59%|█████▉    | 20/34 [3:12:32<2:26:21, 627.28s/it]
+[36m(TaskRunner pid=549966)[0m list(reward_extra_infos_dict.keys())=[]
+[36m(TaskRunner pid=549966)[0m step:21 - global_seqlen/min:994906.000 - global_seqlen/max:994906.000 - global_seqlen/minmax_diff:0.000 - global_seqlen/balanced_min:994906.000 - global_seqlen/balanced_max:994906.000 - global_seqlen/mean:994906.000 - actor/entropy_loss:1.056 - training/rollout_probs_diff_max:0.108 - training/rollout_probs_diff_mean:0.005 - training/rollout_probs_diff_std:0.008 - episode/valid_action_ratio:0.998 - gaca/adv_episode_abs:0.075 - gaca/step_coverage:0.973 - gaca/adv_step_abs:0.038 - gaca/c_mean:1.000 - gaca/c_std:0.345 - gaca/lam_mean:0.500 - gaca/lam_std:0.086 - gaca/clamped:0.000 - gaca/adv_abs:0.055 - probe/rows:0.999 - probe/requests:7943.000 - probe/w_max_mean:2.910 - probe/w_std:1.061 - probe/q0_mean:0.229 - probe/cir_mean:0.082 - probe/qT_mean:0.472 - timing_s/probe:180.660 - actor/kl_loss:0.124 - actor/kl_coef:0.010 - actor/pg_loss:0.032 - actor/pg_clipfrac:0.009 - actor/ppo_kl:0.001 - actor/pg_clipfrac_lower:0.000 - actor/grad_norm:0.592 - perf/mfu/actor:0.283 - perf/max_memory_allocated_gb:40.122 - perf/max_memory_reserved_gb:46.223 - perf/cpu_memory_used_gb:52.268 - actor/lr:0.000 - training/global_step:21.000 - training/epoch:20.000 - critic/score/mean:-0.000 - critic/score/max:0.000 - critic/score/min:-0.100 - critic/rewards/mean:-0.000 - critic/rewards/max:0.000 - critic/rewards/min:-0.100 - critic/advantages/mean:-0.093 - critic/advantages/max:0.520 - critic/advantages/min:-66.576 - critic/returns/mean:-0.093 - critic/returns/max:0.520 - critic/returns/min:-66.576 - response_length/mean:69.016 - response_length/max:512.000 - response_length/min:26.000 - response_length/clip_ratio:0.001 - prompt_length/mean:552.800 - prompt_length/max:982.000 - prompt_length/min:405.000 - prompt_length/clip_ratio:0.000 - episode/reward/mean:0.000 - episode/reward/max:0.000 - episode/reward/min:0.000 - episode/length/mean:50.000 - episode/length/max:50.000 - episode/length/min:50.000 - episode/tool_call_count/mean:0.000 - episode/success_rate:0.000 - episode/pick_and_place_success_rate:0.000 - episode/pick_heat_then_place_in_recep_success_rate:0.000 - episode/pick_clean_then_place_in_recep_success_rate:0.000 - timing_s/gen:177.753 - timing_s/reward:0.436 - timing_s/old_log_prob:28.463 - timing_s/ref:36.031 - timing_s/adv:180.936 - timing_s/update_actor:124.366 - timing_s/step:548.144 - timing_per_token_ms/gen:1.610 - timing_per_token_ms/adv:0.182 - timing_per_token_ms/ref:0.036 - timing_per_token_ms/update_actor:0.125 - perf/total_num_tokens:994906.000 - perf/time_per_step:548.144 - perf/throughput:1815.043
+[36m(TaskRunner pid=549966)[0m Training Progress:  62%|██████▏   | 21/34 [3:21:40<2:10:47, 603.64s/it]
+[36m(TaskRunner pid=549966)[0m list(reward_extra_infos_dict.keys())=[]
+[36m(TaskRunner pid=549966)[0m step:22 - global_seqlen/min:893096.000 - global_seqlen/max:893096.000 - global_seqlen/minmax_diff:0.000 - global_seqlen/balanced_min:893096.000 - global_seqlen/balanced_max:893096.000 - global_seqlen/mean:893096.000 - actor/entropy_loss:1.151 - training/rollout_probs_diff_max:0.098 - training/rollout_probs_diff_mean:0.005 - training/rollout_probs_diff_std:0.009 - episode/valid_action_ratio:0.999 - gaca/adv_episode_abs:0.236 - gaca/step_coverage:0.967 - gaca/adv_step_abs:0.124 - gaca/c_mean:1.000 - gaca/c_std:0.331 - gaca/lam_mean:0.500 - gaca/lam_std:0.083 - gaca/clamped:0.000 - gaca/adv_abs:0.167 - probe/rows:1.000 - probe/requests:8389.000 - probe/w_max_mean:3.080 - probe/w_std:1.099 - probe/q0_mean:0.252 - probe/cir_mean:0.082 - probe/qT_mean:0.465 - timing_s/probe:186.458 - actor/kl_loss:0.087 - actor/kl_coef:0.010 - actor/pg_loss:-0.002 - actor/pg_clipfrac:0.002 - actor/ppo_kl:0.003 - actor/pg_clipfrac_lower:0.000 - actor/grad_norm:0.748 - perf/mfu/actor:0.274 - perf/max_memory_allocated_gb:40.122 - perf/max_memory_reserved_gb:46.223 - perf/cpu_memory_used_gb:52.042 - actor/lr:0.000 - training/global_step:22.000 - training/epoch:21.000 - critic/score/mean:0.530 - critic/score/max:10.000 - critic/score/min:-0.100 - critic/rewards/mean:0.530 - critic/rewards/max:10.000 - critic/rewards/min:-0.100 - critic/advantages/mean:-0.002 - critic/advantages/max:17.814 - critic/advantages/min:-44.358 - critic/returns/mean:-0.002 - critic/returns/max:17.814 - critic/returns/min:-44.358 - response_length/mean:74.821 - response_length/max:512.000 - response_length/min:29.000 - response_length/clip_ratio:0.001 - prompt_length/mean:489.002 - prompt_length/max:1184.000 - prompt_length/min:376.000 - prompt_length/clip_ratio:0.000 - episode/reward/mean:0.625 - episode/reward/max:10.000 - episode/reward/min:0.000 - episode/length/mean:49.500 - episode/length/max:50.000 - episode/length/min:37.000 - episode/tool_call_count/mean:0.000 - episode/success_rate:0.062 - episode/pick_and_place_success_rate:0.250 - episode/pick_two_obj_and_place_success_rate:0.000 - episode/pick_clean_then_place_in_recep_success_rate:0.000 - timing_s/gen:197.643 - timing_s/reward:0.405 - timing_s/old_log_prob:25.773 - timing_s/ref:34.897 - timing_s/adv:186.737 - timing_s/update_actor:115.153 - timing_s/step:560.770 - timing_per_token_ms/gen:1.668 - timing_per_token_ms/adv:0.209 - timing_per_token_ms/ref:0.039 - timing_per_token_ms/update_actor:0.129 - perf/total_num_tokens:893096.000 - perf/time_per_step:560.770 - perf/throughput:1592.625
+[36m(TaskRunner pid=549966)[0m Training Progress:  65%|██████▍   | 22/34 [3:31:02<1:58:10, 590.88s/it]
+[36m(TaskRunner pid=549966)[0m list(reward_extra_infos_dict.keys())=[]
+[36m(TaskRunner pid=549966)[0m step:23 - global_seqlen/min:732490.000 - global_seqlen/max:732490.000 - global_seqlen/minmax_diff:0.000 - global_seqlen/balanced_min:732490.000 - global_seqlen/balanced_max:732490.000 - global_seqlen/mean:732490.000 - actor/entropy_loss:1.039 - training/rollout_probs_diff_max:0.146 - training/rollout_probs_diff_mean:0.005 - training/rollout_probs_diff_std:0.009 - episode/valid_action_ratio:0.999 - gaca/adv_episode_abs:0.223 - gaca/step_coverage:0.962 - gaca/adv_step_abs:0.159 - gaca/c_mean:1.000 - gaca/c_std:0.346 - gaca/lam_mean:0.500 - gaca/lam_std:0.087 - gaca/clamped:0.000 - gaca/adv_abs:0.188 - probe/rows:1.000 - probe/requests:7946.000 - probe/w_max_mean:2.914 - probe/w_std:1.074 - probe/q0_mean:0.248 - probe/cir_mean:0.087 - probe/qT_mean:0.493 - timing_s/probe:169.707 - actor/kl_loss:0.090 - actor/kl_coef:0.010 - actor/pg_loss:-0.006 - actor/pg_clipfrac:0.002 - actor/ppo_kl:0.001 - actor/pg_clipfrac_lower:0.000 - actor/grad_norm:0.687 - perf/mfu/actor:0.253 - perf/max_memory_allocated_gb:40.122 - perf/max_memory_reserved_gb:46.223 - perf/cpu_memory_used_gb:52.053 - actor/lr:0.000 - training/global_step:23.000 - training/epoch:22.000 - critic/score/mean:0.278 - critic/score/max:10.000 - critic/score/min:-0.100 - critic/rewards/mean:0.278 - critic/rewards/max:10.000 - critic/rewards/min:-0.100 - critic/advantages/mean:0.010 - critic/advantages/max:16.793 - critic/advantages/min:-7.350 - critic/returns/mean:0.010 - critic/returns/max:16.793 - critic/returns/min:-7.350 - response_length/mean:73.793 - response_length/max:337.000 - response_length/min:29.000 - response_length/clip_ratio:0.000 - prompt_length/mean:400.617 - prompt_length/max:616.000 - prompt_length/min:342.000 - prompt_length/clip_ratio:0.000 - episode/reward/mean:0.625 - episode/reward/max:10.000 - episode/reward/min:0.000 - episode/length/mean:48.219 - episode/length/max:50.000 - episode/length/min:16.000 - episode/tool_call_count/mean:0.000 - episode/success_rate:0.062 - episode/pick_clean_then_place_in_recep_success_rate:0.083 - episode/pick_two_obj_and_place_success_rate:0.000 - timing_s/gen:126.730 - timing_s/reward:0.369 - timing_s/old_log_prob:21.837 - timing_s/ref:32.991 - timing_s/adv:169.988 - timing_s/update_actor:101.911 - timing_s/step:454.075 - timing_per_token_ms/gen:1.112 - timing_per_token_ms/adv:0.232 - timing_per_token_ms/ref:0.045 - timing_per_token_ms/update_actor:0.139 - perf/total_num_tokens:732490.000 - perf/time_per_step:454.075 - perf/throughput:1613.147
+[36m(TaskRunner pid=549966)[0m Training Progress:  68%|██████▊   | 23/34 [3:38:36<1:40:49, 549.92s/it]
+[36m(TaskRunner pid=549966)[0m list(reward_extra_infos_dict.keys())=[]
+[36m(TaskRunner pid=549966)[0m step:24 - global_seqlen/min:845680.000 - global_seqlen/max:845680.000 - global_seqlen/minmax_diff:0.000 - global_seqlen/balanced_min:845680.000 - global_seqlen/balanced_max:845680.000 - global_seqlen/mean:845680.000 - actor/entropy_loss:1.090 - training/rollout_probs_diff_max:0.146 - training/rollout_probs_diff_mean:0.005 - training/rollout_probs_diff_std:0.008 - episode/valid_action_ratio:0.998 - gaca/adv_episode_abs:0.293 - gaca/step_coverage:0.963 - gaca/adv_step_abs:0.167 - gaca/c_mean:1.000 - gaca/c_std:0.351 - gaca/lam_mean:0.500 - gaca/lam_std:0.088 - gaca/clamped:0.000 - gaca/adv_abs:0.229 - probe/rows:0.999 - probe/requests:8662.000 - probe/w_max_mean:3.044 - probe/w_std:1.090 - probe/q0_mean:0.253 - probe/cir_mean:0.088 - probe/qT_mean:0.482 - timing_s/probe:189.924 - actor/kl_loss:0.065 - actor/kl_coef:0.010 - actor/pg_loss:0.003 - actor/pg_clipfrac:0.011 - actor/ppo_kl:0.002 - actor/pg_clipfrac_lower:0.000 - actor/grad_norm:1.037 - perf/mfu/actor:0.265 - perf/max_memory_allocated_gb:40.122 - perf/max_memory_reserved_gb:46.223 - perf/cpu_memory_used_gb:52.076 - actor/lr:0.000 - training/global_step:24.000 - training/epoch:23.000 - critic/score/mean:0.359 - critic/score/max:10.000 - critic/score/min:-0.100 - critic/rewards/mean:0.359 - critic/rewards/max:10.000 - critic/rewards/min:-0.100 - critic/advantages/mean:0.001 - critic/advantages/max:29.285 - critic/advantages/min:-56.419 - critic/returns/mean:0.001 - critic/returns/max:29.285 - critic/returns/min:-56.419 - response_length/mean:81.092 - response_length/max:512.000 - response_length/min:28.000 - response_length/clip_ratio:0.001 - prompt_length/mean:461.011 - prompt_length/max:743.000 - prompt_length/min:262.000 - prompt_length/clip_ratio:0.000 - episode/reward/mean:0.625 - episode/reward/max:10.000 - episode/reward/min:0.000 - episode/length/mean:48.625 - episode/length/max:50.000 - episode/length/min:7.000 - episode/tool_call_count/mean:0.000 - episode/success_rate:0.062 - episode/pick_and_place_success_rate:0.125 - episode/pick_heat_then_place_in_recep_success_rate:0.000 - episode/pick_clean_then_place_in_recep_success_rate:0.000 - timing_s/gen:171.579 - timing_s/reward:0.398 - timing_s/old_log_prob:24.889 - timing_s/ref:34.266 - timing_s/adv:190.197 - timing_s/update_actor:112.829 - timing_s/step:534.418 - timing_per_token_ms/gen:1.356 - timing_per_token_ms/adv:0.225 - timing_per_token_ms/ref:0.041 - timing_per_token_ms/update_actor:0.133 - perf/total_num_tokens:845680.000 - perf/time_per_step:534.418 - perf/throughput:1582.433
+[36m(TaskRunner pid=549966)[0m Training Progress:  71%|███████   | 24/34 [3:47:31<1:30:53, 545.37s/it]

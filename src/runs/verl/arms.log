@@ -84,3 +84,7 @@
 [02:57:45] start commit_e8_lr3_s0 (gaca, rel=none)
 [02:57:45]   lr=3e-6 extra: algorithm.gaca.token_mode=probe env.seed=0 +env.val_seed=1000 algorithm.gaca.probe_every=8
 [09:18:38] end commit_e8_lr3_s0
+[09:20:51] queue -> commit_ref_lr3_s0
+[09:20:51] start commit_ref_lr3_s0 (gaca, rel=none)
+[09:20:51]   lr=3e-6 extra: algorithm.gaca.token_mode=probe env.seed=0 +env.val_seed=1000 +algorithm.gaca.probe_scorer=ref
+[18:09:34] commit_ref_lr3_s0 killed at step 24 (13:15, all processes gone, no error); requeued
