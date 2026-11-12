@@ -1093,3 +1093,11 @@ version (150 epochs, 3 seeds, best at epoch 100). Scale numbers in RESULTS.md,
 the paper draft and the deck that use 150 / 19,200 / 3 seeds need updating:
 paper = 300 x 128 = 38,400 trajectories per run, ~35x ours (34 x 32 = 1,088).
 History window 2, rollout temp 1, val temp 0.4, eval every 5 already match.
+
+## 2026-11-12 — commit_e8_lr3_s0 result: probe every 8 tokens hurts (3.1%)
+
+Final 3.1% (4/128) vs 33.6% for every-16 on the same seed and lr. Validation
+4.7 (step 10), 2.3, 0.0, 3.1; probe qT fell to 0.25 by step 20 and KL ran
+~2x the every-16 run, the same drift signature as lr 6e-6. One seed, so a
+warning rather than proof. Every-16 stays the default; the frozen-reference
+probe (commit_ref_lr3_s0, started 09:20 UTC) tests whether the drift is the cause.
