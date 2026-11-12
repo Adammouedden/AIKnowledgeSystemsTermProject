@@ -34,6 +34,7 @@ is 0.78 points.
 | GACA, lr 6e-6 | lr sweep | GACA with learning rate 6e-6 | done | 34 | 3.74 | **0.0%** (0/128) | 7.0% (10) |
 | COMMIT, lr 3e-6, seed 0 | seed control | COMMIT at lr 3e-6 on training seed 0 (all non-COMMIT arms' seed) | done | 34 | 5.07 | **33.6%** (43/128) | 33.6% (34) |
 | COMMIT, lr 3e-6 + dynamic sampling | hill-climb | COMMIT at lr 3e-6, groups with all-equal rewards dropped and refilled (DAPO), up to 3 passes | done | 34 | 8.85 | **22.7%** (29/128) | 22.7% (34) |
+| COMMIT, lr 6e-6, seed 0 | hill-climb | COMMIT at learning rate 6e-6 (GACA collapses here) | done | 34 | 5.17 | **1.6%** (2/128) | 10.9% (20) |
 
 Final = the last evaluation (the end-of-training checkpoint). Best is reported for comparison with the
 paper's best-checkpoint convention but is optimistic: it picks the maximum over five noisy evaluations.
@@ -58,6 +59,7 @@ paper's best-checkpoint convention but is optimistic: it picks the maximum over 
 | GACA, lr 6e-6 | 4.7 | 7.0 | 0.8 | 0.0 | 0.0 (34) |
 | COMMIT, lr 3e-6, seed 0 | 4.7 | 7.8 | 9.4 | 21.1 | 33.6 (34) |
 | COMMIT, lr 3e-6 + dynamic sampling | 4.7 | 4.7 | 9.4 | 11.7 | 22.7 (34) |
+| COMMIT, lr 6e-6, seed 0 | 4.7 | 7.8 | 10.9 | 0.0 | 1.6 (34) |
 
 ## Paired comparison of final checkpoints
 
@@ -80,6 +82,7 @@ the other does not. The base model is each arm's own iteration-0 evaluation.
 | base model vs GACA, lr 6e-6 | 6 | 0 | 6 | 0 | 0 | 0.031 |
 | base model vs COMMIT, lr 3e-6, seed 0 | 6 | 43 | 3 | 40 | 3 | 0.000 |
 | base model vs COMMIT, lr 3e-6 + dynamic sampling | 6 | 29 | 4 | 27 | 2 | 0.000 |
+| base model vs COMMIT, lr 6e-6, seed 0 | 6 | 2 | 6 | 2 | 0 | 0.289 |
 | GRPO vs GACA | 18 | 24 | 7 | 13 | 11 | 0.263 |
 | GRPO vs GACA + m_z | 18 | 16 | 13 | 11 | 5 | 0.839 |
 | GRPO vs GACA-LOO | 18 | 15 | 11 | 8 | 7 | 0.648 |
@@ -93,6 +96,7 @@ the other does not. The base model is each arm's own iteration-0 evaluation.
 | GRPO vs GACA, lr 6e-6 | 18 | 0 | 18 | 0 | 0 | 0.000 |
 | GRPO vs COMMIT, lr 3e-6, seed 0 | 18 | 43 | 6 | 31 | 12 | 0.000 |
 | GRPO vs COMMIT, lr 3e-6 + dynamic sampling | 18 | 29 | 8 | 19 | 10 | 0.052 |
+| GRPO vs COMMIT, lr 6e-6, seed 0 | 18 | 2 | 18 | 2 | 0 | 0.000 |
 | GACA vs GACA + m_z | 24 | 16 | 17 | 9 | 7 | 0.169 |
 | GACA vs GACA-LOO | 24 | 15 | 14 | 5 | 10 | 0.064 |
 | GACA vs COMMIT | 24 | 26 | 14 | 16 | 10 | 0.856 |
@@ -105,6 +109,7 @@ the other does not. The base model is each arm's own iteration-0 evaluation.
 | GACA vs GACA, lr 6e-6 | 24 | 0 | 24 | 0 | 0 | 0.000 |
 | GACA vs COMMIT, lr 3e-6, seed 0 | 24 | 43 | 5 | 24 | 19 | 0.001 |
 | GACA vs COMMIT, lr 3e-6 + dynamic sampling | 24 | 29 | 9 | 14 | 15 | 0.405 |
+| GACA vs COMMIT, lr 6e-6, seed 0 | 24 | 2 | 23 | 1 | 1 | 0.000 |
 | GACA + m_z vs GACA-LOO | 16 | 15 | 10 | 9 | 6 | 1.000 |
 | GACA + m_z vs COMMIT | 16 | 26 | 6 | 16 | 10 | 0.052 |
 | GACA + m_z vs COMMIT, clip [0.5, 2] | 16 | 18 | 8 | 10 | 8 | 0.815 |
@@ -116,6 +121,7 @@ the other does not. The base model is each arm's own iteration-0 evaluation.
 | GACA + m_z vs GACA, lr 6e-6 | 16 | 0 | 16 | 0 | 0 | 0.000 |
 | GACA + m_z vs COMMIT, lr 3e-6, seed 0 | 16 | 43 | 1 | 28 | 15 | 0.000 |
 | GACA + m_z vs COMMIT, lr 3e-6 + dynamic sampling | 16 | 29 | 9 | 22 | 7 | 0.029 |
+| GACA + m_z vs COMMIT, lr 6e-6, seed 0 | 16 | 2 | 16 | 2 | 0 | 0.001 |
 | GACA-LOO vs COMMIT | 15 | 26 | 8 | 19 | 7 | 0.052 |
 | GACA-LOO vs COMMIT, clip [0.5, 2] | 15 | 18 | 8 | 11 | 7 | 0.648 |
 | GACA-LOO vs COMMIT, positive A only | 15 | 7 | 13 | 5 | 2 | 0.096 |
@@ -126,6 +132,7 @@ the other does not. The base model is each arm's own iteration-0 evaluation.
 | GACA-LOO vs GACA, lr 6e-6 | 15 | 0 | 15 | 0 | 0 | 0.000 |
 | GACA-LOO vs COMMIT, lr 3e-6, seed 0 | 15 | 43 | 3 | 31 | 12 | 0.000 |
 | GACA-LOO vs COMMIT, lr 3e-6 + dynamic sampling | 15 | 29 | 8 | 22 | 7 | 0.016 |
+| GACA-LOO vs COMMIT, lr 6e-6, seed 0 | 15 | 2 | 14 | 1 | 1 | 0.001 |
 | COMMIT vs COMMIT, clip [0.5, 2] | 26 | 18 | 16 | 8 | 10 | 0.152 |
 | COMMIT vs COMMIT, positive A only | 26 | 7 | 22 | 3 | 4 | 0.000 |
 | COMMIT vs COMMIT, lr 3e-6 | 26 | 30 | 9 | 13 | 17 | 0.523 |
@@ -135,6 +142,7 @@ the other does not. The base model is each arm's own iteration-0 evaluation.
 | COMMIT vs GACA, lr 6e-6 | 26 | 0 | 26 | 0 | 0 | 0.000 |
 | COMMIT vs COMMIT, lr 3e-6, seed 0 | 26 | 43 | 10 | 27 | 16 | 0.008 |
 | COMMIT vs COMMIT, lr 3e-6 + dynamic sampling | 26 | 29 | 14 | 17 | 12 | 0.720 |
+| COMMIT vs COMMIT, lr 6e-6, seed 0 | 26 | 2 | 26 | 2 | 0 | 0.000 |
 | COMMIT, clip [0.5, 2] vs COMMIT, positive A only | 18 | 7 | 14 | 3 | 4 | 0.013 |
 | COMMIT, clip [0.5, 2] vs COMMIT, lr 3e-6 | 18 | 30 | 6 | 18 | 12 | 0.023 |
 | COMMIT, clip [0.5, 2] vs GACA, lr 3e-6 | 18 | 17 | 9 | 8 | 9 | 1.000 |
@@ -143,6 +151,7 @@ the other does not. The base model is each arm's own iteration-0 evaluation.
 | COMMIT, clip [0.5, 2] vs GACA, lr 6e-6 | 18 | 0 | 18 | 0 | 0 | 0.000 |
 | COMMIT, clip [0.5, 2] vs COMMIT, lr 3e-6, seed 0 | 18 | 43 | 4 | 29 | 14 | 0.000 |
 | COMMIT, clip [0.5, 2] vs COMMIT, lr 3e-6 + dynamic sampling | 18 | 29 | 12 | 23 | 6 | 0.090 |
+| COMMIT, clip [0.5, 2] vs COMMIT, lr 6e-6, seed 0 | 18 | 2 | 17 | 1 | 1 | 0.000 |
 | COMMIT, positive A only vs COMMIT, lr 3e-6 | 7 | 30 | 1 | 24 | 6 | 0.000 |
 | COMMIT, positive A only vs GACA, lr 3e-6 | 7 | 17 | 2 | 12 | 5 | 0.013 |
 | COMMIT, positive A only vs GACA + action-span weight | 7 | 26 | 2 | 21 | 5 | 0.000 |
@@ -150,27 +159,35 @@ the other does not. The base model is each arm's own iteration-0 evaluation.
 | COMMIT, positive A only vs GACA, lr 6e-6 | 7 | 0 | 7 | 0 | 0 | 0.016 |
 | COMMIT, positive A only vs COMMIT, lr 3e-6, seed 0 | 7 | 43 | 1 | 37 | 6 | 0.000 |
 | COMMIT, positive A only vs COMMIT, lr 3e-6 + dynamic sampling | 7 | 29 | 2 | 24 | 5 | 0.000 |
+| COMMIT, positive A only vs COMMIT, lr 6e-6, seed 0 | 7 | 2 | 7 | 2 | 0 | 0.180 |
 | COMMIT, lr 3e-6 vs GACA, lr 3e-6 | 30 | 17 | 17 | 4 | 13 | 0.007 |
 | COMMIT, lr 3e-6 vs GACA + action-span weight | 30 | 26 | 14 | 10 | 16 | 0.541 |
 | COMMIT, lr 3e-6 vs GACA + action-span weight, lr 3e-6 | 30 | 8 | 25 | 3 | 5 | 0.000 |
 | COMMIT, lr 3e-6 vs GACA, lr 6e-6 | 30 | 0 | 30 | 0 | 0 | 0.000 |
 | COMMIT, lr 3e-6 vs COMMIT, lr 3e-6, seed 0 | 30 | 43 | 12 | 25 | 18 | 0.047 |
 | COMMIT, lr 3e-6 vs COMMIT, lr 3e-6 + dynamic sampling | 30 | 29 | 13 | 12 | 17 | 1.000 |
+| COMMIT, lr 3e-6 vs COMMIT, lr 6e-6, seed 0 | 30 | 2 | 29 | 1 | 1 | 0.000 |
 | GACA, lr 3e-6 vs GACA + action-span weight | 17 | 26 | 3 | 12 | 14 | 0.035 |
 | GACA, lr 3e-6 vs GACA + action-span weight, lr 3e-6 | 17 | 8 | 12 | 3 | 5 | 0.035 |
 | GACA, lr 3e-6 vs GACA, lr 6e-6 | 17 | 0 | 17 | 0 | 0 | 0.000 |
 | GACA, lr 3e-6 vs COMMIT, lr 3e-6, seed 0 | 17 | 43 | 3 | 29 | 14 | 0.000 |
 | GACA, lr 3e-6 vs COMMIT, lr 3e-6 + dynamic sampling | 17 | 29 | 5 | 17 | 12 | 0.017 |
+| GACA, lr 3e-6 vs COMMIT, lr 6e-6, seed 0 | 17 | 2 | 16 | 1 | 1 | 0.000 |
 | GACA + action-span weight vs GACA + action-span weight, lr 3e-6 | 26 | 8 | 21 | 3 | 5 | 0.000 |
 | GACA + action-span weight vs GACA, lr 6e-6 | 26 | 0 | 26 | 0 | 0 | 0.000 |
 | GACA + action-span weight vs COMMIT, lr 3e-6, seed 0 | 26 | 43 | 8 | 25 | 18 | 0.005 |
 | GACA + action-span weight vs COMMIT, lr 3e-6 + dynamic sampling | 26 | 29 | 12 | 15 | 14 | 0.701 |
+| GACA + action-span weight vs COMMIT, lr 6e-6, seed 0 | 26 | 2 | 26 | 2 | 0 | 0.000 |
 | GACA + action-span weight, lr 3e-6 vs GACA, lr 6e-6 | 8 | 0 | 8 | 0 | 0 | 0.008 |
 | GACA + action-span weight, lr 3e-6 vs COMMIT, lr 3e-6, seed 0 | 8 | 43 | 1 | 36 | 7 | 0.000 |
 | GACA + action-span weight, lr 3e-6 vs COMMIT, lr 3e-6 + dynamic sampling | 8 | 29 | 3 | 24 | 5 | 0.000 |
+| GACA + action-span weight, lr 3e-6 vs COMMIT, lr 6e-6, seed 0 | 8 | 2 | 7 | 1 | 1 | 0.070 |
 | GACA, lr 6e-6 vs COMMIT, lr 3e-6, seed 0 | 0 | 43 | 0 | 43 | 0 | 0.000 |
 | GACA, lr 6e-6 vs COMMIT, lr 3e-6 + dynamic sampling | 0 | 29 | 0 | 29 | 0 | 0.000 |
+| GACA, lr 6e-6 vs COMMIT, lr 6e-6, seed 0 | 0 | 2 | 0 | 2 | 0 | 0.500 |
 | COMMIT, lr 3e-6, seed 0 vs COMMIT, lr 3e-6 + dynamic sampling | 43 | 29 | 24 | 10 | 19 | 0.024 |
+| COMMIT, lr 3e-6, seed 0 vs COMMIT, lr 6e-6, seed 0 | 43 | 2 | 41 | 0 | 2 | 0.000 |
+| COMMIT, lr 3e-6 + dynamic sampling vs COMMIT, lr 6e-6, seed 0 | 29 | 2 | 28 | 1 | 1 | 0.000 |
 
 ### Final success by task type
 
@@ -191,6 +208,7 @@ the other does not. The base model is each arm's own iteration-0 evaluation.
 | GACA, lr 6e-6 | 0/9 | 0/40 | 0/23 | 0/18 | 0/11 | 0/27 |
 | COMMIT, lr 3e-6, seed 0 | 3/9 | 22/40 | 7/23 | 6/18 | 2/11 | 3/27 |
 | COMMIT, lr 3e-6 + dynamic sampling | 3/9 | 16/40 | 3/23 | 2/18 | 2/11 | 3/27 |
+| COMMIT, lr 6e-6, seed 0 | 0/9 | 2/40 | 0/23 | 0/18 | 0/11 | 0/27 |
 
 ## Training diagnostics (mean over iterations)
 
@@ -210,6 +228,7 @@ the other does not. The base model is each arm's own iteration-0 evaluation.
 | GACA, lr 6e-6 | 396 | -- | 99.3% | 85 | 0.238 | 0.34 | 0.086 | 0.98 | -- | -- |
 | COMMIT, lr 3e-6, seed 0 | 537 | 144 | 99.2% | 87 | 0.128 | 0.34 | 0.085 | 0.96 | 0.19 -> 0.26 | 0.11 -> 0.12 |
 | COMMIT, lr 3e-6 + dynamic sampling | 937 | 183 | 99.3% | 84 | 0.160 | 0.37 | 0.091 | 0.97 | 0.22 -> 0.05 | 0.10 -> 0.11 |
+| COMMIT, lr 6e-6, seed 0 | 547 | 148 | 99.1% | 86 | 0.262 | 0.36 | 0.091 | 0.97 | 0.06 -> 0.01 | 0.12 -> 0.10 |
 
 Paper Table 7 (ALFWorld): c_t std 0.31, lambda std 0.08, clamped < 0.01, step coverage 0.86.
 q(0): probability of the eventual action before any reasoning (probe arms). CIR: Causal Importance of
